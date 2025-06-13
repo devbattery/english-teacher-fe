@@ -1,27 +1,60 @@
-import React, { useEffect } from 'react';
+// src/components/AuthCallback.jsx
+
+import React, { useEffect, useState, useRef } from 'react'; // useRef 임포트
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/api';
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const auth = useAuth();
+  const [error, setError] = useState(null);
+
+  // ★★★ API 호출이 이미 시작되었는지 추적하기 위한 ref ★★★
+  const isProcessing = useRef(false);
 
   useEffect(() => {
-    // URL의 'token' 쿼리 파라미터를 가져옴
-    const accessToken = searchParams.get('token');
-
-    if (accessToken) {
-      // AuthContext의 login 함수를 호출하여 토큰을 전역 상태에 저장
-      auth.login(accessToken);
-      // 토큰 처리 후 홈페이지로 리디렉션
-      navigate('/');
-    } else {
-      // 토큰이 없으면 로그인 페이지로 리디렉션
-      alert('로그인에 실패했습니다.');
-      navigate('/login');
+    // ★★★ 이미 처리 중이면, 두 번째 호출을 무시하고 즉시 종료 ★★★
+    if (isProcessing.current) {
+      return;
     }
-  }, [searchParams, navigate, auth]);
+
+    const code = searchParams.get('code');
+
+    if (code) {
+      // ★★★ 처리 시작 플래그를 true로 설정 ★★★
+      isProcessing.current = true;
+
+      api.post('/api/auth/token', { code })
+        .then(response => {
+          const { accessToken } = response.data;
+          if (accessToken) {
+            auth.login(accessToken);
+            navigate('/', { replace: true });
+          } else {
+            throw new Error('Access Token을 받지 못했습니다.');
+          }
+        })
+        .catch(err => {
+          console.error('토큰 교환 실패:', err);
+          setError('로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        });
+    } else {
+      setError('인증 코드가 없습니다. 로그인 페이지로 돌아갑니다.');
+    }
+
+    // useEffect 클린업 함수는 필요하지 않습니다.
+  }, [searchParams, navigate, auth]); // 의존성 배열은 그대로 둡니다.
+
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <button onClick={() => navigate('/login')}>로그인 페이지로 이동</button>
+      </div>
+    );
+  }
 
   return <div>로그인 처리 중...</div>;
 };

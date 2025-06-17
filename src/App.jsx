@@ -9,16 +9,16 @@ import './App.css';
 function App() {
   return (
     // AuthProvider로 전체 앱을 감싸줍니다.
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           {/* 로그인 콜백을 처리할 라우트를 추가합니다. */}
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -1,16 +1,18 @@
-import React from "react";
-import "./LoginPage.css"; // 스타일링을 위한 CSS 파일
-import googleLogo from "../assets/google-logo.svg"; // Google 로고 이미지
+// src/components/LoginPage.jsx
 
-// 백엔드 서버의 기본 URL을 환경 변수에서 가져옵니다.
-// .env.local 파일에 VITE_API_BASE_URL=http://localhost:8080 와 같이 설정합니다.
+import React from "react";
+import "./LoginPage.css";
+// [수정] 각 소셜 로그인 로고를 임포트합니다.
+import googleLogo from "../assets/google-logo.png";
+import kakaoLogo from "../assets/kakao-logo.png";
+import naverLogo from "../assets/naver-logo.jpg";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const LoginPage = () => {
-  const handleGoogleLogin = () => {
-    // 백엔드의 Google OAuth2 로그인 URL로 리디렉션합니다.
-    // Spring Security의 기본 URL 형식은 /oauth2/authorization/{providerId} 입니다.
-    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
+  // [공통] 로그인 핸들러를 일반화하여 중복을 줄일 수 있습니다.
+  const handleSocialLogin = (provider) => {
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/${provider}`;
   };
 
   return (
@@ -18,10 +20,34 @@ const LoginPage = () => {
       <div className="login-box">
         <h2>로그인</h2>
         <p>소셜 계정으로 간편하게 시작하세요.</p>
-        <button className="google-login-button" onClick={handleGoogleLogin}>
-          <img src={googleLogo} alt="Google logo" className="google-logo" />
-          <span>Google 계정으로 로그인</span>
-        </button>
+        <div className="social-login-buttons">
+          {/* Google 로그인 버튼 */}
+          <button
+            className="social-login-button google-login-button"
+            onClick={() => handleSocialLogin('google')}
+          >
+            <img src={googleLogo} alt="Google logo" className="social-logo" />
+            <span>Google 계정으로 로그인</span>
+          </button>
+
+          {/* [추가] Kakao 로그인 버튼 */}
+          <button
+            className="social-login-button kakao-login-button"
+            onClick={() => handleSocialLogin('kakao')}
+          >
+            <img src={kakaoLogo} alt="Kakao logo" className="social-logo" />
+            <span>Kakao 계정으로 로그인</span>
+          </button>
+
+          {/* [추가] Naver 로그인 버튼 */}
+          <button
+            className="social-login-button naver-login-button"
+            onClick={() => handleSocialLogin('naver')}
+          >
+            <img src={naverLogo} alt="Naver logo" className="social-logo" />
+            <span>Naver 계정으로 로그인</span>
+          </button>
+        </div>
       </div>
     </div>
   );

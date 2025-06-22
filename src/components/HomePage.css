@@ -1,0 +1,119 @@
+/* src/components/HomePage.css */
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #f0f2f5;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.profile-picture {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.home-header h1 {
+  font-size: 2.5em;
+  color: #1c1e21;
+}
+
+.home-header p {
+  font-size: 1.2em;
+  color: #606770;
+}
+
+.home-main {
+  width: 100%;
+  max-width: 900px;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  animation: fadeInUp 0.6s ease-out 0.2s;
+  animation-fill-mode: backwards; /* 애니메이션 시작 전에는 보이지 않게 */
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.home-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  margin-bottom: 20px;
+}
+
+.card-icon svg {
+  width: 48px;
+  height: 48px;
+  color: #007bff;
+}
+
+.home-card h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #213547;
+}
+
+.home-card p {
+  font-size: 1em;
+  color: #606770;
+  line-height: 1.6;
+}
+
+/* 주요 카드 강조 */
+.primary-card {
+  border: 2px solid #007bff;
+}
+
+.primary-card:hover {
+  background-color: #f8faff;
+}
+
+/* 로그아웃 카드 스타일 */
+.logout-card .card-icon svg {
+  color: #dc3545;
+}

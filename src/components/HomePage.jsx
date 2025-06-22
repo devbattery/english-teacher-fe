@@ -2,37 +2,65 @@
 
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import './HomePage.css'; // 새로 만들 HomePage.css를 임포트합니다.
+
+// 아이콘 SVG 컴포넌트들
+const ChatIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+);
+
+const LogoutIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+);
 
 const HomePage = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // 로그아웃을 navigate와 함께 처리
+  const handleLogout = () => {
+    logout();
+    // AuthContext의 logout 함수가 이미 /login으로 navigate 하므로 추가 동작은 필요 없습니다.
+  };
+
+  if (!user) {
+    return <div>Loading...</div>; // 유저 정보 로딩 중
+  }
 
   return (
-    <div>
-      <h1>Welcome to the App!</h1>
-      {user ? (
-        <div>
-          <p>Hello, {user.name || user.email}!</p>
-          {user.picture &&
-            <img src={user.picture} alt="Profile" style={{ borderRadius: '50%', width: '50px' }} />
+    <div className="home-page">
+      <header className="home-header">
+        <div className="user-info">
+          {user.picture && 
+            <img src={user.picture} alt="Profile" className="profile-picture" />
           }
-          <br />
-
-          {/* [추가] 채팅 페이지로 이동하는 링크 */}
-          <Link to="/chat" style={{ display: 'inline-block', marginTop: '20px', marginRight: '10px', padding: '10px 15px', backgroundColor: '#28a745', color: 'white', textDecoration: 'none', borderRadius: '5px' }}>
-            Start Learning English
+          <h1>Welcome, {user.name || user.email}!</h1>
+        </div>
+        <p>What would you like to do today?</p>
+      </header>
+      
+      <main className="home-main">
+        <div className="card-container">
+          
+          <Link to="/chat" className="home-card primary-card">
+            <div className="card-icon">
+              <ChatIcon />
+            </div>
+            <h2>Start Chatting</h2>
+            <p>Practice your English with an AI Tutor.</p>
           </Link>
+          
+          <div className="home-card logout-card" onClick={handleLogout}>
+            <div className="card-icon">
+              <LogoutIcon />
+            </div>
+            <h2>Logout</h2>
+            <p>Sign out from your account.</p>
+          </div>
 
-          <button onClick={() => logout()} style={{ marginTop: '20px' }}>Logout</button>
         </div>
-      ) : (
-        // ProtectedRoute를 사용하면 이 부분은 사실상 보이지 않게 됩니다.
-        // 하지만 혹시 모를 상황을 대비해 그대로 둡니다.
-        <div>
-          <p>You are not logged in.</p>
-          <Link to="/login">Go to Login Page</Link>
-        </div>
-      )}
+      </main>
     </div>
   );
 };

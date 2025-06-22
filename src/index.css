@@ -1,68 +1,167 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.login-page {
+  width: 100%;
+  height: 100%; /* 확인된 부분 */
+  overflow: hidden;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
+.login-main-content {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* 왼쪽: 브랜딩 영역 */
+.login-branding {
+  flex: 1;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
 }
 
-button {
+.branding-content {
+  max-width: 450px;
+  text-align: center;
+  animation: slideInFromLeft 0.7s ease-out;
+}
+
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.branding-title {
+  font-size: 40px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.branding-description {
+  font-size: 18px;
+  opacity: 0.9;
+  margin-bottom: 30px;
+}
+
+.branding-features {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.branding-features li {
+  margin-bottom: 12px;
+  opacity: 0.95;
+}
+
+/* 오른쪽: 로그인 폼 영역 */
+.login-form-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+}
+
+.login-box {
+  background: white;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+.logo-in-box {
+  font-size: 24px;
+  font-weight: 700;
+  color: #007bff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.login-box h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 28px;
+  color: #1c1e21;
+}
+
+.login-box p {
+  margin-bottom: 32px;
+  color: #606770;
+  font-size: 16px;
+}
+
+.social-login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.social-login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: 16px;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid #dadce0;
+  background-color: #ffffff;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.social-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.social-logo {
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+}
+
+.google-login-button { color: #3c4043; }
+.kakao-login-button { background-color: #FEE500; color: #191919; border-color: #FEE500; }
+.naver-login-button { background-color: #03C75A; color: white; border-color: #03C75A; }
+
+.login-footer { margin-top: 24px; font-size: 12px; color: #8a8d91; }
+.login-footer a { color: #606770; text-decoration: none; }
+.login-footer a:hover { text-decoration: underline; }
+
+/* 반응형 디자인 */
+@media (max-width: 992px) {
+  .login-main-content {
+    flex-direction: column;
   }
-  a:hover {
-    color: #747bff;
+
+  .login-branding {
+    flex: 0 0 300px;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .branding-title {
+    font-size: 32px;
   }
+
+  .login-form-area {
+    flex-grow: 1;
+  }
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 30px;
+        box-shadow: none;
+        border-radius: 0;
+    }
 }

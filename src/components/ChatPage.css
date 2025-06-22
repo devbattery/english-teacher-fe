@@ -1,8 +1,11 @@
-/* src/components/ChatPage.css */
+/* 추가: body의 기본 마진을 제거하여 화면에 꽉 차게 만듭니다. */
+body {
+  margin: 0;
+}
 
 .chat-page-container {
   display: flex;
-  height: 100vh;
+  height: 94vh; /* [수정됨] 100% 대신 100vh를 사용하여 뷰포트 높이에 맞춤 */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -13,6 +16,35 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  flex-shrink: 0; /* 사이드바가 찌그러지지 않도록 방지 */
+}
+
+.sidebar-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.home-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.home-link:hover {
+  background-color: #e9ecef;
+}
+
+.home-link svg {
+  color: #007bff;
 }
 
 .teacher-sidebar h3 {
@@ -55,21 +87,35 @@
   font-weight: bold;
 }
 
+/* 
+  이제 .chat-page-container가 고정된 높이(100vh)를 가지므로,
+  아래의 Grid 설정이 완벽하게 동작합니다. 
+*/
 .chat-main {
   flex-grow: 1;
-  display: flex;
-  flex-direction: column;
   background-color: #ffffff;
+  display: grid; 
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
 }
 
 .chat-messages {
-  flex-grow: 1;
-  padding: 20px;
   overflow-y: auto;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 0;
 }
+
+.chat-input-form {
+  display: flex;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+}
+
 
 .message-bubble {
   max-width: 70%;
@@ -94,14 +140,7 @@
 
 .message-bubble p {
   margin: 0;
-  white-space: pre-wrap; /* 줄바꿈을 그대로 표시 */
-}
-
-.chat-input-form {
-  display: flex;
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
-  background-color: #f8f9fa;
+  white-space: pre-wrap;
 }
 
 .chat-input-form input {

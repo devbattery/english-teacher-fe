@@ -1,9 +1,8 @@
-// src/components/ChatPage.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import api from '../api/api'; // 백엔드와 통신할 axios 인스턴스
-import './ChatPage.css'; // 채팅 페이지 스타일
+import api from '../api/api';
+import './ChatPage.css';
+import { Link } from 'react-router-dom'; // Link 임포트
 
 // 선생님 레벨 정의
 const teacherLevels = [
@@ -12,6 +11,14 @@ const teacherLevels = [
   { id: 'advanced', name: '고급 선생님' },
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
+
+// 홈 아이콘 SVG
+const HomeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+  </svg>
+);
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -23,14 +30,16 @@ const ChatPage = () => {
 
   // 시작 메시지 설정
   useEffect(() => {
-    const teacherName = teacherLevels.find(t => t.id === selectedTeacher)?.name;
-    setMessages([
-      {
-        sender: 'ai',
-        text: `Hello, ${user.name}! I'm your ${teacherName}. How can I help you practice English today?`,
-      },
-    ]);
-  }, [selectedTeacher, user.name]);
+    if (user) {
+        const teacherName = teacherLevels.find(t => t.id === selectedTeacher)?.name || 'Teacher';
+        setMessages([
+          {
+            sender: 'ai',
+            text: `Hello, ${user.name}! I'm your ${teacherName}. How can I help you practice English today?`,
+          },
+        ]);
+    }
+  }, [selectedTeacher, user]);
 
   // 메시지 목록이 업데이트될 때마다 맨 아래로 스크롤
   useEffect(() => {
@@ -67,9 +76,19 @@ const ChatPage = () => {
     }
   };
 
+  if (!user) {
+    return <div>Loading user...</div>;
+  }
+
   return (
     <div className="chat-page-container">
       <aside className="teacher-sidebar">
+        <div className="sidebar-header">
+          <Link to="/" className="home-link">
+            <HomeIcon />
+            <span>Home</span>
+          </Link>
+        </div>
         <h3>Your Teacher</h3>
         <p>Select a teacher that matches your learning goals.</p>
         <div className="teacher-list">

@@ -1,187 +1,51 @@
 /* src/index.css */
 
-/* 맨 위에 Pretendard 폰트 import 코드 추가 */
+/* Pretendard 폰트 import */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-/* body 태그에 기본 폰트와 스타일 지정 */
-body {
-  margin: 0;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; /* 스크롤바가 생기지 않도록 */
+/* CSS 리셋 및 기본 레이아웃 설정 */
+html {
+  box-sizing: border-box;
 }
 
-/* --- 기존 index.css 내용 --- */
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
 
-.login-page {
-  width: 100%;
-  height: 100%; /* 확인된 부분 */
+body {
+  margin: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0f2f5; /* 페이지 전환 시 흰 배경이 번쩍이는 것을 방지 */
+}
+
+/* 앱의 루트 요소가 뷰포트 전체를 차지하도록 설정 */
+#root {
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
-.login-main-content {
-  display: flex;
-  width: 100%;
-  height: 100%;
+/* 
+  [핵심 추가] 내비게이션 바 아래의 메인 콘텐츠 영역을 위한 스타일 
+*/
+.main-content {
+  /* 고정된 네비게이션 바(높이 64px)에 의해 콘텐츠가 가려지지 않도록 상단 패딩 추가 */
+  padding-top: 64px;
+
+  /* 뷰포트 전체 높이를 차지하도록 설정 */
+  height: 100vh;
+  
+  /* 이 영역의 자식 컴포넌트 높이가 100%를 기준으로 계산되도록 함 */
+  box-sizing: border-box;
 }
 
-/* 왼쪽: 브랜딩 영역 */
-.login-branding {
-  flex: 1;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-}
-
-.branding-content {
-  max-width: 450px;
-  text-align: center;
-  animation: slideInFromLeft 0.7s ease-out;
-}
-
-@keyframes slideInFromLeft {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.branding-title {
-  font-size: 40px;
-  margin-bottom: 20px;
-  line-height: 1.2;
-}
-
-.branding-description {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 30px;
-}
-
-.branding-features {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  display: inline-block;
-  font-size: 16px;
-}
-
-.branding-features li {
-  margin-bottom: 12px;
-  opacity: 0.95;
-}
-
-/* 오른쪽: 로그인 폼 영역 */
-.login-form-area {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f8f9fa;
-}
-
-.login-box {
-  background: white;
-  padding: 40px 50px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 100%;
-  max-width: 420px;
-  animation: fadeIn 0.7s ease-in-out;
-}
-
-.logo-in-box {
-  font-size: 24px;
-  font-weight: 700;
-  color: #007bff;
-  text-decoration: none;
-  display: block;
-  margin-bottom: 20px;
-}
-
-.login-box h2 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 28px;
-  color: #1c1e21;
-}
-
-.login-box p {
-  margin-bottom: 32px;
-  color: #606770;
-  font-size: 16px;
-}
-
-.social-login-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.social-login-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid #dadce0;
-  background-color: #ffffff;
-}
-
-.social-login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-}
-
-.social-logo {
-  width: 22px;
-  height: 22px;
-  margin-right: 12px;
-}
-
-.google-login-button { color: #3c4043; }
-.kakao-login-button { background-color: #FEE500; color: #191919; border-color: #FEE500; }
-.naver-login-button { background-color: #03C75A; color: white; border-color: #03C75A; }
-
-.login-footer { margin-top: 24px; font-size: 12px; color: #8a8d91; }
-.login-footer a { color: #606770; text-decoration: none; }
-.login-footer a:hover { text-decoration: underline; }
-
-/* 반응형 디자인 */
-@media (max-width: 992px) {
-  .login-main-content {
-    flex-direction: column;
-  }
-
-  .login-branding {
-    flex: 0 0 300px;
-  }
-
-  .branding-title {
-    font-size: 32px;
-  }
-
-  .login-form-area {
-    flex-grow: 1;
-  }
-}
-
-@media (max-width: 480px) {
-    .login-box {
-        padding: 30px;
-        box-shadow: none;
-        border-radius: 0;
-    }
-}
+/* 
+  [정리] 기존에 있던 로그인 페이지 관련 스타일은 LoginPage.css 파일에서 관리하므로
+  index.css에서는 제거합니다.
+*/

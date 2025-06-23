@@ -83,24 +83,13 @@ const ChatPage = () => {
   return (
     <div className="chat-page-container">
       <aside className="teacher-sidebar">
+        {/* [수정] 홈 링크가 있던 헤더 부분을 단순화합니다. */}
         <div className="sidebar-header">
-          <Link to="/" className="home-link">
-            <HomeIcon />
-            <span>Home</span>
-          </Link>
+          <h3>Your Teacher</h3>
+          <p>Select a teacher that matches your learning goals.</p>
         </div>
-        <h3>Your Teacher</h3>
-        <p>Select a teacher that matches your learning goals.</p>
         <div className="teacher-list">
-          {teacherLevels.map((teacher) => (
-            <button
-              key={teacher.id}
-              className={`teacher-button ${selectedTeacher === teacher.id ? 'active' : ''}`}
-              onClick={() => setSelectedTeacher(teacher.id)}
-            >
-              {teacher.name}
-            </button>
-          ))}
+          {/* ... */}
         </div>
       </aside>
       <main className="chat-main">

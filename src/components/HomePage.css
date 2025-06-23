@@ -10,54 +10,43 @@
   box-sizing: border-box;
 }
 
-.home-header {
+/* [추가] 기존 헤더 대신 사용할 간단한 페이지 제목 스타일 */
+.page-title {
   text-align: center;
   margin-bottom: 40px;
   animation: fadeInDown 0.6s ease-out;
 }
+
+.page-title h1 {
+  font-size: 2.8em;
+  color: #1c1e21;
+}
+
+.page-title p {
+  font-size: 1.2em;
+  color: #606770;
+  margin-top: 10px;
+}
+
+/* [삭제] 기존 .home-header, .user-info, .profile-picture 관련 스타일은 필요 없어졌습니다. */
 
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 10px;
-}
-
-.profile-picture {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.home-header h1 {
-  font-size: 2.5em;
-  color: #1c1e21;
-}
-
-.home-header p {
-  font-size: 1.2em;
-  color: #606770;
-}
-
 .home-main {
   width: 100%;
-  max-width: 900px;
+  max-width: 600px; /* 카드가 하나이므로 너비를 약간 줄여도 좋습니다. */
 }
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* [수정] 카드가 하나이므로 grid 설정이 더 간단해집니다. */
+  grid-template-columns: 1fr; 
   gap: 30px;
   animation: fadeInUp 0.6s ease-out 0.2s;
-  animation-fill-mode: backwards; /* 애니메이션 시작 전에는 보이지 않게 */
+  animation-fill-mode: backwards;
 }
 
 @keyframes fadeInUp {
@@ -68,7 +57,7 @@
 .home-card {
   background-color: white;
   border-radius: 12px;
-  padding: 30px;
+  padding: 40px; /* 패딩을 조금 더 줍니다. */
   text-align: center;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -87,24 +76,23 @@
 }
 
 .card-icon svg {
-  width: 48px;
-  height: 48px;
+  width: 52px; /* 아이콘 크기를 키웁니다. */
+  height: 52px;
   color: #007bff;
 }
 
 .home-card h2 {
-  font-size: 1.5em;
+  font-size: 1.8em; /* 폰트 크기를 키웁니다. */
   margin-bottom: 10px;
   color: #213547;
 }
 
 .home-card p {
-  font-size: 1em;
+  font-size: 1.1em; /* 폰트 크기를 키웁니다. */
   color: #606770;
   line-height: 1.6;
 }
 
-/* 주요 카드 강조 */
 .primary-card {
   border: 2px solid #007bff;
 }
@@ -113,7 +101,4 @@
   background-color: #f8faff;
 }
 
-/* 로그아웃 카드 스타일 */
-.logout-card .card-icon svg {
-  color: #dc3545;
-}
+/* [삭제] .logout-card 관련 스타일은 필요 없습니다. */

@@ -1,0 +1,81 @@
+/* src/components/NavigationBar.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  height: 64px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  position: fixed; /* 화면 상단에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.navbar-brand a {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #007bff;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.navbar-brand a:hover {
+  opacity: 0.8;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-profile-pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.navbar-username {
+  font-weight: 500;
+  color: #333;
+}
+
+.navbar-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.login-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.logout-button {
+  background-color: #f1f3f5;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.logout-button:hover {
+  background-color: #e9ecef;
+}

@@ -1,11 +1,8 @@
-/* 추가: body의 기본 마진을 제거하여 화면에 꽉 차게 만듭니다. */
-body {
-  margin: 0;
-}
+/* src/components/ChatPage.css */
 
 .chat-page-container {
   display: flex;
-  height: 94vh; /* [수정됨] 100% 대신 100vh를 사용하여 뷰포트 높이에 맞춤 */
+  height: 100%; /* 부모(.main-content)의 높이를 꽉 채우도록 100%로 설정 */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -17,46 +14,29 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  flex-shrink: 0; /* 사이드바가 찌그러지지 않도록 방지 */
+  flex-shrink: 0;
 }
 
+/* [수정됨] 헤더 스타일이 단순화되었습니다. */
 .sidebar-header {
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.home-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-}
-
-.home-link:hover {
-  background-color: #e9ecef;
-}
-
-.home-link svg {
-  color: #007bff;
-}
-
-.teacher-sidebar h3 {
+.sidebar-header h3 {
   margin-top: 0;
+  margin-bottom: 8px;
   color: #333;
 }
 
-.teacher-sidebar p {
+.sidebar-header p {
   font-size: 14px;
   color: #666;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
+
+/* [삭제됨] .home-link 관련 스타일은 NavigationBar로 대체되어 제거되었습니다. */
 
 .teacher-list {
   display: flex;
@@ -87,16 +67,13 @@ body {
   font-weight: bold;
 }
 
-/* 
-  이제 .chat-page-container가 고정된 높이(100vh)를 가지므로,
-  아래의 Grid 설정이 완벽하게 동작합니다. 
-*/
 .chat-main {
   flex-grow: 1;
   background-color: #ffffff;
-  display: grid; 
+  display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;
+  height: 100%; /* 컨테이너 높이에 맞게 설정 */
 }
 
 .chat-messages {
@@ -115,7 +92,6 @@ body {
   background-color: #f8f9fa;
   box-sizing: border-box;
 }
-
 
 .message-bubble {
   max-width: 70%;
@@ -178,32 +154,34 @@ body {
 }
 
 .typing-indicator {
-    display: inline-block;
+  display: inline-block;
 }
 
 .typing-indicator span {
-    height: 8px;
-    width: 8px;
-    background-color: #999;
-    border-radius: 50%;
-    display: inline-block;
-    animation: wave 1.3s infinite;
-    margin: 0 2px;
+  height: 8px;
+  width: 8px;
+  background-color: #999;
+  border-radius: 50%;
+  display: inline-block;
+  animation: wave 1.3s infinite;
+  margin: 0 2px;
 }
 
 .typing-indicator span:nth-child(2) {
-    animation-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .typing-indicator span:nth-child(3) {
-    animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 @keyframes wave {
-    0%, 60%, 100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-8px);
-    }
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-8px);
+  }
 }

@@ -17,7 +17,6 @@
   flex-shrink: 0;
 }
 
-/* [수정됨] 헤더 스타일이 단순화되었습니다. */
 .sidebar-header {
   margin-bottom: 24px;
   padding-bottom: 16px;
@@ -35,8 +34,6 @@
   color: #666;
   margin-bottom: 0;
 }
-
-/* [삭제됨] .home-link 관련 스타일은 NavigationBar로 대체되어 제거되었습니다. */
 
 .teacher-list {
   display: flex;
@@ -73,7 +70,7 @@
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;
-  height: 100%; /* 컨테이너 높이에 맞게 설정 */
+  height: 100%;
 }
 
 .chat-messages {

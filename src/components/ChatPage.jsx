@@ -1,24 +1,18 @@
+// src/components/ChatPage.jsx
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './ChatPage.css';
-import { Link } from 'react-router-dom'; // Link 임포트
+// [수정] NavigationBar가 생겼으므로 Link와 HomeIcon은 더 이상 필요 없습니다.
 
-// 선생님 레벨 정의
+// [유지] 선생님 레벨 정의는 컴포넌트 기능의 핵심이므로 그대로 둡니다.
 const teacherLevels = [
   { id: 'beginner', name: '초급 선생님' },
   { id: 'intermediate', name: '중급 선생님' },
   { id: 'advanced', name: '고급 선생님' },
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
-
-// 홈 아이콘 SVG
-const HomeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-  </svg>
-);
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -56,7 +50,6 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      // 백엔드의 채팅 API 엔드포인트로 요청 전송
       const response = await api.post('/api/chat/send', {
         level: selectedTeacher,
         message: inputValue,
@@ -83,15 +76,26 @@ const ChatPage = () => {
   return (
     <div className="chat-page-container">
       <aside className="teacher-sidebar">
-        {/* [수정] 홈 링크가 있던 헤더 부분을 단순화합니다. */}
+        {/* [수정] 홈 링크 헤더 대신 단순화된 헤더 */}
         <div className="sidebar-header">
           <h3>Your Teacher</h3>
           <p>Select a teacher that matches your learning goals.</p>
         </div>
+
+        {/* ★★★ [복원] 실수로 누락되었던 선생님 선택 버튼 목록 ★★★ */}
         <div className="teacher-list">
-          {/* ... */}
+          {teacherLevels.map((teacher) => (
+            <button
+              key={teacher.id}
+              className={`teacher-button ${selectedTeacher === teacher.id ? 'active' : ''}`}
+              onClick={() => setSelectedTeacher(teacher.id)}
+            >
+              {teacher.name}
+            </button>
+          ))}
         </div>
       </aside>
+      
       <main className="chat-main">
         <div className="chat-messages">
           {messages.map((msg, index) => (

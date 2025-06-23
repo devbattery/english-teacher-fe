@@ -21,7 +21,7 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f0f2f5; /* 페이지 전환 시 흰 배경이 번쩍이는 것을 방지 */
+  background-color: #f0f2f5;
 }
 
 /* 앱의 루트 요소가 뷰포트 전체를 차지하도록 설정 */
@@ -32,20 +32,23 @@ body {
 }
 
 /* 
-  [핵심 추가] 내비게이션 바 아래의 메인 콘텐츠 영역을 위한 스타일 
+  [핵심 수정] 내비게이션 바 아래의 메인 콘텐츠 영역 스타일
 */
 .main-content {
+  /* 부모(#root)의 전체 높이를 차지하도록 설정 */
+  height: 100%; 
+
+  /* ★★★★★
+    이 속성이 핵심입니다.
+    padding과 border를 height/width 계산에 포함시킵니다.
+    따라서 height: 100%를 유지한 채 padding-top을 주어도
+    전체 높이가 100%를 넘어가지 않습니다.
+   ★★★★★ */
+  box-sizing: border-box;
+
   /* 고정된 네비게이션 바(높이 64px)에 의해 콘텐츠가 가려지지 않도록 상단 패딩 추가 */
   padding-top: 64px;
 
-  /* 뷰포트 전체 높이를 차지하도록 설정 */
-  height: 100vh;
-  
-  /* 이 영역의 자식 컴포넌트 높이가 100%를 기준으로 계산되도록 함 */
-  box-sizing: border-box;
+  /* HomePage처럼 내용이 길어질 경우를 대비해 스크롤을 허용합니다. */
+  overflow-y: auto; 
 }
-
-/* 
-  [정리] 기존에 있던 로그인 페이지 관련 스타일은 LoginPage.css 파일에서 관리하므로
-  index.css에서는 제거합니다.
-*/

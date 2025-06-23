@@ -35,9 +35,9 @@ const HomePage = () => {
           {user.picture && 
             <img src={user.picture} alt="Profile" className="profile-picture" />
           }
-          <h1>Welcome, {user.name || user.email}!</h1>
+          <h1>Learn English, Effectively.</h1>
         </div>
-        <p>What would you like to do today?</p>
+        <p>영어 수준에 따라 원하는 AI 선생님을 선택할 수 있습니다. ✅</p>
       </header>
       
       <main className="home-main">
@@ -48,7 +48,7 @@ const HomePage = () => {
               <ChatIcon />
             </div>
             <h2>Start Chatting</h2>
-            <p>Practice your English with an AI Tutor.</p>
+            <p>Practice your English with an AI Teacher.</p>
           </Link>
           
           <div className="home-card logout-card" onClick={handleLogout}>

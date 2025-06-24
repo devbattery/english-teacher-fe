@@ -1,0 +1,79 @@
+/* src/components/HomePageSkeleton.css */
+
+/* 기본 스켈레톤 스타일 */
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 쉬머(shimmer) 애니메이션 효과 */
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* HomePage 레이아웃에 맞춘 스켈레톤 크기 지정 */
+.skeleton-page .page-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 44px; /* h1 폰트 크기와 비슷하게 */
+  margin-bottom: 16px;
+}
+
+.skeleton-subtitle {
+  width: 80%;
+  height: 24px; /* p 폰트 크기와 비슷하게 */
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+}
+
+.skeleton-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%; /* 아이콘은 동그랗게 */
+  margin-bottom: 20px;
+}
+
+.skeleton-card-h2 {
+  width: 50%;
+  height: 32px;
+  margin-bottom: 16px;
+}
+
+.skeleton-card-p {
+  width: 90%;
+  height: 20px;
+  margin-bottom: 10px;
+}
+
+.skeleton-card-p-short {
+  width: 70%;
+  height: 20px;
+}

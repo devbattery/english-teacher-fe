@@ -27,7 +27,6 @@ const NavigationBar = () => {
           // userLoading이 false이고 user가 존재할 때
           <div className="navbar-user">
             {user.picture && <img src={user.picture} alt="Profile" className="navbar-profile-pic" />}
-            <span className="navbar-username">{user.name}</span>
             <button onClick={logout} className="navbar-button logout-button">Logout</button>
           </div>
         ) : (

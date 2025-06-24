@@ -66,8 +66,7 @@
   justify-content: center;
   align-items: center;
   background-color: #f8f9fa;
-  /* [추가] 내용이 넘칠 경우 세로 스크롤을 허용합니다. */
-  overflow-y: auto;
+  /* [수정] 스크롤 처리를 부모로 옮겼으므로 여기서는 제거합니다. */
 }
 
 .login-box {
@@ -80,6 +79,8 @@
   max-width: 420px;
   animation: fadeIn 0.7s ease-in-out;
 }
+
+/* ... (나머지 .logo-in-box, h2, p, button 등 스타일은 그대로 유지) ... */
 
 .logo-in-box {
   font-size: 24px;
@@ -143,16 +144,24 @@
 .login-footer a { color: #606770; text-decoration: none; }
 .login-footer a:hover { text-decoration: underline; }
 
+
+/* --- [핵심 수정 영역] --- */
 /* 반응형 디자인: 화면이 992px보다 좁아지면 세로로 쌓임 */
 @media (max-width: 992px) {
   .login-main-content {
     flex-direction: column;
+    /* [추가] 이제 이 컨테이너 자체가 스크롤됩니다. */
+    overflow-y: auto;
+    /* [추가] iOS에서 부드러운 스크롤을 위함 */
+    -webkit-overflow-scrolling: touch;
   }
 
   .login-branding {
-    flex: 0 0 auto; /* [수정] 고정 높이 대신 콘텐츠 크기에 맞게 자동 조절 */
-    padding: 40px 20px; /* 패딩을 약간 조정 */
-    min-height: 250px; /* 최소 높이를 지정하여 너무 찌그러지지 않게 함 */
+    /* [수정] flex-grow와 shrink를 비활성화하여 고유 높이를 유지하도록 합니다. */
+    flex: 0 0 auto;
+    /* [추가] 최소 높이를 지정하여 콘텐츠가 너무 적어도 영역을 유지합니다. */
+    min-height: 300px;
+    padding: 40px 20px;
   }
 
   .branding-title {
@@ -160,9 +169,10 @@
   }
 
   .login-form-area {
+    /* [수정] flex-grow를 사용하여 남는 공간을 채우고, 최소 높이를 지정합니다. */
     flex-grow: 1;
-    /* [추가] 폼 영역이 항상 최소한의 높이를 갖도록 합니다. */
-    padding: 20px 0;
+    min-height: 400px; /* 로그인 버튼들이 잘리지 않도록 최소 높이 확보 */
+    padding: 40px 0;
   }
 }
 
@@ -171,15 +181,16 @@
     padding: 30px;
     box-shadow: none;
     border-radius: 0;
-    width: 100%; /* 화면 너비에 꽉 차게 */
-    height: 100%; /* [추가] 폼 영역의 높이를 꽉 채우도록 */
-    display: flex; /* [추가] 내부 콘텐츠를 중앙 정렬하기 위해 flex 사용 */
+    width: 100%;
+    /* [수정] 높이 100%는 제거합니다. 부모 스크롤에 따라 자연스럽게 결정됩니다. */
+    /* display, flex-direction, justify-content는 그대로 유지해도 좋습니다. */
+    display: flex;
     flex-direction: column;
     justify-content: center;
   }
 
   .login-branding {
-    min-height: 200px;
+    min-height: 250px; /* 작은 화면에서는 브랜딩 영역을 조금 줄입니다. */
   }
 
   .branding-title {

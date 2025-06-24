@@ -2,8 +2,10 @@
 
 .chat-page-container {
   display: flex;
-  height: 100%; /* 부모(.main-content)의 높이를 꽉 채우도록 100%로 설정 */
+  height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative; /* 자식 요소의 absolute 포지셔닝 기준 */
+  overflow: hidden; /* 모바일에서 사이드바 숨기기 위함 */
 }
 
 .teacher-sidebar {
@@ -15,170 +17,110 @@
   flex-direction: column;
   box-sizing: border-box;
   flex-shrink: 0;
+  transition: transform 0.3s ease-in-out; /* [추가] 슬라이드 애니메이션 */
+  z-index: 1000; /* [추가] 다른 요소 위에 오도록 */
 }
 
 .sidebar-header {
-  margin-bottom: 24px;
+  display: flex; /* [추가] 제목과 닫기 버튼 정렬 */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px; /* p태그가 아래로 가므로 마진 조정 */
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e0e0;
 }
+.sidebar-header h3 { margin: 0; color: #333; }
+.teacher-sidebar p { font-size: 14px; color: #666; margin-bottom: 20px; margin-top: 0; }
 
-.sidebar-header h3 {
-  margin-top: 0;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.sidebar-header p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 0;
-}
-
-.teacher-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.teacher-button {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  text-align: left;
-  font-size: 16px;
+.sidebar-close-button {
+  display: none; /* [추가] 데스크톱에서는 숨김 */
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  padding: 4px;
 }
 
-.teacher-button:hover {
-  background-color: #e9ecef;
-}
-
-.teacher-button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-  font-weight: bold;
-}
+/* ... teacher-list, teacher-button 등은 그대로 ... */
+.teacher-list { display: flex; flex-direction: column; gap: 10px; }
+.teacher-button { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; background-color: #fff; text-align: left; font-size: 16px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+.teacher-button:hover { background-color: #e9ecef; }
+.teacher-button.active { background-color: #007bff; color: white; border-color: #007bff; font-weight: bold; }
 
 .chat-main {
   flex-grow: 1;
   background-color: #ffffff;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: flex; /* [수정] Grid에서 Flexbox로 변경하여 헤더 추가에 용이하도록 함 */
+  flex-direction: column;
   overflow: hidden;
   height: 100%;
 }
 
-.chat-messages {
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 0;
+.chat-header {
+  display: none; /* [추가] 데스크톱에서는 숨김 */
+  flex-shrink: 0;
+  padding: 0 20px;
+  height: 60px;
+  border-bottom: 1px solid #e0e0e0;
+  align-items: center;
 }
 
-.chat-input-form {
-  display: flex;
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
-  background-color: #f8f9fa;
-  box-sizing: border-box;
+.menu-toggle { background: none; border: none; cursor: pointer; padding: 8px; }
+.chat-header-title { font-size: 18px; font-weight: 600; }
+
+/* ... chat-messages, chat-input-form 등은 그대로 ... */
+.chat-messages { overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; /* [수정] 남은 공간 모두 차지 */}
+.chat-input-form { display: flex; padding: 20px; border-top: 1px solid #e0e0e0; background-color: #f8f9fa; box-sizing: border-box; flex-shrink: 0;}
+.message-bubble { max-width: 80%; padding: 12px 18px; border-radius: 20px; line-height: 1.5; }
+.message-bubble.user { background-color: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
+.message-bubble.ai { background-color: #e9ecef; color: #343a40; align-self: flex-start; border-bottom-left-radius: 5px; }
+.message-bubble p { margin: 0; white-space: pre-wrap; }
+.chat-input-form input { flex-grow: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; margin-right: 10px; }
+.chat-input-form input:focus { outline: none; border-color: #007bff; }
+.chat-input-form button { padding: 12px 20px; font-size: 16px; border: none; background-color: #007bff; color: white; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
+.chat-input-form button:hover { background-color: #0056b3; }
+.chat-input-form button:disabled { background-color: #a0c3e6; cursor: not-allowed; }
+.typing-indicator { display: inline-block; }
+.typing-indicator span { height: 8px; width: 8px; background-color: #999; border-radius: 50%; display: inline-block; animation: wave 1.3s infinite; margin: 0 2px; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.1s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.2s; }
+@keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+
+
+/* [추가] 오버레이 스타일 */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
-.message-bubble {
-  max-width: 70%;
-  padding: 12px 18px;
-  border-radius: 20px;
-  line-height: 1.5;
-}
 
-.message-bubble.user {
-  background-color: #007bff;
-  color: white;
-  align-self: flex-end;
-  border-bottom-right-radius: 5px;
-}
-
-.message-bubble.ai {
-  background-color: #e9ecef;
-  color: #343a40;
-  align-self: flex-start;
-  border-bottom-left-radius: 5px;
-}
-
-.message-bubble p {
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-.chat-input-form input {
-  flex-grow: 1;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-right: 10px;
-}
-
-.chat-input-form input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.chat-input-form button {
-  padding: 12px 20px;
-  font-size: 16px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.chat-input-form button:hover {
-  background-color: #0056b3;
-}
-
-.chat-input-form button:disabled {
-  background-color: #a0c3e6;
-  cursor: not-allowed;
-}
-
-.typing-indicator {
-  display: inline-block;
-}
-
-.typing-indicator span {
-  height: 8px;
-  width: 8px;
-  background-color: #999;
-  border-radius: 50%;
-  display: inline-block;
-  animation: wave 1.3s infinite;
-  margin: 0 2px;
-}
-
-.typing-indicator span:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.typing-indicator span:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-@keyframes wave {
-  0%,
-  60%,
-  100% {
-    transform: translateY(0);
+/* --- [핵심] 모바일 반응형 스타일 --- */
+@media (max-width: 768px) {
+  .teacher-sidebar {
+    position: absolute; /* 문서 흐름에서 벗어나 겹치도록 함 */
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%); /* 화면 왼쪽 바깥으로 숨기기 */
+    border-right: none;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   }
-  30% {
-    transform: translateY(-8px);
+
+  .teacher-sidebar.open {
+    transform: translateX(0); /* .open 클래스가 붙으면 화면 안으로 슬라이드 */
   }
+
+  .sidebar-close-button {
+    display: block; /* 모바일에서 닫기 버튼 보이기 */
+  }
+
+  .chat-header {
+    display: flex; /* 모바일에서 헤더 보이기 */
+  }
+
+  /* 오버레이는 JS로 제어되므로 별도 미디어 쿼리 불필요 */
 }

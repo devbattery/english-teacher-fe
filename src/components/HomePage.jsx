@@ -24,8 +24,8 @@ const HomePage = () => {
             <div className="card-icon">
               <ChatIcon />
             </div>
-            <h2>Start Chatting</h2>
-            <p>Practice your English with an AI Teacher.</p>
+            <h2>Start Learning</h2>
+            <p>[초급 / 중급 / 고급 / 전문가]의 AI 선생님을 선택할 수 있습니다.</p>
           </Link>
           
           {/* [삭제] 로그아웃 카드는 NavigationBar로 이동했으므로 삭제합니다. */}

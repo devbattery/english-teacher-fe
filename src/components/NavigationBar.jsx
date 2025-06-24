@@ -11,7 +11,7 @@ const NavigationBar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">🚀 English Trainer</Link>
+        <Link to="/">📘 English Teacher</Link>
       </div>
       <div className="navbar-menu">
         {user ? (

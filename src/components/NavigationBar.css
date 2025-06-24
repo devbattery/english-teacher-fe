@@ -8,7 +8,7 @@
   height: 64px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  position: fixed; /* 화면 상단에 고정 */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -78,4 +78,20 @@
 
 .logout-button:hover {
   background-color: #e9ecef;
+}
+
+/* [추가] 로딩 스피너 스타일 */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

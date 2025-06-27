@@ -44,17 +44,7 @@ const ChatPage = () => {
       setMessages([]); // 이전 선생님의 메시지를 지워 깔끔하게 시작
       try {
         const response = await api.get(`/api/chat/history/${selectedTeacher}`);
-        
-        if (response.data && response.data.length > 0) {
-          // DB에 저장된 메시지 내역으로 상태 업데이트
-          setMessages(response.data);
-        } else {
-          // 내역이 없으면, 환영 메시지를 표시
-          const teacherName = teacherLevels.find(t => t.id === selectedTeacher)?.name || 'Teacher';
-          setMessages([
-            { sender: 'ai', text: `Hello, ${user.name}! I'm your ${teacherName}. How can I help you practice English today?` },
-          ]);
-        }
+        setMessages(response.data);
       } catch (error) {
         console.error('Error fetching chat history:', error);
         setMessages([{ sender: 'ai', text: 'Sorry, I could not load our previous conversation. Please try again.' }]);

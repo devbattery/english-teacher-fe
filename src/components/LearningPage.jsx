@@ -62,18 +62,36 @@ const LearningPage = () => {
         {loading && <LearningPageSkeleton />}
         {error && <div className="error-message">{error}</div>}
         {learningContent && (
-          <article className="learning-article">
-            <h2 className="article-title">{learningContent.title}</h2>
-            <div className="article-content">
-              {/* 백엔드에서 받은 텍스트의 줄바꿈(\n)을 <br>로 변환하여 보여줌 */}
-              {learningContent.content.split('\n').map((line, index) => (
-                <React.Fragment key={index}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
-            </div>
-          </article>
+          <>
+            {/* 1. 학습 아티클 섹션 */}
+            <article className="learning-article">
+              <h2 className="article-title">{learningContent.title}</h2>
+              <div className="article-content">
+                {/* 백엔드에서 받은 텍스트의 줄바꿈(\n)을 <br>로 변환하여 보여줌 */}
+                {learningContent.content.split('\n').map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </div>
+            </article>
+
+            {/* 2. [신규] 핵심 표현 섹션 */}
+            {learningContent.keyExpressions && learningContent.keyExpressions.length > 0 && (
+              <section className="key-expressions-section">
+                <h3 className="expressions-title">Key Expressions ✨</h3>
+                <ul className="expressions-list">
+                  {learningContent.keyExpressions.map((item, index) => (
+                    <li key={index} className="expression-item">
+                      <p className="expression-en">{item.expression}</p>
+                      <p className="expression-kr">{item.meaning}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </>
         )}
       </main>
     </div>

@@ -1,4 +1,5 @@
 /* src/components/LearningPage.css */
+
 .learning-page {
   max-width: 800px;
   margin: 0 auto;
@@ -15,10 +16,12 @@
   text-align: center;
   margin-bottom: 30px;
 }
+
 .learning-header h1 {
   font-size: 2.5em;
   color: #213547;
 }
+
 .learning-header p {
   font-size: 1.1em;
   color: #606770;
@@ -42,16 +45,19 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .level-btn:hover {
   background-color: #f0f2f5;
   border-color: #aaa;
 }
+
 .level-btn.active {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
   font-weight: bold;
 }
+
 .level-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -60,18 +66,16 @@
 .content-area {
   background-color: #fff;
   border-radius: 12px;
-  padding: 30px 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   min-height: 300px;
+  /* [수정] 여러 섹션을 담기 위해 padding을 0으로 하고 overflow hidden 설정 */
+  padding: 0;
+  overflow: hidden;
 }
 
-.learning-article.fade-in {
-    animation: fadeInContent 0.5s;
-}
-
-@keyframes fadeInContent {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.learning-article {
+    /* [추가] 아티클 섹션만의 패딩 */
+    padding: 30px 40px;
 }
 
 .article-title {
@@ -86,7 +90,7 @@
   font-size: 1.1em;
   line-height: 1.8;
   color: #444;
-  white-space: pre-wrap; /* \n을 인식하게 하려면 필요하지만, React에서 map으로 처리해서 괜찮음 */
+  white-space: pre-wrap; /* \n 인식을 위해 React에서 map으로 처리했지만, 만약을 대비해 유지 */
 }
 
 .error-message {
@@ -94,4 +98,55 @@
   color: #d9534f;
   padding: 50px 20px;
   font-size: 1.1em;
+}
+
+/* --- [핵심 추가] Key Expressions 섹션 스타일 --- */
+.key-expressions-section {
+  margin-top: 30px;
+  background-color: #f8f9fa; /* 기본 아티클과 다른 배경색 */
+  border-top: 1px solid #e9ecef;
+  padding: 30px 40px;
+}
+
+.expressions-title {
+  font-size: 1.5em;
+  color: #343a40;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.expressions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 각 항목 사이의 간격 */
+}
+
+.expression-item {
+  background-color: #fff;
+  border-left: 5px solid #007bff; /* 포인트 색상 */
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.expression-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.expression-en {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 5px 0;
+}
+
+.expression-kr {
+  font-size: 1em;
+  color: #6c757d;
+  margin: 0;
 }

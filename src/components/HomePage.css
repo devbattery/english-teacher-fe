@@ -10,7 +10,6 @@
   box-sizing: border-box;
 }
 
-/* [추가] 기존 헤더 대신 사용할 간단한 페이지 제목 스타일 */
 .page-title {
   text-align: center;
   margin-bottom: 40px;
@@ -28,8 +27,6 @@
   margin-top: 10px;
 }
 
-/* [삭제] 기존 .home-header, .user-info, .profile-picture 관련 스타일은 필요 없어졌습니다. */
-
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -37,13 +34,14 @@
 
 .home-main {
   width: 100%;
-  max-width: 600px; /* 카드가 하나이므로 너비를 약간 줄여도 좋습니다. */
+  /* [수정] 두 개의 카드를 담기 위해 최대 너비를 늘립니다. */
+  max-width: 900px;
 }
 
 .card-container {
   display: grid;
-  /* [수정] 카드가 하나이므로 grid 설정이 더 간단해집니다. */
-  grid-template-columns: 1fr; 
+  /* [수정] 2개의 컬럼으로 변경. 화면이 작아지면 1개로 자동 변경되도록 설정 */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   animation: fadeInUp 0.6s ease-out 0.2s;
   animation-fill-mode: backwards;
@@ -57,7 +55,7 @@
 .home-card {
   background-color: white;
   border-radius: 12px;
-  padding: 40px; /* 패딩을 조금 더 줍니다. */
+  padding: 40px;
   text-align: center;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -76,19 +74,18 @@
 }
 
 .card-icon svg {
-  width: 52px; /* 아이콘 크기를 키웁니다. */
+  width: 52px;
   height: 52px;
-  color: #007bff;
 }
 
 .home-card h2 {
-  font-size: 1.8em; /* 폰트 크기를 키웁니다. */
+  font-size: 1.8em;
   margin-bottom: 10px;
   color: #213547;
 }
 
 .home-card p {
-  font-size: 1.1em; /* 폰트 크기를 키웁니다. */
+  font-size: 1.1em;
   color: #606770;
   line-height: 1.6;
 }
@@ -96,9 +93,31 @@
 .primary-card {
   border: 2px solid #007bff;
 }
-
+.primary-card .card-icon svg {
+    color: #007bff;
+}
 .primary-card:hover {
   background-color: #f8faff;
 }
 
-/* [삭제] .logout-card 관련 스타일은 필요 없습니다. */
+/* [추가] 두 번째 카드 스타일 */
+.secondary-card {
+  border: 2px solid #6c757d;
+}
+.secondary-card .card-icon svg {
+    color: #6c757d;
+}
+.secondary-card:hover {
+  background-color: #f8f9fa;
+  border-color: #5a6268;
+}
+
+/* [추가] 모바일 화면에서는 카드 너비를 1컬럼으로 만듭니다. */
+@media (max-width: 768px) {
+  .home-main {
+    max-width: 600px;
+  }
+  .card-container {
+    grid-template-columns: 1fr;
+  }
+}

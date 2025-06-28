@@ -1,0 +1,97 @@
+/* src/components/LearningPage.css */
+.learning-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.learning-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.learning-header h1 {
+  font-size: 2.5em;
+  color: #213547;
+}
+.learning-header p {
+  font-size: 1.1em;
+  color: #606770;
+  margin-top: 8px;
+}
+
+.level-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.level-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.level-btn:hover {
+  background-color: #f0f2f5;
+  border-color: #aaa;
+}
+.level-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  font-weight: bold;
+}
+.level-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.content-area {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-height: 300px;
+}
+
+.learning-article.fade-in {
+    animation: fadeInContent 0.5s;
+}
+
+@keyframes fadeInContent {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.article-title {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.article-content {
+  font-size: 1.1em;
+  line-height: 1.8;
+  color: #444;
+  white-space: pre-wrap; /* \n을 인식하게 하려면 필요하지만, React에서 map으로 처리해서 괜찮음 */
+}
+
+.error-message {
+  text-align: center;
+  color: #d9534f;
+  padding: 50px 20px;
+  font-size: 1.1em;
+}

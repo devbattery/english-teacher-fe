@@ -102,14 +102,18 @@
 
 /* [추가] 두 번째 카드 스타일 */
 .secondary-card {
-  border: 2px solid #6c757d;
+  /* border: 2px solid #6c757d; */ /* 기존 회색 테두리 제거 */
+  border: 2px solid #dc3545; /* 새로운 빨간색 테두리 */
 }
 .secondary-card .card-icon svg {
-    color: #6c757d;
+    /* color: #6c757d; */ /* 기존 회색 아이콘 색상 제거 */
+    color: #dc3545; /* 새로운 빨간색 아이콘 색상 */
 }
 .secondary-card:hover {
-  background-color: #f8f9fa;
-  border-color: #5a6268;
+  /* background-color: #f8f9fa; */ /* 기존 회색 호버 배경 제거 */
+  /* border-color: #5a6268; */ /* 기존 회색 호버 테두리 제거 */
+  background-color: #fff8f8; /* 빨간색 계열의 연한 배경색 */
+  border-color: #c82333; /* 더 진한 빨간색 호버 테두리 */
 }
 
 /* [추가] 모바일 화면에서는 카드 너비를 1컬럼으로 만듭니다. */

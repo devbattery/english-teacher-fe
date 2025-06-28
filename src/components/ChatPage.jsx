@@ -109,7 +109,7 @@ const ChatPage = () => {
             <CloseIcon />
           </button>
         </div>
-        <p>Select a teacher that matches your learning goals.</p>
+        <p>학습 목표에 따라 AI 선생님을 선택하세요!</p>
         <div className="teacher-list">
           {teacherLevels.map((teacher) => (
             <button

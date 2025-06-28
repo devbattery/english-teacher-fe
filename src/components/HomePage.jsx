@@ -36,7 +36,7 @@ const HomePage = () => {
             <div className="card-icon">
               <ChatIcon />
             </div>
-            <h2>{user ? 'Start Learning' : 'Login to Learn'}</h2>
+            <h2>{user ? 'Start Chatting' : 'Chat to Learn'}</h2>
             <p>
              <b>[초급 / 중급 / 고급 / 전문가]</b> 수준의 AI 선생님을 선택할 수 있습니다.
             </p>

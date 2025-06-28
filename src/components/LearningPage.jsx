@@ -41,7 +41,7 @@ const LearningPage = () => {
   return (
     <div className="learning-page">
       <header className="learning-header">
-        <h1>Today's Learning</h1>
+        <h1>Today's Contents</h1>
         <p>AI 선생님이 매일 제공하는 오늘의 학습 콘텐츠입니다.</p>
       </header>
       

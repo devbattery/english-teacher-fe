@@ -39,7 +39,7 @@ const HomePage = () => {
             </div>
             <h2>{user ? 'Start Chatting' : 'Chat to Learn'}</h2>
             <p>
-             <b>[초급/중급/고급/전문가]</b> 수준의 AI 선생님과 대화하며 실력을 향상시키세요.
+             <b>[초급/중급/고급/전문가]</b> 레벨의 AI 선생님과 대화하며 실력을 향상시키세요.
             </p>
           </Link>
           
@@ -48,9 +48,9 @@ const HomePage = () => {
             <div className="card-icon">
               <BookIcon />
             </div>
-            <h2>Start Learning</h2>
+            <h2>Today's Contents</h2>
             <p>
-             매일 AI 선생님이 작성해주는 <b>수준별 맞춤 학습 콘텐츠</b>를 읽어보세요.
+             매일 AI 선생님이 작성해주는 <b>레벨별 맞춤 학습 콘텐츠</b>를 읽어보세요.
             </p>
           </Link>
         </div>

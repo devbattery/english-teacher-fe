@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import './LearningPage.css';
-import LearningPageSkeleton from './LearningPageSkeleton';
+// 기존 스켈레톤 대신 새로운 로딩 컴포넌트를 임포트합니다.
+import CustomLoader from './CustomLoader';
 
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
@@ -17,17 +18,37 @@ const LearningPage = () => {
   const [level, setLevel] = useState(teacherLevels[0].id);
   const [learningContent, setLearningContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  // '생성 중'인지 '단순 로딩 중'인지 구분하기 위한 새로운 상태
+  const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchContent = async () => {
       setLoading(true);
+      setIsGenerating(false); // 상태 초기화
       setError(null);
       setLearningContent(null);
+
+      // API 요청이 길어질 경우(새 콘텐츠 생성 시) '생성 중' 메시지를 보여주기 위한 타이머
+      const timer = setTimeout(() => {
+        setIsGenerating(true);
+      }, 500); // 0.5초 이상 걸리면 '생성 중'으로 간주
+
       try {
         const response = await api.get(`/api/learning/today/${level}`);
-        setLearningContent(response.data);
+        clearTimeout(timer); // 응답을 받으면 타이머를 즉시 취소
+
+        // 백엔드에서 받은 응답에서 status와 content를 분리
+        const { status, content } = response.data;
+        
+        // 백엔드에서 'GENERATED_NEW' 상태를 받았다면 isGenerating을 true로 유지
+        // 그렇지 않으면(FOUND_EXISTING) false로 설정
+        setIsGenerating(status === 'GENERATED_NEW');
+
+        setLearningContent(content);
+
       } catch (err) {
+        clearTimeout(timer); // 에러 발생 시에도 타이머 취소
         console.error("Error fetching learning content:", err);
         setError("콘텐츠를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
       } finally {
@@ -37,6 +58,11 @@ const LearningPage = () => {
 
     fetchContent();
   }, [level]);
+
+  // isGenerating 상태에 따라 다른 로딩 메시지를 결정
+  const loadingMessage = isGenerating 
+    ? "오늘의 맞춤 콘텐츠를 만들고 있어요. 잠시만 기다려 주세요... ✍️" 
+    : "오늘의 콘텐츠를 불러오는 중입니다... 📡";
 
   return (
     <div className="learning-page">
@@ -65,9 +91,14 @@ const LearningPage = () => {
       </nav>
 
       <main className="content-area">
-        {loading && <LearningPageSkeleton />}
+        {/* 로딩 중일 때 CustomLoader를 렌더링 */}
+        {loading && <CustomLoader message={loadingMessage} />}
+        
+        {/* 에러 발생 시 에러 메시지를 렌더링 */}
         {error && <div className="error-message">{error}</div>}
-        {learningContent && (
+        
+        {/* 로딩이 아니고, 콘텐츠가 있을 때만 콘텐츠를 렌더링 */}
+        {!loading && learningContent && (
           <>
             <article className="learning-article">
               <h2 className="article-title">{learningContent.title}</h2>

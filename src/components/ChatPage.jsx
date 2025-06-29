@@ -16,9 +16,9 @@ const CloseIcon = () => (
 
 
 const teacherLevels = [
-  { id: 'beginner', name: '초급 선생님' },
-  { id: 'intermediate', name: '중급 선생님' },
-  { id: 'advanced', name: '고급 선생님' },
+  { id: 'beginner', name: '초급 (Beginner)' },
+  { id: 'intermediate', name: '중급 (Intermediate)' },
+  { id: 'advanced', name: '고급 (Advanced)' },
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
 

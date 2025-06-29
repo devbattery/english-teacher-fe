@@ -41,10 +41,10 @@ const levelData = [
     id: 'ielts',
     title: 'IELTS 전문가',
     summary: '시험은 전략! IELTS 목표 점수 달성하기',
-    description: "IELTS 시험, 특히 스피킹과 라이팅 파트가 막막하신가요? IELTS 전문가는 실제 시험과 유사한 주제와 형식으로 콘텐츠를 제공합니다. 고득점에 필수적인 학술적인 어휘(Academic Vocabulary)와 논리적인 구조를 집중적으로 학습하여 실전 감각을 극대화하고 목표 점수를 달성하세요.",
+    description: "IELTS 시험, 특히 Writing 파트가 막막하신가요? IELTS 전문가는 실제 시험과 유사한 주제와 형식으로 콘텐츠를 제공합니다. 고득점에 필수적인 학술적인 어휘(Academic Vocabulary)와 논리적인 구조를 집중적으로 학습하여 실전 감각을 극대화하고 목표 점수를 달성하세요.",
     recommendations: [
       'IELTS 시험을 준비하고 계신 모든 수험생',
-      '스피킹/라이팅 파트에서 아이디어를 얻고 모범 답안을 학습하고 싶으신 분',
+      '특히 Writing 파트에서 아이디어를 얻고 싶으신 분',
       '유학, 이민, 해외 취업을 목표로 하시는 분',
     ]
   }

@@ -7,9 +7,9 @@ import LearningPageSkeleton from './LearningPageSkeleton'; // 스켈레톤 임�
 
 // ChatPage에서 사용한 teacherLevels 배열을 재활용하거나 새로 정의
 const teacherLevels = [
-  { id: 'beginner', name: '초급' },
-  { id: 'intermediate', name: '중급' },
-  { id: 'advanced', name: '고급' },
+  { id: 'beginner', name: '초급 (Beginner)' },
+  { id: 'intermediate', name: '중급 (Intermediate)' },
+  { id: 'advanced', name: '고급 (Advanced)' },
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
 

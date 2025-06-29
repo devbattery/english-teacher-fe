@@ -33,7 +33,7 @@ const HomePage = () => {
       <main className="home-main">
         <div className="level-guide-link-wrapper">
           <Link to="/level-guide" className="level-guide-link">
-            내게 맞는 레벨은? 🧐 레벨 가이드 보기 ➔
+            내게 맞는 레벨은? 🧐 레벨 가이드 보기 👈
           </Link>
         </div>
         

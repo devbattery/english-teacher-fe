@@ -5,11 +5,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './NavigationBar.css';
 
-// 간단한 로딩 스피너 컴포넌트
-const Spinner = () => <div className="spinner"></div>;
-
 const NavigationBar = () => {
-  const { user, logout, userLoading } = useAuth();
+  // [수정] 필요한 모든 상태를 context에서 가져옵니다.
+  const { user, logout, loading, userLoading, accessToken } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -26,6 +24,12 @@ const NavigationBar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
+  
+  // [핵심 로직] 로딩 상태를 최종적으로 판단합니다.
+  // 1. loading: 앱의 초기 인증 상태를 확인하는 중 (가장 먼저)
+  // 2. userLoading: 토큰으로 사용자 정보를 가져오는 중
+  // 3. accessToken은 있지만 user 객체는 아직 없는 과도기적 상태
+  const isLoading = loading || userLoading || (accessToken && !user);
 
   return (
     <nav className="navbar">
@@ -33,12 +37,14 @@ const NavigationBar = () => {
         <Link to="/">📘 English Teacher</Link>
       </div>
       <div className="navbar-menu">
-        {userLoading ? (
-          <div className="navbar-user">
-            <Spinner />
-            <span className="navbar-username">Loading...</span>
+        {isLoading ? (
+          // 로딩 상태 UI
+          <div className="navbar-user-skeleton">
+            <div className="skeleton skeleton-profile-pic"></div>
+            <div className="skeleton skeleton-username"></div>
           </div>
         ) : user ? (
+          // 로그인 완료 상태 UI
           <div className="navbar-user" ref={dropdownRef}>
             {user.picture && (
               <img
@@ -50,7 +56,6 @@ const NavigationBar = () => {
             )}
             {isDropdownOpen && (
               <div className="user-dropdown">
-                {/* [핵심 수정] 헤더 구조를 단순화하여 CSS로 제어하기 쉽게 만듭니다. */}
                 <div className="dropdown-header">
                   <img src={user.picture} alt="Profile" className="dropdown-profile-pic" />
                   <span className="dropdown-username">{user.name}</span>
@@ -67,6 +72,7 @@ const NavigationBar = () => {
             )}
           </div>
         ) : (
+          // 비로그인 상태 UI
           <Link to="/login" className="navbar-button login-button">Login</Link>
         )}
       </div>

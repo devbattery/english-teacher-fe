@@ -79,7 +79,7 @@
 .logout-button.full-width { width: 100%; }
 
 
-/* --- [핵심 수정] 드롭다운 메뉴 스타일 --- */
+/* --- 드롭다운 메뉴 스타일 --- */
 .user-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -90,18 +90,15 @@
   min-width: 280px;
   z-index: 1001;
   overflow: hidden;
-  animation: fadeInDown 0.2s ease-out;
+  animation: dropdownFadeIn 0.2s ease-out;
 }
 
-/* 드롭다운 헤더 스타일 */
 .dropdown-header {
   display: flex;
-  flex-direction: column; /* 수직 정렬 */
-  align-items: center;    /* 수평 가운데 정렬 */
+  flex-direction: column;
+  align-items: center;
   gap: 12px;
   padding: 24px 16px;
-  /* [수정] 배경색 제거 (부모의 흰색 배경 사용) */
-  /* [추가] 헤더와 메뉴 목록을 구분하는 선 추가 */
   border-bottom: 1px solid #f1f3f5;
 }
 
@@ -114,17 +111,14 @@
 .dropdown-username {
   font-weight: 600;
   font-size: 1.2em;
-  /* [수정] 어두운 글자색으로 변경 */
   color: #212529;
 }
 
 .dropdown-email {
   font-size: 0.9em;
-  /* [수정] 어두운 회색 글자색으로 변경 */
   color: #6c757d;
 }
 
-/* 로그아웃 버튼을 포함한 메뉴 리스트 */
 .dropdown-menu-list {
   list-style: none;
   margin: 0;
@@ -136,21 +130,52 @@
 }
 
 
-/* --- 애니메이션 및 스피너 스타일 --- */
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #007bff;
+/* --- [핵심 수정] 네비게이션 바 로딩 스켈레톤 스타일 --- */
+.navbar-user-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.skeleton {
+  background-color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-profile-pic {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.skeleton-username {
+  width: 80px;
+  height: 20px;
+  border-radius: 4px;
+}
+/* ---------------------------------------------------- */
+
+
+/* --- 애니메이션 --- */
+@keyframes shimmer {
+  to {
+    left: 150%;
+  }
 }
 
-@keyframes fadeInDown {
+@keyframes dropdownFadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);

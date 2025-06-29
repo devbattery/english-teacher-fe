@@ -9,52 +9,57 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 초기화 로딩
-  const [userLoading, setUserLoading] = useState(false); // 사용자 정보 로딩 상태 추가
+  const [loading, setLoading] = useState(true); // 초기 토큰/세션 확인 로딩
+  // [수정] userLoading의 초기값은 false로 둡니다.
+  const [userLoading, setUserLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 앱 처음 로드될 때
+  // 앱 처음 로드될 때: 세션에서 토큰을 가져오려는 시도
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         console.log("앱 초기화: 세션 확인 시도...");
         const response = await api.post("/api/auth/refresh");
         const newAccessToken = response.data.accessToken;
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
         setAccessToken(newAccessToken);
         console.log("access token 설정 완료.");
       } catch (error) {
         console.log("유효한 세션이 없습니다. 로그아웃 상태로 시작합니다.");
+        // 토큰이 없으므로 user도 null로 확실히 설정
+        setUser(null);
       } finally {
+        // 초기화 로딩 완료
         setLoading(false);
       }
     };
     initializeAuth();
   }, []);
 
-  // AccessToken이 변경될 때 사용자 정보를 가져오는 로직
+  // AccessToken이 생기거나 변경될 때 사용자 정보를 가져오는 로직
   useEffect(() => {
     const fetchUser = async () => {
+      // accessToken이 존재할 때만 사용자 정보를 가져옵니다.
       if (accessToken) {
         setUserLoading(true);
         try {
           const response = await api.get("/api/users/me");
           setUser(response.data);
         } catch (error) {
-          console.error(
-            "사용자 정보를 가져오는 데 실패했습니다. 로그아웃 처리합니다.",
-            error
-          );
-          logout(false);
+          console.error("사용자 정보를 가져오는 데 실패했습니다. 토큰이 유효하지 않을 수 있습니다.", error);
+          // 토큰이 유효하지 않아 사용자 정보를 가져오지 못했으므로 로그아웃 처리
+          logout(false); // API 호출 없이 클라이언트 측 로그아웃만 수행
         } finally {
           setUserLoading(false);
         }
       }
     };
-    fetchUser();
-  }, [accessToken]);
+    
+    // 초기화 로딩(loading)이 끝난 후에 사용자 정보를 가져오도록 합니다.
+    if (!loading) {
+      fetchUser();
+    }
+  }, [accessToken, loading]); // loading을 의존성 배열에 추가
 
   const login = (token) => {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -73,28 +78,21 @@ export const AuthProvider = ({ children }) => {
     setAccessToken(null);
     setUser(null);
     delete api.defaults.headers.common["Authorization"];
-    navigate("/login");
+    
+    // [수정] 현재 경로가 /login이 아닐 때만 navigate를 호출하여 불필요한 이동을 방지
+    if (window.location.pathname !== '/login') {
+      navigate("/login");
+    }
   };
 
   const authContextValue = {
     accessToken,
     user,
-    loading,
-    userLoading,
+    loading,      // 초기 세션 확인 로딩
+    userLoading,  // 사용자 정보 조회 로딩
     login,
     logout,
   };
-
-  /*
-    [핵심 수정]
-    AuthProvider가 직접 로딩 UI를 렌더링하는 부분을 제거합니다.
-    이제 AuthProvider는 로딩 상태와 관계없이 항상 자식 컴포넌트를 렌더링하고,
-    로딩 상태를 '값'으로만 전달합니다.
-    로딩 UI를 어떻게 보여줄지는 HomePage 같은 자식 컴포넌트가 결정합니다.
-  */
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }  <-- 이 블록을 삭제!
 
   return (
     <AuthContext.Provider value={authContextValue}>

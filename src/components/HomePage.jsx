@@ -26,7 +26,7 @@ const HomePage = () => {
     <div className="home-page">
       <div className="page-title">
         <h1>Learn English, Effectively.</h1>
-        <p>AI 선생님과 채팅하거나, 오늘의 학습 콘텐츠로 실력을 키워보세요!</p>
+        <p>이제는 AI 선생님과 함께 효율적으로 공부하세요!</p>
       </div>
       
       <main className="home-main">

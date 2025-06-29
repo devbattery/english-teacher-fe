@@ -8,8 +8,6 @@
   --text-primary: #050505;
   --text-secondary: #65676b;
   --border-color: #e0e0e0;
-
-  /* [신규] 레벨별 배경색 변수 선언 */
   --bg-level-beginner: #e3f2fd; /* 옅은 하늘색 */
   --bg-level-intermediate: #e8f5e9; /* 옅은 녹색 */
   --bg-level-advanced: #ede7f6; /* 옅은 보라색 */
@@ -23,7 +21,6 @@
   background-color: var(--chat-bg-color);
 }
 
-/* === 사이드바 === */
 .teacher-sidebar {
   width: 320px;
   background-color: var(--sidebar-bg-color);
@@ -93,10 +90,34 @@
 .sidebar-instruction {
   font-size: 0.9rem; 
   color: var(--text-secondary);
-  margin-bottom: 20px; 
+  margin-bottom: 12px;
   margin-top: 0;
   font-weight: 500;
 }
+
+/* --- [핵심 추가] 레벨 가이드 링크 스타일 --- */
+.page-guide-link-wrapper {
+  margin-bottom: 20px;
+}
+
+.page-guide-link {
+  display: block;
+  text-align: center;
+  padding: 8px 12px;
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #495057;
+  font-size: 0.85em;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.page-guide-link:hover {
+  background-color: #e4e6eb;
+  color: #0056b3;
+}
+/* ------------------------------------ */
 
 .teacher-list { 
   display: flex; 
@@ -132,8 +153,6 @@
   transform: none;
 }
 
-
-/* === 메인 채팅창 === */
 .chat-main {
   flex-grow: 1;
   background-color: #ffffff;
@@ -142,18 +161,15 @@
   overflow: hidden;
   height: 100%;
   transition: background-color 0.5s ease;
-
-  /* [교체] 부드러운 대각선 패턴 */
   background-image: repeating-linear-gradient(
     45deg,
     rgba(0, 0, 0, 0.03),
     rgba(0, 0, 0, 0.03) 1px,
     transparent 1px,
-    transparent 25px /* 선의 간격 */
+    transparent 25px
   );
 }
 
-/* --- [핵심 추가] 레벨별 배경색 지정 --- */
 .chat-main.chat-level-beginner {
   background-color: var(--bg-level-beginner);
 }
@@ -166,7 +182,6 @@
 .chat-main.chat-level-ielts {
   background-color: var(--bg-level-ielts);
 }
-/* ------------------------------------- */
 
 .chat-header {
   display: flex;
@@ -243,7 +258,6 @@
   white-space: pre-wrap; 
 }
 
-/* === 입력 폼 === */
 .chat-input-form { 
   display: flex; 
   align-items: center;

@@ -10,7 +10,6 @@ const ChatIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
 );
 
-// [추가] 학습 아이콘
 const BookIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
 );
@@ -27,13 +26,13 @@ const HomePage = () => {
     <div className="home-page">
       <div className="page-title">
         <h1>Learn English, Effectively.</h1>
-        <p>AI 선생님과 채팅하거나, 오늘의 학습 콘텐츠로 실력을 키워보세요. ✅</p>
+        <p>AI 선생님과 채팅하거나, 오늘의 학습 콘텐츠로 실력을 키워보세요!</p>
       </div>
       
       <main className="home-main">
         <div className="level-guide-link-wrapper">
           <Link to="/level-guide" className="level-guide-link">
-            내게 맞는 레벨은? 🧐 레벨 가이드 보기 👈
+            내게 맞는 레벨은? 🧐
           </Link>
         </div>
         
@@ -48,7 +47,6 @@ const HomePage = () => {
             </p>
           </Link>
           
-          {/* [추가] Start Learning 카드 */}
           <Link to="/learning" className="home-card secondary-card">
             <div className="card-icon">
               <BookIcon />

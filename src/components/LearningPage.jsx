@@ -1,11 +1,11 @@
 // src/components/LearningPage.jsx
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/api';
 import './LearningPage.css';
-import LearningPageSkeleton from './LearningPageSkeleton'; // 스켈레톤 임포트
+import LearningPageSkeleton from './LearningPageSkeleton';
 
-// ChatPage에서 사용한 teacherLevels 배열을 재활용하거나 새로 정의
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
   { id: 'intermediate', name: '중급 (Intermediate)' },
@@ -23,7 +23,7 @@ const LearningPage = () => {
     const fetchContent = async () => {
       setLoading(true);
       setError(null);
-      setLearningContent(null); // 레벨 변경 시 기존 콘텐츠 초기화
+      setLearningContent(null);
       try {
         const response = await api.get(`/api/learning/today/${level}`);
         setLearningContent(response.data);
@@ -36,7 +36,7 @@ const LearningPage = () => {
     };
 
     fetchContent();
-  }, [level]); // level이 변경될 때마다 데이터를 다시 불러옴
+  }, [level]);
 
   return (
     <div className="learning-page">
@@ -45,6 +45,12 @@ const LearningPage = () => {
         <p>AI 선생님이 매일 제공하는 오늘의 학습 콘텐츠입니다.</p>
       </header>
       
+      <div className="page-guide-link-wrapper">
+        <Link to="/level-guide" className="page-guide-link">
+          내게 맞는 레벨은? 🧐
+        </Link>
+      </div>
+
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (
           <button
@@ -63,11 +69,9 @@ const LearningPage = () => {
         {error && <div className="error-message">{error}</div>}
         {learningContent && (
           <>
-            {/* 1. 학습 아티클 섹션 */}
             <article className="learning-article">
               <h2 className="article-title">{learningContent.title}</h2>
               <div className="article-content">
-                {/* 백엔드에서 받은 텍스트의 줄바꿈(\n)을 <br>로 변환하여 보여줌 */}
                 {learningContent.content.split('\n').map((line, index) => (
                   <React.Fragment key={index}>
                     {line}
@@ -77,7 +81,6 @@ const LearningPage = () => {
               </div>
             </article>
 
-            {/* 2. [신규] 핵심 표현 섹션 */}
             {learningContent.keyExpressions && learningContent.keyExpressions.length > 0 && (
               <section className="key-expressions-section">
                 <h3 className="expressions-title">Key Expressions ✨</h3>

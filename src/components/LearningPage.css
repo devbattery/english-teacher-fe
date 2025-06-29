@@ -28,6 +28,31 @@
   margin-top: 8px;
 }
 
+/* --- [핵심 추가] 레벨 가이드 링크 스타일 --- */
+.page-guide-link-wrapper {
+  text-align: center;
+  margin-bottom: 24px; /* 레벨 선택 버튼과의 간격 */
+}
+
+.page-guide-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #495057;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.page-guide-link:hover {
+  background-color: #dee2e6;
+  color: #212529;
+  transform: translateY(-2px);
+}
+/* ------------------------------------ */
+
 .level-selector {
   display: flex;
   justify-content: center;
@@ -68,14 +93,12 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   min-height: 300px;
-  /* [수정] 여러 섹션을 담기 위해 padding을 0으로 하고 overflow hidden 설정 */
   padding: 0;
   overflow: hidden;
 }
 
 .learning-article {
-    /* [추가] 아티클 섹션만의 패딩 */
-    padding: 30px 40px;
+  padding: 30px 40px;
 }
 
 .article-title {
@@ -90,7 +113,7 @@
   font-size: 1.1em;
   line-height: 1.8;
   color: #444;
-  white-space: pre-wrap; /* \n 인식을 위해 React에서 map으로 처리했지만, 만약을 대비해 유지 */
+  white-space: pre-wrap;
 }
 
 .error-message {
@@ -100,10 +123,9 @@
   font-size: 1.1em;
 }
 
-/* --- [핵심 추가] Key Expressions 섹션 스타일 --- */
 .key-expressions-section {
   margin-top: 30px;
-  background-color: #f8f9fa; /* 기본 아티클과 다른 배경색 */
+  background-color: #f8f9fa;
   border-top: 1px solid #e9ecef;
   padding: 30px 40px;
 }
@@ -121,12 +143,12 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* 각 항목 사이의 간격 */
+  gap: 15px;
 }
 
 .expression-item {
   background-color: #fff;
-  border-left: 5px solid #007bff; /* 포인트 색상 */
+  border-left: 5px solid #007bff;
   padding: 15px 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -134,8 +156,8 @@
 }
 
 .expression-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .expression-en {

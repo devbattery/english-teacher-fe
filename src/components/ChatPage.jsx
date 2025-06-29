@@ -1,11 +1,11 @@
 // src/components/ChatPage.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './ChatPage.css';
 
-// 아이콘 SVG 컴포넌트들
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
@@ -107,7 +107,7 @@ const ChatPage = () => {
 
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <h3>Your AI Teachers</h3>
+          <h3>Your AI Tutors</h3>
           <button className="sidebar-close-button" onClick={() => setIsSidebarOpen(false)}>
             <CloseIcon />
           </button>
@@ -121,6 +121,13 @@ const ChatPage = () => {
         </div>
         
         <p className="sidebar-instruction">학습 목표에 따라 AI 선생님을 선택하세요!</p>
+        
+        <div className="page-guide-link-wrapper">
+          <Link to="/level-guide" className="page-guide-link">
+            내게 맞는 레벨은? 🧐
+          </Link>
+        </div>
+
         <div className="teacher-list">
           {teacherLevels.map((teacher) => (
             <button
@@ -135,7 +142,6 @@ const ChatPage = () => {
         </div>
       </aside>
       
-      {/* [핵심 수정] main 태그의 className을 동적으로 변경합니다. */}
       <main className={`chat-main chat-level-${selectedTeacher}`}>
         <header className="chat-header">
           <button className="menu-toggle" onClick={() => setIsSidebarOpen(true)}>

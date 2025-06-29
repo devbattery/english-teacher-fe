@@ -1,0 +1,135 @@
+/* src/components/LevelGuidePage.css */
+
+.level-guide-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  animation: page-fade-in 0.6s ease-out;
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.level-guide-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.level-guide-header h1 {
+  font-size: 2.5em;
+  color: #213547;
+}
+
+.level-guide-header p {
+  font-size: 1.1em;
+  color: #606770;
+  margin-top: 10px;
+}
+
+.level-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  font-size: 1em;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #dcdfe6;
+  background-color: #fff;
+  color: #606770;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background-color: #f5f7fa;
+  color: #303133;
+  border-color: #c0c4cc;
+}
+
+.tab-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.level-content-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  animation: card-fade-in 0.5s ease-out;
+}
+
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.level-summary {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #007bff;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.level-description {
+  font-size: 1.1em;
+  line-height: 1.8;
+  color: #303133;
+  text-align: justify;
+  margin-bottom: 40px;
+}
+
+.recommendations-section {
+  background-color: #f8faff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e0e7ff;
+}
+
+.recommendations-section h3 {
+  font-size: 1.2em;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #303133;
+}
+
+.recommendations-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.recommendations-list li {
+  font-size: 1em;
+  color: #606770;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.recommendations-list li:last-child {
+  margin-bottom: 0;
+}

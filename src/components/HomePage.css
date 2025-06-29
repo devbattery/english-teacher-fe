@@ -38,6 +38,33 @@
   max-width: 900px;
 }
 
+/* --- [핵심 추가] 레벨 가이드 링크 스타일 --- */
+.level-guide-link-wrapper {
+  margin-bottom: 40px; /* 카드와의 간격 */
+  text-align: center;
+}
+
+.level-guide-link {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.level-guide-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  background-color: #fafbff;
+  color: #0056b3;
+}
+/* ----------------------------------------- */
+
 .card-container {
   display: grid;
   /* [수정] 2개의 컬럼으로 변경. 화면이 작아지면 1개로 자동 변경되도록 설정 */

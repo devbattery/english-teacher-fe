@@ -31,7 +31,12 @@ const HomePage = () => {
       </div>
       
       <main className="home-main">
-        {/* [수정] 카드 컨테이너에 2개의 카드를 넣습니다. */}
+        <div className="level-guide-link-wrapper">
+          <Link to="/level-guide" className="level-guide-link">
+            내게 맞는 레벨은? 🧐 레벨 가이드 보기 ➔
+          </Link>
+        </div>
+        
         <div className="card-container">
           <Link to="/chat" className="home-card primary-card">
             <div className="card-icon">

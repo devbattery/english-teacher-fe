@@ -9,7 +9,8 @@ import LoginPage from './components/LoginPage';
 import AuthCallback from './components/AuthCallback';
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatPage from './components/ChatPage';
-import LearningPage from './components/LearningPage'; // [추가] LearningPage 임포트
+import LearningPage from './components/LearningPage';
+import LevelGuidePage from './components/LevelGuidePage'; // [추가] LevelGuidePage 임포트
 import './App.css';
 
 function App() {
@@ -26,10 +27,11 @@ function App() {
             <Route path="/" element={<HomePage />} />
             
             <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-
-            {/* --- [핵심 추가] --- */}
-            {/* LearningPage 경로 추가, 로그인한 사용자만 접근 가능 */}
             <Route path="/learning" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
+            
+            {/* --- [핵심 추가] --- */}
+            {/* LevelGuidePage 경로 추가, 로그인이 필요 없는 공개 경로 */}
+            <Route path="/level-guide" element={<LevelGuidePage />} />
             {/* -------------------- */}
             
           </Routes>

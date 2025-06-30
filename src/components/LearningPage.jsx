@@ -73,7 +73,7 @@ const LearningPage = () => {
       
       <div className="page-guide-link-wrapper">
         <Link to="/level-guide" className="page-guide-link">
-          내게 맞는 레벨은? 🧐
+          레벨 가이드 보기 👈
         </Link>
       </div>
 

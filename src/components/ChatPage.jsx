@@ -140,7 +140,7 @@ const ChatPage = () => {
 
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <h3>Your AI Tutors</h3>
+          <h3>Your AI Teachers</h3>
           <button className="sidebar-close-button" onClick={() => setIsSidebarOpen(false)}>
             <CloseIcon />
           </button>
@@ -157,7 +157,7 @@ const ChatPage = () => {
         
         <div className="page-guide-link-wrapper">
           <Link to="/level-guide" className="page-guide-link">
-            내게 맞는 레벨은? 🧐 가이드 보기
+            레벨 가이드 보기 👈
           </Link>
         </div>
 

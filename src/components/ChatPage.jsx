@@ -25,7 +25,6 @@ const SendIcon = () => (
   </svg>
 );
 
-// [신규] 초기화 아이콘 (Feather Icons: trash-2)
 const ResetIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="3 6 5 6 21 6"></polyline>
@@ -33,6 +32,14 @@ const ResetIcon = () => (
         <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
     </svg>
 );
+
+// [신규] 이미지 업로드 아이콘 (Feather Icons: paperclip)
+const PaperclipIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+    </svg>
+);
+
 
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
@@ -50,6 +57,8 @@ const ChatPage = () => {
   const [selectedTeacher, setSelectedTeacher] = useState(teacherLevels[0].id);
   const chatEndRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null); // [신규] 선택된 이미지 파일 상태
+  const fileInputRef = useRef(null); // [신규] 숨겨진 file input 참조
 
   useEffect(() => {
     if (!user || !selectedTeacher) return;
@@ -77,19 +86,36 @@ const ChatPage = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!inputValue.trim() || isAiReplying || isHistoryLoading) return;
+    if ((!inputValue.trim() && !selectedFile) || isAiReplying || isHistoryLoading) return;
 
-    const userMessage = { sender: 'user', text: inputValue };
+    // 사용자 메시지 객체에 이미지 미리보기 URL 추가
+    const userMessage = { 
+      sender: 'user', 
+      text: inputValue,
+      imageUrl: selectedFile ? URL.createObjectURL(selectedFile) : null 
+    };
     setMessages((prev) => [...prev, userMessage]);
+    
+    // FormData를 사용하여 텍스트와 이미지 함께 전송
+    const formData = new FormData();
+    
+    const chatRequest = {
+        level: selectedTeacher,
+        message: inputValue
+    };
+    formData.append('request', new Blob([JSON.stringify(chatRequest)], { type: "application/json" }));
+
+    if (selectedFile) {
+        formData.append('image', selectedFile);
+    }
+    
     setInputValue('');
+    setSelectedFile(null); // 전송 후 파일 선택 초기화
     setIsAiReplying(true);
 
     try {
-      const response = await api.post('/api/chat/send', {
-        level: selectedTeacher,
-        message: inputValue
-      });
-      const aiMessage = { sender: 'ai', text: response.data.reply };
+      const response = await api.post('/api/chat/send', formData);
+      const aiMessage = { sender: 'ai', text: response.data.reply, imageUrl: null };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -129,6 +155,20 @@ const ChatPage = () => {
     }
   };
 
+  const handleFileSelectClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        setSelectedFile(file);
+    } else {
+        setSelectedFile(null);
+        // 사용자에게 이미지 파일만 업로드 가능하다는 알림을 줄 수 있습니다.
+        // alert("Please select an image file (e.g., png, jpg, gif).");
+    }
+  };
 
   if (!user) {
     return <div>Loading user information...</div>;
@@ -200,7 +240,12 @@ const ChatPage = () => {
           )}
 
           {!isHistoryLoading && messages.map((msg, index) => (
-            <div key={index} className={`message-bubble ${msg.sender}`}><p>{msg.text}</p></div>
+            <div key={index} className={`message-bubble ${msg.sender}`}>
+              {msg.imageUrl && (
+                <img src={msg.imageUrl} alt="uploaded content" className="message-image" />
+              )}
+              {msg.text && <p>{msg.text}</p>}
+            </div>
           ))}
 
           {isAiReplying && (
@@ -210,18 +255,38 @@ const ChatPage = () => {
         </div>
 
         <form className="chat-input-form" onSubmit={handleSendMessage}>
-          <div className="input-wrapper">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your message in English..."
-              disabled={isHistoryLoading || isAiReplying}
+          {selectedFile && (
+            <div className="image-preview-container">
+              <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="image-preview" />
+              <button type="button" onClick={() => setSelectedFile(null)} className="remove-image-button">
+                <CloseIcon />
+              </button>
+            </div>
+          )}
+          <div className="input-controls">
+            <button type="button" className="attach-file-button" onClick={handleFileSelectClick} disabled={isHistoryLoading || isAiReplying || !!selectedFile}>
+              <PaperclipIcon />
+            </button>
+            <input 
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+              accept="image/png, image/jpeg, image/gif, image/webp"
             />
+            <div className="input-wrapper">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type a message or upload an image..."
+                disabled={isHistoryLoading || isAiReplying}
+              />
+            </div>
+            <button type="submit" disabled={(!inputValue.trim() && !selectedFile) || isHistoryLoading || isAiReplying}>
+              <SendIcon />
+            </button>
           </div>
-          <button type="submit" disabled={!inputValue.trim() || isHistoryLoading || isAiReplying}>
-            <SendIcon />
-          </button>
         </form>
       </main>
     </div>

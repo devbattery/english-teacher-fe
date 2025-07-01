@@ -212,7 +212,6 @@
   text-transform: uppercase;
 }
 
-/* --- [핵심 추가] 초기화 버튼 스타일 --- */
 .chat-reset-button {
   background: none;
   border: none;
@@ -225,12 +224,12 @@
   cursor: pointer;
   color: var(--text-secondary);
   transition: background-color 0.2s, color 0.2s;
-  flex-shrink: 0; /* 버튼 크기 유지 */
+  flex-shrink: 0;
 }
 
 .chat-reset-button:hover:not(:disabled) {
   background-color: #f0f2f5;
-  color: #dc3545; /* 호버 시 빨간색으로 경고 의미 부여 */
+  color: #dc3545;
 }
 
 .chat-reset-button:disabled {
@@ -242,7 +241,6 @@
   width: 20px;
   height: 20px;
 }
-/* ------------------------------------- */
 
 .chat-messages { 
   overflow-y: auto; 
@@ -284,16 +282,115 @@
   white-space: pre-wrap; 
 }
 
-.chat-input-form { 
-  display: flex; 
-  align-items: center;
-  gap: 12px;
-  padding: 16px 24px; 
-  border-top: 1px solid var(--border-color); 
-  background-color: var(--chat-bg-color); 
-  box-sizing: border-box; 
+/* --- [신규] 이미지 관련 스타일 --- */
+.message-image {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.message-image:hover {
+  transform: scale(1.02);
+}
+/* 텍스트와 이미지 사이의 간격 조정 */
+.message-bubble .message-image + p {
+  margin-top: 8px;
+}
+/* ------------------------------- */
+
+.chat-input-form {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: stretch;
+  gap: 8px; /* 미리보기와 입력창 사이의 간격 */
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--chat-bg-color);
+  box-sizing: border-box;
   flex-shrink: 0;
 }
+
+/* --- [신규] 이미지 미리보기 컨테이너 --- */
+.image-preview-container {
+  position: relative;
+  align-self: flex-start; /* 왼쪽 정렬 */
+  padding: 8px;
+  background-color: var(--sidebar-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  max-width: 200px;
+  margin-left: 56px; /* 첨부파일 버튼 너비만큼 왼쪽 여백 */
+}
+.image-preview {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.remove-image-button {
+  position: absolute;
+  top: 0px;
+  right: -32px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
+}
+.remove-image-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.remove-image-button svg {
+  width: 16px;
+  height: 16px;
+}
+/* ------------------------------------- */
+
+/* 입력 필드와 버튼들을 담는 래퍼 */
+.input-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* --- [신규] 파일 첨부 버튼 --- */
+.attach-file-button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.attach-file-button:hover:not(:disabled) {
+  background-color: #e4e6eb;
+  color: var(--message-user-bg);
+}
+.attach-file-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+/* --------------------------- */
+
 .input-wrapper {
   flex-grow: 1;
   background-color: var(--sidebar-bg-color);
@@ -301,8 +398,9 @@
   padding: 2px 4px 2px 20px;
   display: flex;
   align-items: center;
+  border: 1px solid var(--border-color);
 }
-.chat-input-form input { 
+.chat-input-form input[type="text"] { 
   width: 100%;
   padding: 12px 0; 
   font-size: 1rem;
@@ -312,7 +410,7 @@
 .chat-input-form input:focus { 
   outline: none;
 }
-.chat-input-form button { 
+.chat-input-form button[type="submit"] { 
   width: 48px;
   height: 48px;
   padding: 0;
@@ -327,16 +425,16 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.chat-input-form button:hover:not(:disabled) { 
+.chat-input-form button[type="submit"]:hover:not(:disabled) { 
   background-color: #0056b3; 
   transform: scale(1.1);
 }
-.chat-input-form button:disabled { 
+.chat-input-form button[type="submit"]:disabled { 
   background-color: #a0c3e6; 
   cursor: not-allowed; 
   transform: none;
 }
-.chat-input-form button svg {
+.chat-input-form button[type="submit"] svg {
   width: 24px;
   height: 24px;
 }
@@ -375,5 +473,14 @@
   }
   .chat-header-title {
     flex-grow: 0;
+  }
+
+  .image-preview-container {
+    margin-left: 0; /* 모바일에서는 여백 제거 */
+    max-width: 150px;
+  }
+  .remove-image-button {
+    right: -12px;
+    top: -12px;
   }
 }

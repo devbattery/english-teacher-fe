@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './ChatPage.css';
 
-// 아이콘 SVG 컴포넌트들
+// --- 아이콘 SVG 컴포넌트들 (수정됨) ---
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
@@ -25,20 +25,25 @@ const SendIcon = () => (
   </svg>
 );
 
-const ResetIcon = () => (
+// [수정] 새로고침 아이콘 (Feather Icons: refresh-cw)
+const RefreshIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <polyline points="1 20 1 14 7 14"></polyline>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
     </svg>
 );
 
-// [신규] 이미지 업로드 아이콘 (Feather Icons: paperclip)
-const PaperclipIcon = () => (
+
+// [수정] 이미지 전용 아이콘 (Feather Icons: image)
+const ImageIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
     </svg>
 );
+// --- 아이콘 SVG 정의 끝 ---
 
 
 const teacherLevels = [
@@ -57,8 +62,8 @@ const ChatPage = () => {
   const [selectedTeacher, setSelectedTeacher] = useState(teacherLevels[0].id);
   const chatEndRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null); // [신규] 선택된 이미지 파일 상태
-  const fileInputRef = useRef(null); // [신규] 숨겨진 file input 참조
+  const [selectedFile, setSelectedFile] = useState(null); 
+  const fileInputRef = useRef(null); 
 
   useEffect(() => {
     if (!user || !selectedTeacher) return;
@@ -88,7 +93,6 @@ const ChatPage = () => {
     e.preventDefault();
     if ((!inputValue.trim() && !selectedFile) || isAiReplying || isHistoryLoading) return;
 
-    // 사용자 메시지 객체에 이미지 미리보기 URL 추가
     const userMessage = { 
       sender: 'user', 
       text: inputValue,
@@ -96,7 +100,6 @@ const ChatPage = () => {
     };
     setMessages((prev) => [...prev, userMessage]);
     
-    // FormData를 사용하여 텍스트와 이미지 함께 전송
     const formData = new FormData();
     
     const chatRequest = {
@@ -110,7 +113,7 @@ const ChatPage = () => {
     }
     
     setInputValue('');
-    setSelectedFile(null); // 전송 후 파일 선택 초기화
+    setSelectedFile(null); 
     setIsAiReplying(true);
 
     try {
@@ -135,7 +138,7 @@ const ChatPage = () => {
 
   const handleResetChat = async () => {
     const teacherName = teacherLevels.find(t => t.id === selectedTeacher)?.name || '이 선생님';
-    if (!window.confirm(`'${teacherName}' 선생님과의 대화 기록을 모두 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.`)) {
+    if (!window.confirm(`'${teacherName}' 선생님과의 대화 기록을 모두 초기화하시겠습니까?`)) {
         return;
     }
 
@@ -165,8 +168,6 @@ const ChatPage = () => {
         setSelectedFile(file);
     } else {
         setSelectedFile(null);
-        // 사용자에게 이미지 파일만 업로드 가능하다는 알림을 줄 수 있습니다.
-        // alert("Please select an image file (e.g., png, jpg, gif).");
     }
   };
 
@@ -230,7 +231,7 @@ const ChatPage = () => {
               title="대화 내용 초기화"
               disabled={isHistoryLoading || isAiReplying}
           >
-              <ResetIcon />
+              <RefreshIcon /> {/* [수정] 아이콘 컴포넌트 교체 */}
           </button>
         </header>
 
@@ -265,7 +266,7 @@ const ChatPage = () => {
           )}
           <div className="input-controls">
             <button type="button" className="attach-file-button" onClick={handleFileSelectClick} disabled={isHistoryLoading || isAiReplying || !!selectedFile}>
-              <PaperclipIcon />
+              <ImageIcon /> {/* [수정] 아이콘 컴포넌트 교체 */}
             </button>
             <input 
               type="file"

@@ -83,6 +83,7 @@ const ChatPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); 
   const fileInputRef = useRef(null); 
+  const [isResetConfirmVisible, setIsResetConfirmVisible] = useState(false); 
 
   useEffect(() => {
     if (!user || !selectedTeacher) return;
@@ -155,12 +156,12 @@ const ChatPage = () => {
     setIsSidebarOpen(false);
   };
 
-  const handleResetChat = async () => {
-    const teacherName = teacherLevels.find(t => t.id === selectedTeacher)?.name || '이 선생님';
-    if (!window.confirm(`'${teacherName}' 선생님과의 대화 기록을 모두 초기화하시겠습니까?`)) {
-        return;
-    }
+  const handleResetChat = () => {
+    setIsResetConfirmVisible(true);
+  };
 
+  const confirmResetChat = async () => {
+    setIsResetConfirmVisible(false);
     try {
         await api.delete(`/api/chat/history/${selectedTeacher}`);
         setIsHistoryLoading(true);
@@ -175,6 +176,10 @@ const ChatPage = () => {
     } finally {
         setIsHistoryLoading(false);
     }
+  };
+
+  const cancelResetChat = () => {
+    setIsResetConfirmVisible(false);
   };
 
   const handleFileSelectClick = () => {
@@ -196,6 +201,21 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
+      {isResetConfirmVisible && (
+        <div className="reset-confirm-overlay">
+          <div className="reset-confirm-modal">
+            <h4>대화 기록 초기화</h4>
+            <p>
+              '{teacherLevels.find(t => t.id === selectedTeacher)?.name || '이 선생님'}' 선생님과의 대화 기록을 정말로 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+            </p>
+            <div className="reset-confirm-actions">
+              <button onClick={cancelResetChat} className="cancel-btn">취소</button>
+              <button onClick={confirmResetChat} className="confirm-btn">확인</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
 
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>

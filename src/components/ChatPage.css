@@ -519,3 +519,89 @@
     top: -12px;
   }
 }
+
+/* --- [신규] 대화 초기화 확인 모달 --- */
+.reset-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; /* 사이드바보다 위에 오도록 z-index 설정 */
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.reset-confirm-modal {
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  animation: slide-up 0.4s ease-out;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.reset-confirm-modal h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.reset-confirm-modal p {
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.reset-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.reset-confirm-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-confirm-actions .cancel-btn {
+  background-color: #e4e6eb;
+  color: var(--text-primary);
+}
+
+.reset-confirm-actions .cancel-btn:hover {
+  background-color: #d8dbdf;
+}
+
+.reset-confirm-actions .confirm-btn {
+  background-color: #dc3545; /* 위험을 나타내는 빨간색 */
+  color: white;
+}
+
+.reset-confirm-actions .confirm-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+/* --------------------------------- */

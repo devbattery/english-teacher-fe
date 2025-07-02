@@ -45,6 +45,25 @@ const ImageIcon = () => (
 );
 // --- 아이콘 SVG 정의 끝 ---
 
+const MessageImage = ({ src, alt }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const handleLoad = () => {
+        setIsLoaded(true);
+    };
+
+    return (
+        <div className="message-image-container">
+            {!isLoaded && <div className="image-loading-placeholder"></div>}
+            <img 
+                src={src} 
+                alt={alt} 
+                className={`message-image ${isLoaded ? 'loaded' : ''}`}
+                onLoad={handleLoad} 
+            />
+        </div>
+    );
+};
 
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
@@ -243,11 +262,11 @@ const ChatPage = () => {
           {!isHistoryLoading && messages.map((msg, index) => (
             <div key={index} className={`message-bubble ${msg.sender}`}>
               {msg.imageUrl && (
-                <img src={msg.imageUrl} alt="uploaded content" className="message-image" />
+                <MessageImage src={msg.imageUrl} alt="uploaded content" />
               )}
               {msg.text && <p>{msg.text}</p>}
             </div>
-          ))}
+          )) }
 
           {isAiReplying && (
             <div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>

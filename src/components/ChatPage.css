@@ -297,6 +297,41 @@
 .message-bubble .message-image + p {
   margin-top: 8px;
 }
+
+.message-image-container {
+    position: relative;
+    min-height: 100px; /* 최소 높이를 지정하여 로딩 중 공간 확보 */
+}
+
+.image-loading-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0; /* 이미지와 비슷한 배경색 */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-image {
+    display: block;
+    max-width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out, transform 0.2s;
+    opacity: 0;
+}
+
+.message-image.loaded {
+    opacity: 1;
+}
+
+.message-image:hover {
+  transform: scale(1.02);
+}
 /* ------------------------------- */
 
 .chat-input-form {

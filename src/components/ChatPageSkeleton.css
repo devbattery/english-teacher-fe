@@ -1,0 +1,63 @@
+/* src/components/ChatPageSkeleton.css */
+
+.skeleton-chat-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0.5;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #f0f0f0;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}
+
+.skeleton-message-bubble-wrapper {
+    display: flex;
+}
+
+.skeleton-message-bubble-wrapper.user {
+    justify-content: flex-end;
+}
+
+.skeleton-message-bubble {
+  max-width: 70%;
+  padding: 10px 16px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-message-bubble.ai {
+  background-color: #f0f2f5;
+  border-bottom-left-radius: 4px;
+}
+
+.skeleton-message-bubble.user {
+  background-color: #e3f2fd;
+  border-bottom-right-radius: 4px;
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: 4px;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+  background-color: #e0e0e0; /* 로딩 애니메이션을 위한 기본 색상 */
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.medium {
+  width: 80%;
+}

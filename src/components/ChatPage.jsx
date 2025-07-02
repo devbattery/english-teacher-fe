@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './ChatPage.css';
 
+import ChatPageSkeleton from './ChatPageSkeleton';
+
 // --- 아이콘 SVG 컴포넌트들 (수정됨) ---
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -275,18 +277,18 @@ const ChatPage = () => {
         </header>
 
         <div className="chat-messages">
-          {isHistoryLoading && (
-             <div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>
+          {isHistoryLoading ? (
+            <ChatPageSkeleton />
+          ) : (
+            messages.map((msg, index) => (
+              <div key={index} className={`message-bubble ${msg.sender}`}>
+                {msg.imageUrl && (
+                  <MessageImage src={msg.imageUrl} alt="uploaded content" />
+                )}
+                {msg.text && <p>{msg.text}</p>}
+              </div>
+            ))
           )}
-
-          {!isHistoryLoading && messages.map((msg, index) => (
-            <div key={index} className={`message-bubble ${msg.sender}`}>
-              {msg.imageUrl && (
-                <MessageImage src={msg.imageUrl} alt="uploaded content" />
-              )}
-              {msg.text && <p>{msg.text}</p>}
-            </div>
-          )) }
 
           {isAiReplying && (
             <div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>

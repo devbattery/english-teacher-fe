@@ -29,7 +29,9 @@ function App() {
               <Route path="/" element={<HomePage />} />
               
               <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+              <Route path="/chat/:level" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
               <Route path="/learning" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
+              <Route path="/learning/:level" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
               
               {/* --- [핵심 추가] --- */}
               {/* LevelGuidePage 경로 추가, 로그인이 필요 없는 공개 경로 */}

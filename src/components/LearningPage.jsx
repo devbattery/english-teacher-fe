@@ -1,7 +1,7 @@
 // src/components/LearningPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import api from '../api/api';
 import './LearningPage.css';
 // 기존 스켈레톤 대신 새로운 로딩 컴포넌트를 임포트합니다.
@@ -15,7 +15,13 @@ const teacherLevels = [
 ];
 
 const LearningPage = () => {
-  const [level, setLevel] = useState(teacherLevels[0].id);
+  const location = useLocation();
+  const [level, setLevel] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    const levelParam = params.get('level');
+    const initialLevel = teacherLevels.find(t => t.id === levelParam);
+    return initialLevel ? initialLevel.id : teacherLevels[0].id;
+  });
   const [learningContent, setLearningContent] = useState(null);
   const [loading, setLoading] = useState(true);
   // '생성 중'인지 '단순 로딩 중'인지 구분하기 위한 새로운 상태

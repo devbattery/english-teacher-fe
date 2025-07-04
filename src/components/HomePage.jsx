@@ -36,10 +36,10 @@ const HomePage = () => {
   ];
 
   const contentLevels = [
-    { label: '초급', path: '/learning?level=beginner' },
-    { label: '중급', path: '/learning?level=intermediate' },
-    { label: '고급', path: '/learning?level=advanced' },
-    { label: 'IELTS 전문가', path: '/learning?level=ielts' },
+    { label: '초급', path: '/learning/beginner' },
+    { label: '중급', path: '/learning/intermediate' },
+    { label: '고급', path: '/learning/advanced' },
+    { label: 'IELTS 전문가', path: '/learning/ielts' },
   ];
 
   return (

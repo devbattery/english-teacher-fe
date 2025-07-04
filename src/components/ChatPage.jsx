@@ -1,7 +1,7 @@
 // src/components/ChatPage.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './ChatPage.css';
@@ -80,7 +80,13 @@ const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const [isAiReplying, setIsAiReplying] = useState(false);
-  const [selectedTeacher, setSelectedTeacher] = useState(teacherLevels[0].id);
+  const location = useLocation();
+  const [selectedTeacher, setSelectedTeacher] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    const levelParam = params.get('level');
+    const initialLevel = teacherLevels.find(t => t.id === levelParam);
+    return initialLevel ? initialLevel.id : teacherLevels[0].id;
+  });
   const chatEndRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); 

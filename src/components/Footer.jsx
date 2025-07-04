@@ -7,7 +7,6 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <p>© 2025 English Teacher. All rights reserved.</p>
-        <p>Powered by Google Gemini</p>
       </div>
     </footer>
   );

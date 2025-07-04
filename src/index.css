@@ -6,6 +6,7 @@
 /* CSS 리셋 및 기본 레이아웃 설정 */
 html {
   box-sizing: border-box;
+  height: 100%; /* 추가 */
 }
 
 *,
@@ -21,14 +22,15 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f0f2f5;
+  background-color: #ffffff; /* #f0f2f5 -> #ffffff로 변경 */
+  height: 100%;
 }
 
 /* 앱의 루트 요소가 뷰포트 전체를 차지하도록 설정 */
 #root {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  height: 100%; /* 100vh -> 100%로 변경 */
+  overflow: auto; /* hidden -> auto로 변경 */
 }
 
 /* 

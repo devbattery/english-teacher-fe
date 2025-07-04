@@ -10,3 +10,8 @@
   flex-direction: column;
   overflow-y: auto;
 }
+
+/* ChatPage에서는 하단 패딩을 제거하여 전체 화면 레이아웃을 유지합니다. */
+.main-content:has(.chat-page-container) {
+  padding-bottom: 0;
+}

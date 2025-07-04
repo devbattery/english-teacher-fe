@@ -48,10 +48,10 @@
 }
 
 .page-guide-link:hover {
-  background-color: #fafbff;
-  color: #0056b3;
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  background-color: #fafbff;
+  color: #0056b3;
 }
 /* ------------------------------------ */
 

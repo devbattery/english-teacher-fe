@@ -15,10 +15,8 @@ const teacherLevels = [
 ];
 
 const LearningPage = () => {
-  const location = useLocation();
+  const { level: levelParam } = useParams();
   const [level, setLevel] = useState(() => {
-    const params = new URLSearchParams(location.search);
-    const levelParam = params.get('level');
     const initialLevel = teacherLevels.find(t => t.id === levelParam);
     return initialLevel ? initialLevel.id : teacherLevels[0].id;
   });

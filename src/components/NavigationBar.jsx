@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './NavigationBar.css';
+import logo from '../assets/logo.png';
 
 const NavigationBar = () => {
   // [수정] 필요한 모든 상태를 context에서 가져옵니다.
@@ -34,7 +35,9 @@ const NavigationBar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">📘 English Teacher</Link>
+        <Link to="/">
+          <img src={logo} alt="English Teacher Logo" className="navbar-logo" />
+        </Link>
       </div>
       <div className="navbar-menu">
         {isLoading ? (

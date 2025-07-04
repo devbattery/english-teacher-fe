@@ -36,20 +36,22 @@
 
 .page-guide-link {
   display: inline-block;
-  padding: 8px 16px;
-  background-color: #e9ecef;
-  border-radius: 20px;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-radius: 25px;
   text-decoration: none;
-  color: #495057;
-  font-size: 0.9em;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
 }
 
 .page-guide-link:hover {
-  background-color: #dee2e6;
-  color: #212529;
-  transform: translateY(-2px);
+  background-color: #fafbff;
+  color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 /* ------------------------------------ */
 

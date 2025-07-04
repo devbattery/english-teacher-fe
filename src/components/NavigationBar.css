@@ -22,6 +22,8 @@
   color: #007bff;
   text-decoration: none;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-brand a:hover {

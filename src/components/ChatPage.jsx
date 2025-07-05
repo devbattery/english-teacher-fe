@@ -87,7 +87,7 @@ const ChatPage = () => {
     const initialLevel = teacherLevels.find(t => t.id === levelParam);
     return initialLevel ? initialLevel.id : teacherLevels[0].id;
   });
-  const chatEndRef = useRef(null);
+  const chatMessagesRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); 
   const fileInputRef = useRef(null); 
@@ -114,7 +114,12 @@ const ChatPage = () => {
   }, [selectedTeacher, user]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTo({
+        top: chatMessagesRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [messages]);
 
   const handleSendMessage = async (e) => {
@@ -282,7 +287,7 @@ const ChatPage = () => {
           </button>
         </header>
 
-        <div className="chat-messages">
+        <div className="chat-messages" ref={chatMessagesRef}>
           {isHistoryLoading ? (
             <ChatPageSkeleton />
           ) : (
@@ -299,7 +304,6 @@ const ChatPage = () => {
           {isAiReplying && (
             <div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>
           )}
-          <div ref={chatEndRef} />
         </div>
 
         <form className="chat-input-form" onSubmit={handleSendMessage}>

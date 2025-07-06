@@ -70,7 +70,7 @@ const HomePage = () => {
                 <div className="card-icon">
                   <ChatIcon />
                 </div>
-                <h2>Start Chatting</h2>
+                <h2>English Chat</h2>
               </div>
               <p>
                 AI 선생님과 대화하며 실력을 향상시키세요. 원하는 레벨의 선생님을 선택하세요.

@@ -232,12 +232,12 @@ const ChatPage = () => {
       {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
 
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
+        {/* <div className="sidebar-header">
           <h3>Your AI Teachers</h3>
           <button className="sidebar-close-button" onClick={() => setIsSidebarOpen(false)}>
             <CloseIcon />
           </button>
-        </div>
+        </div> */}
         
         <div className="sidebar-user-profile">
           <img src={user?.picture || `https://ui-avatars.com/api/?name=${user?.name}&background=random`} alt={user?.name} className="profile-pic" />
@@ -246,7 +246,7 @@ const ChatPage = () => {
           </div>
         </div>
         
-        <p className="sidebar-instruction">학습 목표에 따라 AI 선생님을 선택하세요!</p>
+        {/* <p className="sidebar-instruction">학습 목표에 따라 AI 선생님을 선택하세요!</p> */}
         
         <div className="page-guide-link-wrapper">
           <Link to="/level-guide" className="page-guide-link">

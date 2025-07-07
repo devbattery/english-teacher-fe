@@ -232,39 +232,38 @@ const ChatPage = () => {
       {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
 
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        {/* <div className="sidebar-header">
-          <h3>Your AI Teachers</h3>
-          <button className="sidebar-close-button" onClick={() => setIsSidebarOpen(false)}>
-            <CloseIcon />
-          </button>
-        </div> */}
-        
-        <div className="sidebar-user-profile">
-          <img src={user?.picture || `https://ui-avatars.com/api/?name=${user?.name}&background=random`} alt={user?.name} className="profile-pic" />
-          <div className="user-details">
-            <span className="user-name">{user?.name}</span>
+        {/* Sidebar content wrapper */}
+        <div className="sidebar-content-wrapper">
+          {/* Top section: User Profile & Level Guide */}
+          <div className="sidebar-top-section">
+            <div className="sidebar-user-profile">
+              <img src={user?.picture || `https://ui-avatars.com/api/?name=${user?.name}&background=random`} alt={user?.name} className="profile-pic" />
+              <div className="user-details">
+                <span className="user-name">{user?.name}</span>
+              </div>
+            </div>
+            <div className="page-guide-link-wrapper">
+              <Link to="/level-guide" className="page-guide-link">
+                레벨 가이드 보기 👈
+              </Link>
+            </div>
           </div>
-        </div>
-        
-        {/* <p className="sidebar-instruction">학습 목표에 따라 AI 선생님을 선택하세요!</p> */}
-        
-        <div className="page-guide-link-wrapper">
-          <Link to="/level-guide" className="page-guide-link">
-            레벨 가이드 보기 👈
-          </Link>
-        </div>
 
-        <div className="teacher-list">
-          {teacherLevels.map((teacher) => (
-            <button
-              key={teacher.id}
-              className={`teacher-button ${selectedTeacher === teacher.id ? 'active' : ''}`}
-              onClick={() => handleTeacherSelect(teacher.id)}
-              disabled={isHistoryLoading}
-            >
-              {teacher.name}
-            </button>
-          ))}
+          {/* Middle section: Teacher List */}
+          <div className="sidebar-middle-section">
+            <div className="teacher-list">
+              {teacherLevels.map((teacher) => (
+                <button
+                  key={teacher.id}
+                  className={`teacher-button ${selectedTeacher === teacher.id ? 'active' : ''}`}
+                  onClick={() => handleTeacherSelect(teacher.id)}
+                  disabled={isHistoryLoading}
+                >
+                  {teacher.name}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </aside>
       

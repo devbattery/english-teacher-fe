@@ -89,12 +89,12 @@
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: background-color 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .social-login-btn:hover {
-  background-color: #f7f7f7;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #ccc;
 }
 
 .social-logo {
@@ -108,10 +108,20 @@
   border-color: #FEE500;
 }
 
+.kakao-login-btn:hover {
+  background-color: #fddc3f; /* 살짝 어두운 노란색 */
+  border-color: #fddc3f;
+}
+
 .naver-login-btn {
   background-color: #03C75A;
   color: white;
   border-color: #03C75A;
+}
+
+.naver-login-btn:hover {
+  background-color: #02b150; /* 살짝 어두운 녹색 */
+  border-color: #02b150;
 }
 
 .footer-text {

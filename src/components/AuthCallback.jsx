@@ -1,21 +1,20 @@
 // src/components/AuthCallback.jsx
 
-import React, { useEffect, useState, useRef } from 'react'; // useRef 임포트
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
+import CustomLoader from './CustomLoader';
+import './AuthCallback.css';
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const auth = useAuth();
   const [error, setError] = useState(null);
-
-  // ★★★ API 호출이 이미 시작되었는지 추적하기 위한 ref ★★★
   const isProcessing = useRef(false);
 
   useEffect(() => {
-    // ★★★ 이미 처리 중이면, 두 번째 호출을 무시하고 즉시 종료 ★★★
     if (isProcessing.current) {
       return;
     }
@@ -23,7 +22,6 @@ const AuthCallback = () => {
     const code = searchParams.get('code');
 
     if (code) {
-      // ★★★ 처리 시작 플래그를 true로 설정 ★★★
       isProcessing.current = true;
 
       api.post('/api/auth/token', { code })
@@ -43,20 +41,27 @@ const AuthCallback = () => {
     } else {
       setError('인증 코드가 없습니다. 로그인 페이지로 돌아갑니다.');
     }
-
-    // useEffect 클린업 함수는 필요하지 않습니다.
-  }, [searchParams, navigate, auth]); // 의존성 배열은 그대로 둡니다.
+  }, [searchParams, navigate, auth]);
 
   if (error) {
     return (
-      <div>
-        <p>{error}</p>
-        <button onClick={() => navigate('/login')}>로그인 페이지로 이동</button>
+      <div className="callback-container">
+        <div className="loading-box">
+          <p className="error-text">{error}</p>
+          <button className="login-redirect-btn" onClick={() => navigate('/login')}>로그인 페이지로 이동</button>
+        </div>
       </div>
     );
   }
 
-  return <div>로그인 처리 중...</div>;
+  return (
+    <div className="callback-container">
+      <div className="loading-box">
+        <CustomLoader />
+        <p className="loading-text">로그인 처리 중...</p>
+      </div>
+    </div>
+  );
 };
 
 export default AuthCallback;

@@ -11,6 +11,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const LoginPage = () => {
   const handleSocialLogin = (provider) => {
+    // [수정] 자동 재로그인을 위해 선택한 provider를 sessionStorage에 저장합니다.
+    sessionStorage.setItem('login_provider', provider);
     window.location.href = `${API_BASE_URL}/oauth2/authorization/${provider}`;
   };
 

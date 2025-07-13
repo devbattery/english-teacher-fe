@@ -84,7 +84,6 @@ const AuthCallback = () => {
     <div className="callback-container">
       <div className="loading-box">
         <CustomLoader />
-        <p className="loading-text">로그인 처리 중...</p>
       </div>
     </div>
   );

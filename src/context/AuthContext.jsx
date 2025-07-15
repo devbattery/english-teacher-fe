@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // 초기 토큰/세션 확인 로딩
   // [수정] userLoading의 초기값은 false로 둡니다.
   const [userLoading, setUserLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const navigate = useNavigate();
 
   // 앱 처음 로드될 때: 세션에서 토큰을 가져오려는 시도
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async (callApi = true) => {
+    setLogoutLoading(true);
     if (callApi) {
       try {
         await api.post("/api/auth/logout");
@@ -83,6 +85,7 @@ export const AuthProvider = ({ children }) => {
     if (window.location.pathname !== '/login') {
       navigate("/login");
     }
+    setLogoutLoading(false);
   };
 
   const authContextValue = {
@@ -90,6 +93,7 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,      // 초기 세션 확인 로딩
     userLoading,  // 사용자 정보 조회 로딩
+    logoutLoading, // 로그아웃 로딩
     login,
     logout,
   };

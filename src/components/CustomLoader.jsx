@@ -2,15 +2,13 @@
 import React from 'react';
 import './CustomLoader.css';
 
-const CustomLoader = ({ message }) => {
+const CustomLoader = ({ message, size = 'default' }) => {
   return (
-    <div className="loader-container">
+    <div className={`loader-container ${size}`}>
       <div className="bouncing-loader">
         <div></div>
-        <div></div>
-        <div></div>
       </div>
-      <p className="loader-message">{message}</p>
+      {message && <p className="loader-message">{message}</p>}
     </div>
   );
 };

@@ -4,11 +4,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './NavigationBar.css';
+import CustomLoader from './CustomLoader';
 import logo from '../assets/logo.png';
 
 const NavigationBar = () => {
   // [수정] 필요한 모든 상태를 context에서 가져옵니다.
-  const { user, logout, loading, userLoading, accessToken } = useAuth();
+  const { user, logout, loading, userLoading, accessToken, logoutLoading } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -49,29 +50,35 @@ const NavigationBar = () => {
         ) : user ? (
           // 로그인 완료 상태 UI
           <div className="navbar-user" ref={dropdownRef}>
-            {user.picture && (
-              <img
-                src={user.picture}
-                alt="Profile"
-                className="navbar-profile-pic clickable"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              />
-            )}
-            {isDropdownOpen && (
-              <div className="user-dropdown">
-                <div className="dropdown-header">
-                  <img src={user.picture} alt="Profile" className="dropdown-profile-pic" />
-                  <span className="dropdown-username">{user.name}</span>
-                  <span className="dropdown-email">{user.email}</span>
-                </div>
-                <ul className="dropdown-menu-list">
-                  <li className="dropdown-menu-item" onClick={logout}>
-                    <button className="navbar-button logout-button full-width">
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
+            {logoutLoading ? (
+              <CustomLoader size="small" />
+            ) : (
+              <>
+                {user.picture && (
+                  <img
+                    src={user.picture}
+                    alt="Profile"
+                    className="navbar-profile-pic clickable"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  />
+                )}
+                {isDropdownOpen && (
+                  <div className="user-dropdown">
+                    <div className="dropdown-header">
+                      <img src={user.picture} alt="Profile" className="dropdown-profile-pic" />
+                      <span className="dropdown-username">{user.name}</span>
+                      <span className="dropdown-email">{user.email}</span>
+                    </div>
+                    <ul className="dropdown-menu-list">
+                      <li className="dropdown-menu-item" onClick={logout}>
+                        <button className="navbar-button logout-button full-width">
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ) : (

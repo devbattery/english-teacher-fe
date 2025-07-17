@@ -1,105 +1,89 @@
 /* src/components/HomePageSkeleton.css */
 
-/* 기본 스켈레톤 스타일 */
+.skeleton-page {
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.page-title {
+    margin-bottom: 3rem;
+}
+
 .skeleton {
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* 쉬머(shimmer) 애니메이션 효과 */
-.skeleton::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -150%;
-  }
-  100% {
-    left: 150%;
-  }
-}
-
-/* HomePage 레이아웃에 맞춘 스켈레톤 크기 지정 */
-.skeleton-page .page-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
 }
 
 .skeleton-title {
-  width: 60%;
-  height: 44px; /* h1 폰트 크기와 비슷하게 */
-  margin-bottom: 16px;
+    width: 60%;
+    height: 36px;
+    margin-bottom: 1rem;
 }
 
 .skeleton-subtitle {
-  width: 80%;
-  height: 24px; /* p 폰트 크기와 비슷하게 */
+    width: 40%;
+    height: 24px;
 }
 
-.skeleton-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px;
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.home-card.skeleton-card {
+    background-color: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    position: relative; /* For loader positioning */
 }
 
 .skeleton-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%; /* 아이콘은 동그랗게 */
-  margin-bottom: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
 }
 
 .skeleton-card-h2 {
-  width: 50%;
-  height: 32px;
-  margin-bottom: 16px;
+    width: 70%;
+    height: 28px;
+    margin-bottom: 1rem;
 }
 
 .skeleton-card-p {
-  width: 90%;
-  height: 20px;
-  margin-bottom: 10px;
+    width: 90%;
+    height: 16px;
+    margin-bottom: 0.75rem;
 }
 
 .skeleton-card-p-short {
-  width: 70%;
-  height: 20px;
+    width: 60%;
+    height: 16px;
 }
 
-
-/* --- [핵심 추가] LearningPage 스켈레톤 스타일 --- */
-.skeleton-article-title {
-  width: 70%;
-  height: 36px;
-  margin-bottom: 25px;
+.loader-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
 }
 
-.skeleton-text {
-  width: 100%;
-  height: 18px;
-  margin-bottom: 12px;
-}
-
-.skeleton-text-medium {
-  width: 80%;
-  height: 18px;
-  margin-bottom: 12px;
-}
-
-.skeleton-text-short {
-  width: 60%;
-  height: 18px;
-  margin-bottom: 12px;
+@keyframes pulse {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #d0d0d0;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
 }

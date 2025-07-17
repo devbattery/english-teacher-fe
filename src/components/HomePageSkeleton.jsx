@@ -1,10 +1,12 @@
 // src/components/HomePageSkeleton.jsx
 
 import React from 'react';
+import CustomLoader from './CustomLoader'; // CustomLoader import
 import './HomePageSkeleton.css';
 
-const SkeletonCard = () => (
+const SkeletonCard = ({ withLoader = false }) => (
     <div className="home-card skeleton-card">
+        {withLoader && <div className="loader-wrapper"><CustomLoader /></div>}
         <div className="skeleton skeleton-icon"></div>
         <div className="skeleton skeleton-card-h2"></div>
         <div className="skeleton skeleton-card-p"></div>
@@ -24,7 +26,7 @@ const HomePageSkeleton = () => {
         {/* [수정] 카드 스켈레톤을 2개 렌더링합니다. */}
         <div className="card-container">
           <SkeletonCard />
-          <SkeletonCard />
+          <SkeletonCard withLoader={true} />
         </div>
       </main>
     </div>

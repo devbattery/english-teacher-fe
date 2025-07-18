@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
+import CustomLoader from './CustomLoader';
 import './ChatPage.css';
 
 import ChatPageSkeleton from './ChatPageSkeleton';
@@ -288,7 +289,9 @@ const ChatPage = () => {
 
         <div className="chat-messages" ref={chatMessagesRef}>
           {isHistoryLoading ? (
-            <ChatPageSkeleton />
+            <div className="chat-loading-container">
+              <CustomLoader />
+            </div>
           ) : (
             messages.map((msg, index) => (
               <div key={index} className={`message-bubble ${msg.sender}`}>

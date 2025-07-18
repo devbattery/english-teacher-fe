@@ -279,6 +279,15 @@
   gap: 4px;
   flex-grow: 1;
 }
+
+.chat-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  height: 100%;
+}
+
 .message-bubble { 
   max-width: 70%;
   padding: 10px 16px; 

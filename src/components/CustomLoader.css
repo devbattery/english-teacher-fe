@@ -4,7 +4,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
   text-align: center;
 }
 
@@ -19,13 +18,11 @@
   height: 24px;
   margin: 0;
   background: transparent;
-  border: 4px solid #007bff;
+  border: 4px solid var(--accent-color);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-
-
 
 @keyframes spin {
   from {
@@ -45,6 +42,6 @@
 .loader-message {
   font-size: 1.1em;
   font-weight: 500;
-  color: #606770;
+  color: var(--text-secondary);
   line-height: 1.6;
 }

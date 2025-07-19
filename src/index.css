@@ -1,3 +1,27 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f2f5;
+  --text-primary: #050505;
+  --text-secondary: #65676b;
+  --border-color: #e0e0e0;
+  --accent-color: #007bff;
+  --accent-color-hover: #0056b3;
+  --danger-color: #dc3545;
+  --danger-color-hover: #c82333;
+}
+
+html.dark {
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a0a0a5;
+  --border-color: #3a3a3c;
+  --accent-color: #0a84ff;
+  --accent-color-hover: #0060df;
+  --danger-color: #ff453a;
+  --danger-color-hover: #ff1c0f;
+}
+
 /* src/index.css */
 
 /* Pretendard 폰트 import */
@@ -22,8 +46,10 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff; /* #f0f2f5 -> #ffffff로 변경 */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   height: 100%;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* 앱의 루트 요소가 뷰포트 전체를 차지하도록 설정 */

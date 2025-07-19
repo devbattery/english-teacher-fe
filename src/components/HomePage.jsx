@@ -47,7 +47,7 @@ const HomePage = () => {
       <div className="top-section">
         <div className="hero-section">
           <h1 className="hero-title">
-            English Teacher는 <span className="highlight-text">Google의 최신 Gemini AI</span>와 함께합니다.
+            English Teacher는 <span className="highlight-text">Google의 최신 Gemini API</span>와 함께합니다.
           </h1>
           <div className="partner-logos">
             <img src={geminiLogo} alt="Google Gemini Logo" />

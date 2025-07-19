@@ -1,13 +1,6 @@
 /* src/components/ChatPage.css */
 
 .chat-page-container {
-  --chat-bg-color: #ffffff; /* #f0f2f5에서 #ffffff로 변경 */
-  --sidebar-bg-color: #ffffff;
-  --message-user-bg: #007bff;
-  --message-ai-bg: #e9e9eb;
-  --text-primary: #050505;
-  --text-secondary: #65676b;
-  --border-color: #e0e0e0;
   --bg-level-beginner: #e3f2fd; /* 옅은 하늘색 */
   --bg-level-intermediate: #e8f5e9; /* 옅은 녹색 */
   --bg-level-advanced: #ede7f6; /* 옅은 보라색 */
@@ -18,19 +11,26 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   position: relative;
   overflow: hidden;
-  background-color: var(--chat-bg-color);
+  background-color: var(--bg-primary);
+}
+
+html.dark .chat-page-container {
+    --bg-level-beginner: #2a3a4a;
+    --bg-level-intermediate: #2f4031;
+    --bg-level-advanced: #3c3245;
+    --bg-level-ielts: #2c2c2e;
 }
 
 /* === 사이드바 === */
 .teacher-sidebar {
   width: 320px;
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--bg-primary);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   flex-shrink: 0;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, background-color 0.3s, border-color 0.3s;
   z-index: 1000;
 }
 
@@ -58,7 +58,6 @@
   color: var(--text-secondary);
 }
 
-/* [수정] 사이드바 콘텐츠 래퍼 */
 .sidebar-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -67,7 +66,6 @@
   padding: 24px;
 }
 
-/* [수정] 사이드바 상단 섹션 */
 .sidebar-top-section {
   flex-shrink: 0;
   margin-bottom: 24px;
@@ -78,7 +76,7 @@
   align-items: center;
   padding: 12px;
   margin-bottom: 16px;
-  background-color: #f0f2f5;
+  background-color: var(--bg-secondary);
   border-radius: 12px;
 }
 .profile-pic {
@@ -87,7 +85,7 @@
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
-  border: 2px solid #fff;
+  border: 2px solid var(--bg-primary);
 }
 .user-details {
   display: flex;
@@ -96,11 +94,6 @@
 .user-name {
   font-weight: 600;
   color: var(--text-primary);
-}
-.user-status {
-  font-size: 0.8rem;
-  color: #31a24c;
-  font-weight: 500;
 }
 
 .page-guide-link-wrapper {
@@ -112,29 +105,28 @@
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   border-radius: 25px;
   text-decoration: none;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 600;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 8px var(--shadow-color);
   transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
 }
 
 .page-guide-link:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-  background-color: #fafbff;
-  color: #0056b3;
+  box-shadow: 0 6px 12px var(--shadow-color);
+  background-color: var(--bg-secondary);
+  color: var(--accent-color-hover);
 }
 
-/* [수정] 사이드바 중간 섹션 */
 .sidebar-middle-section {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 수직 상단 정렬 */
+  justify-content: flex-start;
 }
 
 .sidebar-instruction {
@@ -156,23 +148,26 @@
   padding: 14px 16px; 
   border: none;
   border-radius: 10px; 
-  background-color: #f0f2f5;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  background-color: var(--bg-secondary);
+  text-align: center;
   font-size: 1rem; 
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer; 
-  transition: background-color 0.2s, transform 0.2s; 
+  transition: background-color 0.2s, transform 0.2s, color 0.2s; 
 }
 .teacher-button:hover { 
-  background-color: #e4e6eb; 
+  background-color: var(--bg-secondary-hover);
   transform: scale(1.02);
 }
 .teacher-button.active { 
-  background-color: var(--message-user-bg); 
-  color: white; 
+  background-color: var(--accent-color); 
+  color: var(--accent-text-color); 
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
   transform: scale(1.02);
+}
+html.dark .teacher-button.active {
+    box-shadow: 0 4px 12px rgba(46, 137, 255, 0.3);
 }
 .teacher-button:disabled {
   opacity: 0.6;
@@ -184,17 +179,17 @@
 /* === 메인 채팅창 === */
 .chat-main {
   flex-grow: 1;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: calc(100vh - 64px); /* 네비게이션 바 높이(64px)를 뺀 나머지 화면 전체 */
-  margin-right: 24px; /* 오른쪽 여백 추가 */
+  height: calc(100vh - 64px);
+  margin-right: 24px;
   transition: background-color 0.5s ease;
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(0, 0, 0, 0.03),
-    rgba(0, 0, 0, 0.03) 1px,
+    rgba(128, 128, 128, 0.03),
+    rgba(128, 128, 128, 0.03) 1px,
     transparent 1px,
     transparent 25px
   );
@@ -212,7 +207,7 @@
   height: 64px;
   border-bottom: 1px solid var(--border-color);
   align-items: center;
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--bg-primary);
 }
 .menu-toggle { 
   background: none; border: none; cursor: pointer; padding: 8px; margin-right: 12px;
@@ -231,8 +226,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--message-user-bg);
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--accent-text-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -257,8 +252,8 @@
 }
 
 .chat-reset-button:hover:not(:disabled) {
-  background-color: #f0f2f5;
-  color: #dc3545;
+  background-color: var(--bg-secondary);
+  color: var(--danger-color);
 }
 
 .chat-reset-button:disabled {
@@ -293,7 +288,7 @@
   padding: 10px 16px; 
   border-radius: 18px; 
   line-height: 1.5;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 1px var(--shadow-color);
   margin-bottom: 8px;
   animation: message-fade-in 0.3s ease-out;
 }
@@ -304,13 +299,13 @@
 }
 
 .message-bubble.user { 
-  background-color: var(--message-user-bg); 
-  color: white; 
+  background-color: var(--accent-color); 
+  color: var(--accent-text-color); 
   align-self: flex-end; 
   border-bottom-right-radius: 4px; 
 }
 .message-bubble.ai { 
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--bg-secondary);
   color: var(--text-primary); 
   align-self: flex-start; 
   border-bottom-left-radius: 4px; 
@@ -320,25 +315,9 @@
   white-space: pre-wrap; 
 }
 
-/* --- [신규] 이미지 관련 스타일 --- */
-.message-image {
-  display: block;
-  max-width: 100%;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.message-image:hover {
-  transform: scale(1.02);
-}
-/* 텍스트와 이미지 사이의 간격 조정 */
-.message-bubble .message-image + p {
-  margin-top: 8px;
-}
-
 .message-image-container {
     position: relative;
-    min-height: 100px; /* 최소 높이를 지정하여 로딩 중 공간 확보 */
+    min-height: 100px;
 }
 
 .image-loading-placeholder {
@@ -347,7 +326,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #e0e0e0; /* 이미지와 비슷한 배경색 */
+    background-color: var(--border-color);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -370,30 +349,28 @@
 .message-image:hover {
   transform: scale(1.02);
 }
-/* ------------------------------- */
 
 .chat-input-form {
   display: flex;
-  flex-direction: column; /* 세로 정렬 */
+  flex-direction: column;
   align-items: stretch;
-  gap: 8px; /* 미리보기와 입력창 사이의 간격 */
+  gap: 8px;
   padding: 16px 24px;
   border-top: 1px solid var(--border-color);
-  background-color: var(--chat-bg-color);
+  background-color: var(--bg-primary);
   box-sizing: border-box;
   flex-shrink: 0;
 }
 
-/* --- [신규] 이미지 미리보기 컨테이너 --- */
 .image-preview-container {
   position: relative;
-  align-self: flex-start; /* 왼쪽 정렬 */
+  align-self: flex-start;
   padding: 8px;
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   max-width: 200px;
-  margin-left: 56px; /* 첨부파일 버튼 너비만큼 왼쪽 여백 */
+  margin-left: 56px;
 }
 .image-preview {
   display: block;
@@ -422,13 +399,7 @@
 .remove-image-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
-.remove-image-button svg {
-  width: 16px;
-  height: 16px;
-}
-/* ------------------------------------- */
 
-/* 입력 필드와 버튼들을 담는 래퍼 */
 .input-controls {
   display: flex;
   align-items: center;
@@ -436,7 +407,6 @@
   width: 100%;
 }
 
-/* --- [신규] 파일 첨부 버튼 --- */
 .attach-file-button {
   width: 48px;
   height: 48px;
@@ -453,8 +423,8 @@
   flex-shrink: 0;
 }
 .attach-file-button:hover:not(:disabled) {
-  background-color: #e4e6eb;
-  color: var(--message-user-bg);
+  background-color: var(--bg-secondary-hover);
+  color: var(--accent-color);
 }
 .attach-file-button:disabled {
   opacity: 0.5;
@@ -462,11 +432,10 @@
   background-color: transparent;
   color: var(--text-secondary);
 }
-/* --------------------------- */
 
 .input-wrapper {
   flex-grow: 1;
-  background-color: var(--sidebar-bg-color);
+  background-color: var(--bg-secondary);
   border-radius: 24px;
   padding: 2px 4px 2px 20px;
   display: flex;
@@ -479,6 +448,7 @@
   font-size: 1rem;
   border: none;
   background-color: transparent;
+  color: var(--text-primary);
 }
 .chat-input-form input:focus { 
   outline: none;
@@ -488,8 +458,8 @@
   height: 48px;
   padding: 0;
   border: none; 
-  background-color: var(--message-user-bg); 
-  color: white; 
+  background-color: var(--accent-color); 
+  color: var(--accent-text-color); 
   border-radius: 50%;
   cursor: pointer; 
   transition: background-color 0.2s, transform 0.2s; 
@@ -499,21 +469,17 @@
   flex-shrink: 0;
 }
 .chat-input-form button[type="submit"]:hover:not(:disabled) { 
-  background-color: #0056b3; 
+  background-color: var(--accent-color-hover); 
   transform: scale(1.1);
 }
 .chat-input-form button[type="submit"]:disabled { 
-  background-color: #a0c3e6; 
+  background-color: var(--accent-color-disabled); 
   cursor: not-allowed; 
   transform: none;
 }
-.chat-input-form button[type="submit"] svg {
-  width: 24px;
-  height: 24px;
-}
 
 .typing-indicator span { 
-  background-color: #8a8d91;
+  background-color: var(--text-secondary);
 }
 
 .overlay {
@@ -532,7 +498,7 @@
     height: 100%;
     transform: translateX(-100%);
     border-right: none;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 5px var(--shadow-color);
   }
   .teacher-sidebar.open {
     transform: translateX(0);
@@ -549,7 +515,7 @@
   }
 
   .image-preview-container {
-    margin-left: 0; /* 모바일에서는 여백 제거 */
+    margin-left: 0;
     max-width: 150px;
   }
   .remove-image-button {
@@ -558,7 +524,6 @@
   }
 }
 
-/* --- [신규] 대화 초기화 확인 모달 --- */
 .reset-confirm-overlay {
   position: fixed;
   top: 0;
@@ -569,7 +534,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000; /* 사이드바보다 위에 오도록 z-index 설정 */
+  z-index: 2000;
   animation: fade-in 0.3s ease;
 }
 
@@ -579,7 +544,7 @@
 }
 
 .reset-confirm-modal {
-  background-color: white;
+  background-color: var(--bg-primary);
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -624,22 +589,21 @@
 }
 
 .reset-confirm-actions .cancel-btn {
-  background-color: #e4e6eb;
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
 }
 
 .reset-confirm-actions .cancel-btn:hover {
-  background-color: #d8dbdf;
+  background-color: var(--bg-secondary-hover);
 }
 
 .reset-confirm-actions .confirm-btn {
-  background-color: #dc3545; /* 위험을 나타내는 빨간색 */
-  color: white;
+  background-color: var(--danger-color);
+  color: var(--accent-text-color);
 }
 
 .reset-confirm-actions .confirm-btn:hover {
-  background-color: #c82333;
+  background-color: var(--danger-color-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
-/* --------------------------------- */

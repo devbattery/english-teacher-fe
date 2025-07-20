@@ -8,6 +8,7 @@
 
 .top-section {
   background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 4rem;
   margin-bottom: 3rem;
@@ -24,6 +25,7 @@
   font-weight: 700;
   margin-bottom: 2rem;
   line-height: 1.4;
+  color: var(--text-primary);
 }
 
 .highlight-text {
@@ -32,7 +34,13 @@
 
 .partner-logos img {
   height: 40px;
+  filter: grayscale(30%); /* 다크모드에서도 잘 보이도록 조정 */
   opacity: 0.8;
+  transition: filter 0.3s;
+}
+
+.partner-logos img:hover {
+  filter: grayscale(0%);
 }
 
 .bottom-section {
@@ -82,6 +90,7 @@
 .home-section:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px var(--shadow-color);
+  border-color: var(--border-color-hover);
 }
 
 .section-header {
@@ -100,18 +109,21 @@
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .home-section h2 {
   font-size: 1.75rem;
   font-weight: 600;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .home-section p {
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 2rem;
+  min-height: 75px; /* 카드의 높이를 비슷하게 유지 */
 }
 
 .level-buttons-container {
@@ -121,7 +133,7 @@
 }
 
 .level-button {
-  flex-grow: 1;
+  flex: 1 1 120px; /* 유연한 크기 조절 */
   text-align: center;
   padding: 1rem;
   background-color: var(--bg-primary);

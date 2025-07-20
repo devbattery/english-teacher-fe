@@ -2,26 +2,59 @@
 
 .login-page {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   height: 100%;
   background-color: var(--bg-primary);
+  flex-direction: row; /* 가로 정렬 */
+  align-items: center;
+  justify-content: center;
+  gap: 5%;
+  padding: 2rem;
+}
+
+/* [추가] 브랜딩 섹션 스타일 */
+.branding-section {
+  flex: 1;
+  max-width: 450px;
+  text-align: left;
+  padding-right: 2rem;
+}
+
+.branding-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.branding-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.branding-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* [수정] 로그인 섹션 스타일 */
+.login-section {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+  justify-content: center;
 }
 
 .login-container {
   background-color: var(--bg-secondary);
-  padding: 3rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px var(--shadow-color);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px var(--shadow-color);
   text-align: center;
   width: 100%;
-  max-width: 400px;
-}
-
-.login-logo {
-  width: 80px;
-  margin-bottom: 1.5rem;
 }
 
 .login-title {
@@ -42,29 +75,61 @@
   gap: 1rem;
 }
 
-.social-login-button {
+/* 수정: 클래스명 통일 및 스타일 재정의 */
+.social-login-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: all 0.2s;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-.social-login-button:hover {
-  background-color: var(--bg-secondary-hover);
+.social-login-btn:hover {
   border-color: var(--border-color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .social-logo {
-  width: 24px;
-  height: 24px;
-  margin-right: 1rem;
+  width: 22px;
+  height: 22px;
+  margin-right: 0.75rem;
+}
+
+.google-login-btn {
+  /* 기본 스타일 유지 */
+}
+
+.kakao-login-btn {
+  background-color: var(--kakao-color);
+  color: var(--kakao-text-color);
+  border-color: var(--kakao-color);
+}
+
+.naver-login-btn {
+  background-color: var(--naver-color);
+  color: var(--naver-text-color);
+  border-color: var(--naver-color);
+}
+
+/* 모바일 화면 대응 */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 5rem;
+  }
+  .branding-section {
+    text-align: center;
+    padding-right: 0;
+    margin-bottom: 3rem;
+  }
 }

@@ -5,6 +5,7 @@
   margin: 40px auto;
   padding: 20px;
   animation: page-fade-in 0.6s ease-out;
+  color: var(--text-primary);
 }
 
 @keyframes page-fade-in {
@@ -25,12 +26,14 @@
 
 .level-guide-header h1 {
   font-size: 2.5em;
-  color: #213547;
+  /* 수정: 변수 사용 */
+  color: var(--text-primary);
 }
 
 .level-guide-header p {
   font-size: 1.1em;
-  color: #606770;
+  /* 수정: 변수 사용 */
+  color: var(--text-secondary);
   margin-top: 10px;
 }
 
@@ -47,32 +50,37 @@
   font-size: 1em;
   font-weight: 600;
   border-radius: 8px;
-  border: 1px solid #dcdfe6;
-  background-color: #fff;
-  color: #606770;
+  /* 수정: 변수 사용 */
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
-  background-color: #f5f7fa;
-  color: #303133;
-  border-color: #c0c4cc;
+  /* 수정: 변수 사용 */
+  background-color: var(--bg-secondary-hover);
+  color: var(--text-primary);
+  border-color: var(--border-color-hover);
 }
 
 .tab-btn.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+  /* 수정: 변수 사용 */
+  background-color: var(--accent-color);
+  color: var(--accent-text-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .level-content-card {
-  background-color: #ffffff;
+  /* 수정: 변수 사용 */
+  background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 40px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px var(--shadow-color);
   animation: card-fade-in 0.5s ease-out;
+  border: 1px solid var(--border-color);
 }
 
 @keyframes card-fade-in {
@@ -89,7 +97,8 @@
 .level-summary {
   font-size: 1.8em;
   font-weight: 700;
-  color: #007bff;
+  /* 수정: 변수 사용 */
+  color: var(--accent-color);
   text-align: center;
   margin-top: 0;
   margin-bottom: 25px;
@@ -98,23 +107,26 @@
 .level-description {
   font-size: 1.1em;
   line-height: 1.8;
-  color: #303133;
+  /* 수정: 변수 사용 */
+  color: var(--text-primary);
   text-align: justify;
   margin-bottom: 40px;
 }
 
 .recommendations-section {
-  background-color: #f8faff;
+  /* 수정: 변수 사용 */
+  background-color: var(--bg-primary);
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid #e0e7ff;
+  border: 1px solid var(--border-color);
 }
 
 .recommendations-section h3 {
   font-size: 1.2em;
   margin-top: 0;
   margin-bottom: 15px;
-  color: #303133;
+  /* 수정: 변수 사용 */
+  color: var(--text-primary);
 }
 
 .recommendations-list {
@@ -125,7 +137,8 @@
 
 .recommendations-list li {
   font-size: 1em;
-  color: #606770;
+  /* 수정: 변수 사용 */
+  color: var(--text-secondary);
   margin-bottom: 10px;
   line-height: 1.6;
 }

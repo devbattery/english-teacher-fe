@@ -1,10 +1,11 @@
 /* src/components/ChatPage.css */
 
 .chat-page-container {
-  --bg-level-beginner: #e3f2fd; /* 옅은 하늘색 */
-  --bg-level-intermediate: #e8f5e9; /* 옅은 녹색 */
-  --bg-level-advanced: #ede7f6; /* 옅은 보라색 */
-  --bg-level-ielts: #f5f5f5; /* 옅은 회색 */
+  /* 라이트 모드 레벨별 배경색 */
+  --bg-level-beginner: #e3f2fd;
+  --bg-level-intermediate: #e8f5e9;
+  --bg-level-advanced: #f3e5f5;
+  --bg-level-ielts: #f5f5f5;
   
   display: flex;
   height: 100%;
@@ -14,11 +15,12 @@
   background-color: var(--bg-primary);
 }
 
+/* 다크 모드 레벨별 배경색 정의 */
 html.dark .chat-page-container {
-    --bg-level-beginner: #2a3a4a;
-    --bg-level-intermediate: #2f4031;
-    --bg-level-advanced: #3c3245;
-    --bg-level-ielts: #2c2c2e;
+  --bg-level-beginner: #2a3a4a;
+  --bg-level-intermediate: #2f4031;
+  --bg-level-advanced: #4a3c50;
+  --bg-level-ielts: #2c2c2e;
 }
 
 /* === 사이드바 === */
@@ -28,34 +30,9 @@ html.dark .chat-page-container {
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
   flex-shrink: 0;
   transition: transform 0.3s ease-in-out, background-color 0.3s, border-color 0.3s;
   z-index: 1000;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-color);
-  flex-shrink: 0;
-}
-.sidebar-header h3 { 
-  margin: 0; 
-  color: var(--text-primary);
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-.sidebar-close-button {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: var(--text-secondary);
 }
 
 .sidebar-content-wrapper {
@@ -85,7 +62,7 @@ html.dark .chat-page-container {
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
-  border: 2px solid var(--bg-primary);
+  border: 2px solid var(--border-color);
 }
 .user-details {
   display: flex;
@@ -118,7 +95,7 @@ html.dark .chat-page-container {
 .page-guide-link:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px var(--shadow-color);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary-hover);
   color: var(--accent-color-hover);
 }
 
@@ -129,20 +106,12 @@ html.dark .chat-page-container {
   justify-content: flex-start;
 }
 
-.sidebar-instruction {
-  font-size: 0.9rem; 
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-  margin-top: 0;
-  font-weight: 500;
-  text-align: center;
-}
-
 .teacher-list { 
   display: flex; 
   flex-direction: column; 
   gap: 8px;
 }
+
 .teacher-button { 
   width: 100%; 
   padding: 14px 16px; 
@@ -154,20 +123,17 @@ html.dark .chat-page-container {
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer; 
-  transition: background-color 0.2s, transform 0.2s, color 0.2s; 
+  transition: all 0.2s; 
 }
-.teacher-button:hover { 
+.teacher-button:hover:not(:disabled) { 
   background-color: var(--bg-secondary-hover);
   transform: scale(1.02);
 }
 .teacher-button.active { 
   background-color: var(--accent-color); 
   color: var(--accent-text-color); 
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 4px 12px var(--shadow-color);
   transform: scale(1.02);
-}
-html.dark .teacher-button.active {
-    box-shadow: 0 4px 12px rgba(46, 137, 255, 0.3);
 }
 .teacher-button:disabled {
   opacity: 0.6;
@@ -179,12 +145,10 @@ html.dark .teacher-button.active {
 /* === 메인 채팅창 === */
 .chat-main {
   flex-grow: 1;
-  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: calc(100vh - 64px);
-  margin-right: 24px;
+  height: 100%;
   transition: background-color 0.5s ease;
   background-image: repeating-linear-gradient(
     45deg,
@@ -211,7 +175,7 @@ html.dark .teacher-button.active {
 }
 .menu-toggle { 
   background: none; border: none; cursor: pointer; padding: 8px; margin-right: 12px;
-  display: none;
+  display: none; color: var(--text-secondary);
 }
 .chat-header-title { 
   display: flex;
@@ -252,7 +216,7 @@ html.dark .teacher-button.active {
 }
 
 .chat-reset-button:hover:not(:disabled) {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary-hover);
   color: var(--danger-color);
 }
 
@@ -305,10 +269,11 @@ html.dark .teacher-button.active {
   border-bottom-right-radius: 4px; 
 }
 .message-bubble.ai { 
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   color: var(--text-primary); 
   align-self: flex-start; 
   border-bottom-left-radius: 4px; 
+  border: 1px solid var(--border-color);
 }
 .message-bubble p { 
   margin: 0; 
@@ -441,7 +406,13 @@ html.dark .teacher-button.active {
   display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
+  transition: border-color 0.2s;
 }
+
+.input-wrapper:focus-within {
+  border-color: var(--accent-color);
+}
+
 .chat-input-form input[type="text"] { 
   width: 100%;
   padding: 12px 0; 
@@ -478,9 +449,39 @@ html.dark .teacher-button.active {
   transform: none;
 }
 
-.typing-indicator span { 
-  background-color: var(--text-secondary);
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
 }
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  margin: 0 2px;
+  background-color: var(--text-secondary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-of-type(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-of-type(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
 
 .overlay {
   position: absolute;
@@ -503,9 +504,8 @@ html.dark .teacher-button.active {
   .teacher-sidebar.open {
     transform: translateX(0);
   }
-  .sidebar-close-button, .menu-toggle {
+  .menu-toggle {
     display: block;
-    color: var(--text-secondary);
   }
   .chat-header {
     justify-content: space-between;
@@ -547,11 +547,12 @@ html.dark .teacher-button.active {
   background-color: var(--bg-primary);
   padding: 24px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px var(--shadow-color);
   width: 90%;
   max-width: 400px;
   text-align: center;
   animation: slide-up 0.4s ease-out;
+  border: 1px solid var(--border-color);
 }
 
 @keyframes slide-up {
@@ -591,6 +592,7 @@ html.dark .teacher-button.active {
 .reset-confirm-actions .cancel-btn {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .reset-confirm-actions .cancel-btn:hover {

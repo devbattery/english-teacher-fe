@@ -22,15 +22,85 @@ html.dark {
   --danger-color-hover: #ff1c0f;
 }
 
-/* src/index.css */
+/* index.css */
 
 /* Pretendard 폰트 import */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
+:root {
+  /* 배경 색상 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f2f5;
+  --bg-secondary-hover: #e4e6e9;
+
+  /* 텍스트 색상 */
+  --text-primary: #050505;
+  --text-secondary: #65676b;
+  --accent-text-color: #ffffff; /* Accent 색상 위의 텍스트 */
+
+  /* 테두리 및 구분선 */
+  --border-color: #dcdfe6;
+  --border-color-hover: #c0c4cc;
+
+  /* Accent (주요) 색상 */
+  --accent-color: #007bff;
+  --accent-color-hover: #0056b3;
+  --accent-color-disabled: #a0cfff;
+
+  /* Danger (위험/삭제) 색상 */
+  --danger-color: #dc3545;
+  --danger-color-hover: #c82333;
+
+  /* 그림자 */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* 스켈레톤 UI */
+  --skeleton-bg: #e0e0e0;
+  --skeleton-bg-pulse: #d0d0d0;
+  
+  /* 소셜 버튼 (고정 색상) */
+  --kakao-color: #FEE500;
+  --kakao-text-color: #191919;
+  --naver-color: #03C75A;
+  --naver-text-color: #ffffff;
+}
+
+html.dark {
+  /* 배경 색상 */
+  --bg-primary: #18191a;
+  --bg-secondary: #242526;
+  --bg-secondary-hover: #3a3b3c;
+
+  /* 텍스트 색상 */
+  --text-primary: #e4e6eb;
+  --text-secondary: #b0b3b8;
+  --accent-text-color: #ffffff;
+
+  /* 테두리 및 구분선 */
+  --border-color: #3e4042;
+  --border-color-hover: #4e4f50;
+
+  /* Accent (주요) 색상 */
+  --accent-color: #2e89ff;
+  --accent-color-hover: #4a9aff;
+  --accent-color-disabled: #2c5a8e;
+
+  /* Danger (위험/삭제) 색상 */
+  --danger-color: #ff5252;
+  --danger-color-hover: #ff7b7b;
+  
+  /* 그림자 */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* 스켈레톤 UI */
+  --skeleton-bg: #3a3b3c;
+  --skeleton-bg-pulse: #4e4f50;
+}
+
 /* CSS 리셋 및 기본 레이아웃 설정 */
 html {
   box-sizing: border-box;
-  height: 100%; /* 추가 */
+  height: 100%;
 }
 
 *,
@@ -52,31 +122,15 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* 앱의 루트 요소가 뷰포트 전체를 차지하도록 설정 */
 #root {
   width: 100vw;
-  height: 100%; /* 100vh -> 100%로 변경 */
-  overflow: auto; /* hidden -> auto로 변경 */
+  height: 100%;
+  overflow: auto;
 }
 
-/* 
-  [핵심 수정] 내비게이션 바 아래의 메인 콘텐츠 영역 스타일
-*/
 .main-content {
-  /* 부모(#root)의 전체 높이를 차지하도록 설정 */
   height: 100%; 
-
-  /* ★★★★★
-    이 속성이 핵심입니다.
-    padding과 border를 height/width 계산에 포함시킵니다.
-    따라서 height: 100%를 유지한 채 padding-top을 주어도
-    전체 높이가 100%를 넘어가지 않습니다.
-   ★★★★★ */
   box-sizing: border-box;
-
-  /* 고정된 네비게이션 바(높이 64px)에 의해 콘텐츠가 가려지지 않도록 상단 패딩 추가 */
   padding-top: 64px;
-
-  /* HomePage처럼 내용이 길어질 경우를 대비해 스크롤을 허용합니다. */
   overflow-y: auto; 
 }

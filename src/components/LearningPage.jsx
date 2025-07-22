@@ -94,7 +94,7 @@ const LearningPage = () => {
         ))}
       </nav>
 
-      <main className="content-area">
+      <main className={`content-area ${loading ? 'loading' : ''}`}>
         {/* 로딩 중일 때 CustomLoader를 렌더링 */}
         {loading && <CustomLoader message={loadingMessage} />}
         

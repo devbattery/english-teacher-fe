@@ -101,8 +101,16 @@
   overflow: hidden;
 }
 
+.content-area.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 40px;
+}
+
 .learning-article {
   padding: 30px 40px;
+  width: 100%;
 }
 
 .article-title {

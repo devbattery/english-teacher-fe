@@ -29,7 +29,8 @@ const MoonIcon = () => (
 );
 
 const NavigationBar = () => {
-  const { user, logout, loading, userLoading, accessToken, logoutLoading } = useAuth();
+  // openLoginModal 함수를 context에서 가져옵니다.
+  const { user, logout, loading, userLoading, accessToken, logoutLoading, openLoginModal } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -88,8 +89,10 @@ const NavigationBar = () => {
                       <span className="dropdown-email">{user.email}</span>
                     </div>
                     <ul className="dropdown-menu-list">
-                      <li className="dropdown-menu-item" onClick={logout}>
-                        {/* [수정] 'full-width' 클래스 제거 */}
+                      <li className="dropdown-menu-item" onClick={() => {
+                          setIsDropdownOpen(false); // 드롭다운 닫기
+                          logout();
+                        }}>
                         <button className="navbar-button logout-button">
                           로그아웃
                         </button>
@@ -101,7 +104,10 @@ const NavigationBar = () => {
             )}
           </div>
         ) : (
-          <Link to="/login" className="navbar-button login-button">Login</Link>
+          // <Link> 대신 <button>을 사용하고 onClick으로 모달을 엽니다.
+          <button onClick={openLoginModal} className="navbar-button login-button">
+            Login
+          </button>
         )}
       </div>
     </nav>

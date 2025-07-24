@@ -60,13 +60,14 @@
 .login-title {
   font-size: 1.8rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2.0rem;
   color: var(--text-primary);
 }
 
 .login-subtitle {
   color: var(--text-secondary);
-  margin-bottom: 2.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .social-login-buttons {

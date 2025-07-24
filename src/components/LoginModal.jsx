@@ -1,36 +1,44 @@
-// src/components/LoginPage.jsx
-
-import React from "react";
-import "./LoginPage.css";
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { createPortal } from 'react-dom';
+import './LoginModal.css';
 import googleLogo from "../assets/google-logo.svg";
 import kakaoLogo from "../assets/kakao-logo.png";
 import naverLogo from "../assets/naver-logo.png";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const LoginPage = () => {
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+const LoginModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
   const handleSocialLogin = (provider) => {
-    // [수정] 자동 재로그인을 위해 선택한 provider를 sessionStorage에 저장합니다.
     sessionStorage.setItem('login_provider', provider);
     window.location.href = `${API_BASE_URL}/oauth2/authorization/${provider}`;
   };
+  
+  // 모달 외부 클릭 시 닫기 (모달 콘텐츠 클릭 시에는 닫히지 않도록 stopPropagation)
+  const handleOverlayClick = () => {
+    onClose();
+  };
 
-  return (
-    <div className="login-page">
-      {/* 브랜딩 섹션 */}
-      <div className="branding-section">
-        <div className="branding-logo">📘 English Teacher</div>
-        <h1 className="branding-title">레벨별 AI 영어 선생님</h1>
-        <p className="branding-description">
-          4가지 레벨의 영어 선생님을 선택하여 효율적으로 공부해요. 일상 대화부터 영작문 피드백, 구문 질문까지 모두 가능합니다.
-        </p>
-      </div>
+  const handleModalContentClick = (e) => {
+    e.stopPropagation();
+  };
 
-      {/* 로그인 섹션 */}
-      <div className="login-section">
-        <div className="login-container">
-          <h2 className="login-title">환영합니다!</h2>
+  return createPortal(
+    <div className="login-modal-overlay" onClick={handleOverlayClick}>
+      <div className="login-modal-content" onClick={handleModalContentClick}>
+        <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
+          <CloseIcon />
+        </button>
+        <div className="modal-login-body">
+          <h2 className="modal-login-title">환영합니다!</h2>
           <div className="social-login-buttons">
             <button
               className="social-login-btn"
@@ -56,8 +64,9 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body // 포탈의 타겟을 document.body로 설정
   );
 };
 
-export default LoginPage;
+export default LoginModal;

@@ -1,0 +1,99 @@
+.feature-tooltip-container {
+  position: fixed;
+  bottom: 85px; /* FAB 버튼 바로 위 */
+  right: 20px;
+  width: 300px;
+  z-index: 1001;
+  animation: tooltip-fade-in 0.5s ease-out;
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip-bubble {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 25px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.dismiss-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.tooltip-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.tooltip-content p {
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 15px 0;
+}
+
+.tooltip-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.tooltip-content li {
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.tooltip-content strong {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--accent-color);
+  color: var(--accent-text-color);
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+.confirm-btn:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.tooltip-pointer {
+  position: absolute;
+  bottom: -10px;
+  right: 28px; /* FAB 버튼 중앙에 맞춤 */
+  width: 20px;
+  height: 20px;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  transform: rotate(45deg);
+}

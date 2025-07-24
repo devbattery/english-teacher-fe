@@ -10,6 +10,8 @@
 }
 
 .home-page {
+  max-width: 1000px;
+  margin: 0 auto;
   padding: 3rem 2rem;
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -53,7 +55,7 @@
 }
 
 .bottom-section {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 

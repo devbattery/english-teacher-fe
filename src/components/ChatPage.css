@@ -123,6 +123,19 @@ html.dark .chat-page-container {
   justify-content: center;
   transition: all 0.2s;
 }
+
+/* --- [핵심] 로딩 애니메이션 추가 --- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.new-chat-button.creating svg {
+  animation: spin 1s linear infinite;
+}
+/* ---------------------------------- */
+
+
 .new-chat-button:hover:not(:disabled) {
   background-color: var(--bg-secondary-hover);
   color: var(--accent-color);

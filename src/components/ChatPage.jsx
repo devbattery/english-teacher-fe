@@ -53,7 +53,8 @@ const ChatPage = () => {
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
   const isInitialLoad = useRef(false);
-  
+  const isNewRoomFlow = useRef(false);
+
   useEffect(() => {
     if (!user || !selectedLevel) return;
     const fetchChatRooms = async () => {
@@ -76,6 +77,12 @@ const ChatPage = () => {
         setIsHistoryLoading(false);
         return;
     }
+
+    if (isNewRoomFlow.current) {
+        isNewRoomFlow.current = false; 
+        return;
+    }
+
     const fetchChatHistory = async () => {
         setIsHistoryLoading(true);
         setMessages([]);
@@ -106,9 +113,11 @@ const ChatPage = () => {
     }
   }, [messages]);
 
-  const sendTextMessageAndGetResponse = async (messageText, convId) => {
-    const userMessage = { sender: 'user', text: messageText, imageUrl: null };
-    setMessages((prev) => [...prev, userMessage]);
+  const sendTextMessageAndGetResponse = async (messageText, convId, isOptimisticUpdate = false) => {
+    if (!isOptimisticUpdate) {
+      const userMessage = { sender: 'user', text: messageText, imageUrl: null };
+      setMessages((prev) => [...prev, userMessage]);
+    }
     setIsAiReplying(true);
     const formData = new FormData();
     const chatRequest = { level: selectedLevel, conversationId: convId, message: messageText };
@@ -211,9 +220,13 @@ const ChatPage = () => {
 
   const handleRecommendationClick = async (prompt) => {
     if(isCreatingRoom) return;
+    isNewRoomFlow.current = true;
     const newRoom = await handleNewChat();
     if (newRoom && newRoom.conversationId) {
-      await sendTextMessageAndGetResponse(prompt, newRoom.conversationId);
+      setMessages([{ sender: 'user', text: prompt, imageUrl: null }]);
+      await sendTextMessageAndGetResponse(prompt, newRoom.conversationId, true);
+    } else {
+      isNewRoomFlow.current = false;
     }
   };
 

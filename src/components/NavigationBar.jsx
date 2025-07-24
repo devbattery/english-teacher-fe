@@ -106,7 +106,7 @@ const NavigationBar = () => {
         ) : (
           // <Link> 대신 <button>을 사용하고 onClick으로 모달을 엽니다.
           <button onClick={openLoginModal} className="navbar-button login-button">
-            Login
+            로그인
           </button>
         )}
       </div>

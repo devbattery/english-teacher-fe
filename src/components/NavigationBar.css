@@ -106,6 +106,7 @@
 .dropdown-email {
   color: var(--text-secondary);
   font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .dropdown-menu-list {

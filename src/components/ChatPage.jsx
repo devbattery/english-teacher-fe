@@ -10,6 +10,8 @@ import ChatRoomSelection from './ChatRoomSelection';
 import ReactMarkdown from 'react-markdown'; // [추가] 마크다운 컴포넌트 임포트
 import remarkGfm from 'remark-gfm';         // [추가] GFM 플러그인 임포트
 import './ChatPage.css';
+import { levelData } from '../data/levelData'; // [추가] 중앙 데이터 임포트
+
 
 // ... 아이콘 컴포넌트들 ...
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
@@ -25,12 +27,9 @@ const MessageImage = ({ src, alt }) => {
     return ( <div className="message-image-container">{!isLoaded && <div className="image-loading-placeholder"></div>}<img src={src} alt={alt} className={`message-image ${isLoaded ? 'loaded' : ''}`} onLoad={() => setIsLoaded(true)} /></div> );
 };
 
-const teacherLevels = [
-  { id: 'elementary', name: '초등학생' },
-  { id: 'highschool', name: '고등학생 (수능)' },
-  { id: 'native', name: '원어민 (뉴스/교양)' },
-  { id: 'toeic', name: 'TOEIC 전문가' },
-];
+// [수정] teacherLevels를 levelData에서 가져와서 단순화
+const teacherLevels = levelData.map(level => ({ id: level.id, name: level.name }));
+
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -194,7 +193,8 @@ const ChatPage = () => {
   };
 
   const isLoading = isRoomsLoading || isHistoryLoading;
-  const currentLevelName = teacherLevels.find(t => t.id === selectedLevel)?.name || 'Teacher';
+  const currentLevelData = levelData.find(t => t.id === selectedLevel) || {};
+  const currentLevelName = currentLevelData.name || 'Teacher';
 
   return (
     <div className="chat-page-container">
@@ -265,6 +265,7 @@ const ChatPage = () => {
               isCreating={isCreatingRoom}
               onRoomSelect={handleRoomSelect}
               onNewChat={handleNewChat}
+              recommendations={currentLevelData.recommendations}
             />
         ) : (
           <>

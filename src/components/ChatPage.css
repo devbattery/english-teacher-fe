@@ -874,3 +874,39 @@ html.dark .room-item.active {
 .markdown-content a:hover {
   text-decoration: none;
 }
+
+/* --- [추가] ChatRoomSelection 내 추천 목록 스타일 --- */
+.recommendations-box {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  max-width: 500px;
+  width: 100%;
+}
+
+.recommendations-box h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-align: left;
+  color: var(--text-primary);
+}
+
+.recommendations-list-chat {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.recommendations-list-chat li {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.recommendations-list-chat li:last-child {
+  margin-bottom: 0;
+}

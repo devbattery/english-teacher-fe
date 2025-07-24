@@ -251,15 +251,8 @@ const LearningPage = () => {
       />
 
       <header className="learning-header">
-        <h1>Today's Contents</h1>
-        <p>AI 선생님이 매일 제공하는 오늘의 학습 콘텐츠입니다.</p>
+        <h1>Daily Contents</h1>
       </header>
-
-      <div className="page-guide-link-wrapper">
-        <Link to="/level-guide" className="page-guide-link">
-          레벨 가이드 보기 👈
-        </Link>
-      </div>
 
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (

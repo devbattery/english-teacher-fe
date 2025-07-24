@@ -6,13 +6,13 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import CustomLoader from './CustomLoader';
 import ChatPageSkeleton from './ChatPageSkeleton';
-import ChatRoomSelection from './ChatRoomSelection'; // 수정된 컴포넌트 임포트
+import ChatRoomSelection from './ChatRoomSelection';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './ChatPage.css';
 import { levelData } from '../data/levelData';
 
-// --- 아이콘 컴포넌트들 (기존과 동일) ---
+// --- 아이콘 컴포넌트들 ---
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -52,7 +52,6 @@ const ChatPage = () => {
 
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
-  const inputRef = useRef(null); // [추가] 텍스트 입력창 참조
   const isInitialLoad = useRef(false);
   
   useEffect(() => {
@@ -107,18 +106,55 @@ const ChatPage = () => {
     }
   }, [messages]);
 
-  const handleSendMessage = async (e) => {
+  const sendTextMessageAndGetResponse = async (messageText, convId) => {
+    const userMessage = { sender: 'user', text: messageText, imageUrl: null };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsAiReplying(true);
+    const formData = new FormData();
+    const chatRequest = { level: selectedLevel, conversationId: convId, message: messageText };
+    formData.append('request', new Blob([JSON.stringify(chatRequest)], { type: "application/json" }));
+    try {
+      const response = await api.post('/api/chat/send', formData);
+      const aiMessage = { sender: 'ai', text: response.data.reply, imageUrl: null };
+      setMessages((prev) => [...prev, aiMessage]);
+      setChatRooms(prev => {
+          const currentRoom = prev.find(r => r.conversationId === convId);
+          const otherRooms = prev.filter(r => r.conversationId !== convId);
+          if (currentRoom) {
+              currentRoom.lastMessage = messageText.trim();
+              currentRoom.lastModifiedAt = new Date().toISOString();
+              return [currentRoom, ...otherRooms];
+          }
+          return prev;
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages((prev) => [...prev, { sender: 'ai', text: '메시지 전송에 실패했습니다.' }]);
+    } finally {
+      setIsAiReplying(false);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if ((!inputValue.trim() && !selectedFile) || isAiReplying || !activeConversationId) return;
-    const userMessage = { sender: 'user', text: inputValue, imageUrl: selectedFile ? URL.createObjectURL(selectedFile) : null };
-    setMessages((prev) => [...prev, userMessage]);
-    const formData = new FormData();
-    const chatRequest = { level: selectedLevel, conversationId: activeConversationId, message: inputValue };
-    formData.append('request', new Blob([JSON.stringify(chatRequest)], { type: "application/json" }));
-    if (selectedFile) formData.append('image', selectedFile);
+
+    const messageToSend = inputValue;
+    const imageToSend = selectedFile;
+    const userMessage = { 
+        sender: 'user', 
+        text: messageToSend, 
+        imageUrl: imageToSend ? URL.createObjectURL(imageToSend) : null 
+    };
+    setMessages(prev => [...prev, userMessage]);
     setInputValue('');
-    setSelectedFile(null); 
+    setSelectedFile(null);
     setIsAiReplying(true);
+    const formData = new FormData();
+    const chatRequest = { level: selectedLevel, conversationId: activeConversationId, message: messageToSend };
+    formData.append('request', new Blob([JSON.stringify(chatRequest)], { type: "application/json" }));
+    if (imageToSend) formData.append('image', imageToSend);
+
     try {
       const response = await api.post('/api/chat/send', formData);
       const aiMessage = { sender: 'ai', text: response.data.reply, imageUrl: null };
@@ -127,7 +163,7 @@ const ChatPage = () => {
           const currentRoom = prev.find(r => r.conversationId === activeConversationId);
           const otherRooms = prev.filter(r => r.conversationId !== activeConversationId);
           if (currentRoom) {
-              currentRoom.lastMessage = inputValue.trim() || "이미지 전송";
+              currentRoom.lastMessage = messageToSend.trim() || "이미지 전송";
               currentRoom.lastModifiedAt = new Date().toISOString();
               return [currentRoom, ...otherRooms];
           }
@@ -136,7 +172,9 @@ const ChatPage = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages((prev) => [...prev, { sender: 'ai', text: '메시지 전송에 실패했습니다. 다시 시도해 주세요.' }]);
-    } finally { setIsAiReplying(false); }
+    } finally {
+      setIsAiReplying(false);
+    }
   };
 
   const handleLevelSelect = (levelId) => {
@@ -150,9 +188,9 @@ const ChatPage = () => {
   }
 
   const handleNewChat = async () => {
-    if (chatRooms.length >= 10) {
-        alert("한 레벨 당 최대 10개의 채팅방만 만들 수 있습니다.");
-        return null; // [수정] 생성 실패 시 null 반환
+    if (isCreatingRoom || chatRooms.length >= 10) {
+        if(chatRooms.length >= 10) alert("한 레벨 당 최대 10개의 채팅방만 만들 수 있습니다.");
+        return null;
     }
     setIsCreatingRoom(true);
     try {
@@ -161,27 +199,21 @@ const ChatPage = () => {
         setChatRooms(prev => [newRoom, ...prev]);
         setActiveConversationId(newRoom.conversationId);
         setIsSidebarOpen(false);
-        return newRoom; // [수정] 생성된 룸 정보 반환
+        return newRoom;
     } catch (error) {
         console.error('Error creating new chat room:', error);
         alert('새로운 대화방을 만드는 데 실패했습니다.');
-        return null; // [수정] 생성 실패 시 null 반환
+        return null;
     } finally {
         setIsCreatingRoom(false);
     }
   };
-  
-  // [핵심 추가] 추천 질문 클릭 핸들러
-  const handleRecommendationClick = async (text) => {
-    // 1. 새로운 대화방을 생성 (또는 기존 비활성 방 활성화)
-    const newRoom = await handleNewChat();
 
-    // 2. 대화방이 성공적으로 생성되었을 경우에만 진행
-    if (newRoom) {
-      // 3. 입력창에 추천 질문 텍스트를 설정
-      setInputValue(text);
-      // 4. (사용자 경험 향상) 입력창으로 포커스 이동
-      setTimeout(() => inputRef.current?.focus(), 0);
+  const handleRecommendationClick = async (prompt) => {
+    if(isCreatingRoom) return;
+    const newRoom = await handleNewChat();
+    if (newRoom && newRoom.conversationId) {
+      await sendTextMessageAndGetResponse(prompt, newRoom.conversationId);
     }
   };
 
@@ -214,17 +246,21 @@ const ChatPage = () => {
   return (
     <div className="chat-page-container">
       {confirmingDelete && (
-        <div className="reset-confirm-overlay">
-          <div className="reset-confirm-modal">
+        <div className="delete-modal-overlay">
+          <div className="delete-modal-content">
             {isDeleting ? (
               <CustomLoader message="채팅방을 삭제하고 있습니다..." />
             ) : (
               <>
                 <h4>채팅방 삭제</h4>
-                <p>이 대화 기록을 정말로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
-                <div className="reset-confirm-actions">
-                  <button onClick={() => setConfirmingDelete(null)} className="cancel-btn">취소</button>
-                  <button onClick={() => handleDeleteRoom(confirmingDelete)} className="confirm-btn">삭제</button>
+                <p>정말로 삭제하시겠습니까?</p>
+                <div className="delete-modal-buttons">
+                  <button onClick={() => setConfirmingDelete(null)} className="cancel-button">
+                    취소
+                  </button>
+                  <button onClick={() => handleDeleteRoom(confirmingDelete)} className="delete-button">
+                    삭제
+                  </button>
                 </div>
               </>
             )}
@@ -281,7 +317,7 @@ const ChatPage = () => {
               onRoomSelect={handleRoomSelect}
               onNewChat={handleNewChat}
               recommendations={currentLevelData.recommendations}
-              onRecommendationClick={handleRecommendationClick} // [핵심] 핸들러 전달
+              onRecommendationClick={handleRecommendationClick}
             />
         ) : (
           <>
@@ -301,13 +337,12 @@ const ChatPage = () => {
               ))}
               {isAiReplying && (<div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>)}
             </div>
-            <form className="chat-input-form" onSubmit={handleSendMessage}>
+            <form className="chat-input-form" onSubmit={handleFormSubmit}>
               {selectedFile && (<div className="image-preview-container"><img src={URL.createObjectURL(selectedFile)} alt="Preview" className="image-preview" /><button type="button" onClick={() => setSelectedFile(null)} className="remove-image-button"><CloseIcon /></button></div>)}
               <div className="input-controls">
                 <button type="button" className="attach-file-button" onClick={() => fileInputRef.current.click()} disabled={isAiReplying || !!selectedFile}><ImageIcon /></button>
                 <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} accept="image/*"/>
-                {/* [수정] input에 ref 추가 */}
-                <div className="input-wrapper"><input ref={inputRef} type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="메시지를 입력하세요..." disabled={isAiReplying} /></div>
+                <div className="input-wrapper"><input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="메시지를 입력하세요..." disabled={isAiReplying} /></div>
                 <button type="submit" disabled={(!inputValue.trim() && !selectedFile) || isAiReplying || !activeConversationId}><SendIcon /></button>
               </div>
             </form>

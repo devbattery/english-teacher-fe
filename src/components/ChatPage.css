@@ -600,7 +600,8 @@ html.dark .room-item.active {
   }
 }
 
-.reset-confirm-overlay {
+/* === 채팅방 삭제 확인 모달 === */
+.delete-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -614,77 +615,68 @@ html.dark .room-item.active {
   animation: fade-in 0.3s ease;
 }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.reset-confirm-modal {
+.delete-modal-content {
   background-color: var(--bg-primary);
-  padding: 24px;
+  padding: 30px;
   border-radius: 16px;
   box-shadow: 0 10px 30px var(--shadow-color);
   width: 90%;
-  max-width: 400px;
-  text-align: center;
+  max-width: 420px;
   animation: slide-up 0.4s ease-out;
   border: 1px solid var(--border-color);
+  text-align: center;
 }
 
-@keyframes slide-up {
-  from { transform: translateY(20px) scale(0.95); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-.reset-confirm-modal h4 {
+.delete-modal-content h4 {
   margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 1.25rem;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
   color: var(--text-primary);
+  font-weight: 600;
 }
 
-.reset-confirm-modal p {
-  margin-bottom: 24px;
+.delete-modal-content p {
+  margin-bottom: 30px;
   color: var(--text-secondary);
   line-height: 1.6;
+  font-size: 1rem;
 }
 
-.reset-confirm-actions {
+.delete-modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 15px;
 }
 
-.reset-confirm-actions button {
-  padding: 10px 20px;
+.delete-modal-buttons button {
+  padding: 12px 25px;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.reset-confirm-actions .cancel-btn {
+.delete-modal-buttons .cancel-button {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
 }
 
-.reset-confirm-actions .cancel-btn:hover {
+.delete-modal-buttons .cancel-button:hover {
   background-color: var(--bg-secondary-hover);
 }
 
-.reset-confirm-actions .confirm-btn {
-  background-color: var(--danger-color);
+.delete-modal-buttons .delete-button {
+  background-color: var(--accent-color);
   color: var(--accent-text-color);
 }
 
-.reset-confirm-actions .confirm-btn:hover {
-  background-color: var(--danger-color-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-color);
+.delete-modal-buttons .delete-button:hover {
+  background-color: var(--accent-color-hover);
 }
+
 
 /* === ChatRoomSelection 컴포넌트 스타일 === */
 .chat-room-selection-container {

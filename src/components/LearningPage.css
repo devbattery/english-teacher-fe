@@ -398,6 +398,8 @@
   padding: 2px 1px;
   margin: -2px -1px;
   border-radius: 4px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .selectable-word.selected {

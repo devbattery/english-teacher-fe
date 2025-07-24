@@ -89,7 +89,6 @@ const LearningPage = () => {
 
   const handleTextSelection = () => {
     if (isMobile || isWordSelectMode) return;
-
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
 
@@ -110,6 +109,9 @@ const LearningPage = () => {
   };
 
   const handleWordTap = (e, tappedIndex) => {
+    // 브라우저의 기본 동작(더블 탭 시 단어 선택 등)을 막습니다.
+    e.preventDefault();
+
     if (!isWordSelectMode || !e.target.matches('.selectable-word')) return;
     const lastIndex = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length - 1] : -2;
     if (selectedIndices.length === 0 || tappedIndex === lastIndex + 2) {
@@ -159,6 +161,7 @@ const LearningPage = () => {
       setIsSaving(false);
       setPopover({ show: false, x: 0, y: 0, text: '' });
       clearSelection();
+      setIsWordSelectMode(false);
     }
   };
 
@@ -244,7 +247,7 @@ const LearningPage = () => {
                       <span
                         key={index}
                         className={`selectable-word ${selectedIndices.includes(index) ? 'selected' : ''}`}
-                        onClick={(e) => handleWordTap(e, index)}
+                        onMouseDown={(e) => handleWordTap(e, index)}
                       >
                         {word}
                       </span> :

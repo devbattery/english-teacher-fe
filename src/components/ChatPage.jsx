@@ -336,9 +336,14 @@ const ChatPage = () => {
           <>
             <div className="chat-messages" ref={chatMessagesRef}>
               {isHistoryLoading ? <ChatPageSkeleton /> : messages.map((msg, index) => (
-                <div key={index} className={`message-bubble ${msg.sender}`}>
+                // [수정] 메시지 버블을 감싸는 wrapper 추가
+                <div key={index} className={`message-wrapper ${msg.sender}`}>
+                  {/* [추가] AI 메시지일 경우 아바타 표시 */}
+                  {msg.sender === 'ai' && (
+                    <div className="message-avatar">{currentLevelName.charAt(0)}</div>
+                  )}
+                  <div className={`message-bubble ${msg.sender}`}>
                     {msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" />}
-                    
                     {msg.text && (
                         <div className="markdown-content">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -346,9 +351,18 @@ const ChatPage = () => {
                             </ReactMarkdown>
                         </div>
                     )}
+                  </div>
                 </div>
               ))}
-              {isAiReplying && (<div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>)}
+              {/* [수정] AI 응답 대기 중에도 아바타 표시 */}
+              {isAiReplying && (
+                <div className="message-wrapper ai">
+                  <div className="message-avatar">{currentLevelName.charAt(0)}</div>
+                  <div className="message-bubble ai">
+                    <div className="typing-indicator"><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              )}
             </div>
             <form className="chat-input-form" onSubmit={handleFormSubmit}>
               {selectedFile && (<div className="image-preview-container"><img src={URL.createObjectURL(selectedFile)} alt="Preview" className="image-preview" /><button type="button" onClick={() => setSelectedFile(null)} className="remove-image-button"><CloseIcon /></button></div>)}

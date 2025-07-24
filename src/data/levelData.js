@@ -44,7 +44,7 @@ export const levelData = [
   },
   {
     id: 'native',
-    name: '유창함 (Native)',
+    name: '원어민 (Native)',
     summary: "자유로운 의사소통이 가능하며, 더 전문적인 표현을 배우고 싶은 단계",
     description: "비즈니스 이메일 작성, 뉴스 기사 토론 등 특정 목적을 가진 전문적인 글쓰기 연습을 통해 영어 실력을 한 단계 더 높은 수준으로 끌어올릴 수 있습니다.",
     recommendations: [

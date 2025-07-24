@@ -10,25 +10,42 @@
 
 @keyframes skeleton-loading {
   0% {
-    background-color: #e0e0e0;
+    background-color: var(--skeleton-bg, #e0e0e0);
   }
   50% {
-    background-color: #f0f0f0;
+    background-color: var(--skeleton-bg-pulse, #f0f0f0);
   }
   100% {
-    background-color: #e0e0e0;
+    background-color: var(--skeleton-bg, #e0e0e0);
   }
 }
 
-.skeleton-message-bubble-wrapper {
-    display: flex;
+/* [수정] 클래스명 변경 및 스타일 추가 */
+.skeleton-message-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
 }
 
-.skeleton-message-bubble-wrapper.user {
-    justify-content: flex-end;
+.skeleton-message-wrapper.user {
+  justify-content: flex-end;
+}
+
+/* [수정] 스켈레톤 아바타 스타일 */
+.skeleton-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  /* [삭제] animation: skeleton-loading 1.5s infinite ease-in-out; */
+
+  /* [추가] 고정된 파란색 배경과 투명도로 로딩 상태 표현 */
+  background-color: var(--accent-color);
+  opacity: 0.6;
 }
 
 .skeleton-message-bubble {
+  width: 100%; /* [수정] 부모 wrapper에 맞춰 너비 조정 */
   max-width: 70%;
   padding: 10px 16px;
   border-radius: 18px;
@@ -38,20 +55,29 @@
 }
 
 .skeleton-message-bubble.ai {
-  background-color: #f0f2f5;
+  background-color: transparent; /* [수정] 배경색은 line에서 처리 */
   border-bottom-left-radius: 4px;
+  max-width: 100%;
 }
 
 .skeleton-message-bubble.user {
-  background-color: #e3f2fd;
+  background-color: transparent; /* [수정] 배경색은 line에서 처리 */
   border-bottom-right-radius: 4px;
+  max-width: 100%;
 }
 
 .skeleton-line {
   height: 16px;
   border-radius: 4px;
   animation: skeleton-loading 1.5s infinite ease-in-out;
-  background-color: #e0e0e0; /* 로딩 애니메이션을 위한 기본 색상 */
+}
+
+/* [추가] 각 버블 타입에 따른 라인 색상 지정 (다크모드 호환성) */
+.skeleton-message-wrapper.ai .skeleton-line {
+  background-color: var(--bg-secondary);
+}
+.skeleton-message-wrapper.user .skeleton-line {
+  background-color: var(--accent-color-disabled);
 }
 
 .skeleton-line.short {

@@ -54,17 +54,17 @@ const HomePage = () => {
   }
 
   const chatLevels = [
-    { label: "초등학생", path: "/chat?level=elementary" },
+    { label: "왕초보", path: "/chat?level=elementary" },
     { label: "고등학생", path: "/chat?level=highschool" },
     { label: "원어민", path: "/chat?level=native" },
-    { label: "TOEIC 전문가", path: "/chat?level=toeic" },
+    { label: "TOEIC", path: "/chat?level=toeic" },
   ];
 
   const contentLevels = [
-    { label: "초등학생", path: "/learning/elementary" },
+    { label: "왕초보", path: "/learning/elementary" },
     { label: "고등학생", path: "/learning/highschool" },
     { label: "원어민", path: "/learning/native" },
-    { label: "TOEIC 전문가", path: "/learning/toeic" },
+    { label: "TOEIC", path: "/learning/toeic" },
   ];
 
   return (
@@ -102,7 +102,7 @@ const HomePage = () => {
 
               {/* 기존 <p> 태그를 아래 구조로 교체 */}
               <div className="section-description">
-                <p className="section-tagline">실전처럼 대화하며 배우는 영어</p>
+                <p className="section-tagline">실전처럼 채팅하며 배우는 영어</p>
                 <ul className="feature-list">
                   <li className="feature-item">실시간 문법 및 어휘 교정</li>
                   <li className="feature-item">

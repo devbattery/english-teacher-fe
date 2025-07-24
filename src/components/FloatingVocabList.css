@@ -1,16 +1,28 @@
+/* src/components/FloatingVocabList.css */
+
 .floating-vocab-list {
   position: fixed;
   bottom: 20px;
   right: 20px;
   width: 350px;
-  max-height: 500px;
+  
+  /* --- 핵심 수정 사항 1 --- */
+  /* 최대 높이를 500px로 제한합니다. 이보다 작을 땐 내용에 맞게 높이가 조절됩니다. */
+  max-height: 500px; 
+  /* ---------------------- */
+
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 8px 25px var(--shadow-color);
   z-index: 1000;
+  
+  /* --- 핵심 수정 사항 2 --- */
+  /* 내부 요소(헤더, 검색, 컨텐츠)를 유연하게 배치하기 위해 flex 사용 */
   display: flex;
-  flex-direction: column;
+  flex-direction: column; 
+  /* ---------------------- */
+
   animation: slideInUp 0.3s ease-out;
 }
 
@@ -31,7 +43,10 @@
   align-items: center;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border-color);
-  flex-shrink: 0; /* 헤더 크기 고정 */
+
+  /* --- 추가 --- */
+  /* 헤더의 높이가 늘어나지 않도록 고정 */
+  flex-shrink: 0; 
 }
 
 .vocab-header h3 {
@@ -52,12 +67,14 @@
   color: var(--text-primary);
 }
 
-/* --- 검색창 스타일 (신규 추가) --- */
 .vocab-search-wrapper {
   padding: 10px 15px;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg-secondary-light, var(--bg-secondary)); /* 테마에 따라 다른 배경 적용 가능 */
-  flex-shrink: 0; /* 검색창 크기 고정 */
+  background-color: var(--bg-secondary-light, var(--bg-secondary));
+  
+  /* --- 추가 --- */
+  /* 검색창의 높이가 늘어나지 않도록 고정 */
+  flex-shrink: 0; 
 }
 
 .vocab-search-input {
@@ -80,12 +97,15 @@
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 80, 150, 255), 0.3);
 }
-/* --- 여기까지 신규 추가 --- */
-
 
 .vocab-content {
-  overflow-y: auto;
+  /* --- 핵심 수정 사항 3 --- */
+  /* 내용이 넘칠 경우 자동으로 수직 스크롤바를 생성합니다. */
+  overflow-y: auto; 
+  /* padding을 유지하여 내용물이 경계에 붙지 않도록 합니다. */
   padding: 10px;
+  /* flex-grow: 1;을 사용하여 남는 공간을 모두 차지하도록 할 수도 있지만, 
+     auto만으로도 충분히 잘 동작합니다. */
 }
 
 .vocab-content .empty-message {
@@ -123,7 +143,7 @@ html.dark .vocab-content li {
 .vocab-content .expression {
   font-weight: 600;
   color: var(--text-primary);
-  word-break: break-word; /* 긴 단어가 영역을 벗어나지 않도록 */
+  word-break: break-word;
 }
 
 .vocab-content .meaning {

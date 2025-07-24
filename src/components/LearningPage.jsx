@@ -199,7 +199,7 @@ const LearningPage = () => {
 
       {showGuide && (
         <div className="guide-tooltip">
-          저장하고 싶은 단어를 순서대로 탭하세요!
+          저장하고 싶은 단어를 순서대로 천천히 탭하여 주세요!
         </div>
       )}
 

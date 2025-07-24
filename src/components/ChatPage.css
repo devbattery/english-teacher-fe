@@ -723,3 +723,147 @@ html.dark .room-item.active {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--shadow-color);
 }
+
+/* [추가] ChatRoomSelection 컴포넌트 스타일 */
+.chat-room-selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 상단 정렬 */
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 40px 24px;
+  box-sizing: border-box;
+}
+
+.room-selection-header {
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 500px;
+}
+
+.room-selection-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.room-selection-header p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.room-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.room-card, .room-card-skeleton {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+  box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.room-card-icon {
+  color: var(--accent-color);
+  margin-bottom: 12px;
+}
+.room-card-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.room-card-content {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex-grow: 1;
+  /* 3줄 이상일 경우 말줄임표 처리 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.room-card-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  align-self: flex-end;
+  margin-top: 8px;
+}
+
+/* 새 대화 시작 카드 스타일 */
+.new-chat-card {
+  border-style: dashed;
+  border-width: 2px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+  background-color: var(--bg-secondary);
+}
+
+.new-chat-card:hover:not(:disabled) {
+  color: var(--accent-color);
+  background-color: var(--bg-secondary-hover);
+}
+
+.new-chat-card .new-chat-card-icon {
+  margin-bottom: 8px;
+}
+.new-chat-card .new-chat-card-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.new-chat-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border-color);
+}
+
+/* 카드 스켈레톤 UI */
+.room-card-skeleton {
+  cursor: default;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* 작은 로더 (새 대화 생성 시) */
+.loader-small {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--accent-color-disabled);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* 기존 chat-placeholder는 더 이상 사용되지 않으므로 삭제하거나 주석 처리 가능 */
+.chat-placeholder {
+  display: none;
+}

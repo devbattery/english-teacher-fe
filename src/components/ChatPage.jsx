@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
-import CustomLoader from './CustomLoader';
+import CustomLoader from './CustomLoader'; // CustomLoader 컴포넌트가 사용됩니다.
 import ChatPageSkeleton from './ChatPageSkeleton';
 import './ChatPage.css';
 
-// --- 아이콘 SVG 컴포넌트들 ---
+// --- 아이콘 SVG 컴포넌트들 (기존과 동일) ---
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -39,6 +39,7 @@ const ChatPage = () => {
   const [isRoomsLoading, setIsRoomsLoading] = useState(true);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [isAiReplying, setIsAiReplying] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false); // [추가] 채팅방 삭제 로딩 상태
   
   const [inputValue, setInputValue] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -162,8 +163,10 @@ const ChatPage = () => {
     }
   };
 
+  // [수정] handleDeleteRoom 함수 수정
   const handleDeleteRoom = async (conversationId) => {
     if (!conversationId) return;
+    setIsDeleting(true); // 삭제 시작 시 로딩 상태 활성화
     try {
         await api.delete(`/api/chat/room/${conversationId}`);
         setChatRooms(prev => prev.filter(room => room.conversationId !== conversationId));
@@ -171,7 +174,10 @@ const ChatPage = () => {
     } catch (error) {
         console.error('Error deleting chat room:', error);
         alert('채팅방 삭제에 실패했습니다.');
-    } finally { setConfirmingDelete(null); }
+    } finally { 
+      setIsDeleting(false); // 작업 완료 후 로딩 상태 비활성화
+      setConfirmingDelete(null); // 모달 닫기
+    }
   };
 
   const handleFileChange = (e) => {
@@ -185,17 +191,26 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
+      {/* [수정] 확인 모달 내부에 로딩 상태에 따른 조건부 렌더링 추가 */}
       {confirmingDelete && (
         <div className="reset-confirm-overlay">
           <div className="reset-confirm-modal">
-            <h4>채팅방 삭제</h4><p>이 대화 기록을 정말로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
-            <div className="reset-confirm-actions">
-              <button onClick={() => setConfirmingDelete(null)} className="cancel-btn">취소</button>
-              <button onClick={() => handleDeleteRoom(confirmingDelete)} className="confirm-btn">삭제</button>
-            </div>
+            {isDeleting ? (
+              <CustomLoader message="채팅방을 삭제하고 있습니다..." />
+            ) : (
+              <>
+                <h4>채팅방 삭제</h4>
+                <p>이 대화 기록을 정말로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+                <div className="reset-confirm-actions">
+                  <button onClick={() => setConfirmingDelete(null)} className="cancel-btn">취소</button>
+                  <button onClick={() => handleDeleteRoom(confirmingDelete)} className="confirm-btn">삭제</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
+
       {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-content-wrapper">

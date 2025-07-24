@@ -192,33 +192,60 @@
 .save-popover {
   position: absolute;
   transform: translateX(-50%);
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  padding: 8px 15px;
+  background-color: var(--accent-color);
+  color: var(--accent-text-color);
+  padding: 0;
   border-radius: 20px;
-  border: 1px solid var(--border-color);
+  border: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1001;
   animation: popover-fade-in 0.2s ease;
-  white-space: nowrap;
+  transition: all 0.2s ease-out;
+}
+
+.save-popover:hover {
+  filter: brightness(95%);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
 .save-popover button {
+  padding: 8px 18px;
+  min-width: auto;
+  min-height: auto;
   background: none;
   border: none;
   color: inherit;
-  font-size: 0.95em;
+  font-size: 0.9em;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
+}
+
+.save-popover:has(button:disabled) {
+  filter: none;
+  transform: translateX(-50%);
+  cursor: not-allowed;
 }
 
 .save-popover button:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
 }
+
+.save-popover button .bouncing-loader > div {
+  border-color: currentColor;
+  border-top-color: transparent;
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+.save-popover button .loader-message {
+  display: none;
+}
+
 
 @keyframes popover-fade-in {
   from { opacity: 0; transform: translateX(-50%) translateY(10px); }

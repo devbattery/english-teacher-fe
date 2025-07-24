@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import api from '../api/api';
 import './LearningPage.css';
 import CustomLoader from './CustomLoader';
-import FloatingVocabList from './FloatingVocabList'; // 단어장 컴포넌트 임포트
+import FloatingVocabList from './FloatingVocabList';
+import useWindowWidth from '../hooks/useWindowWidth'; // 화면 너비 감지 훅 임포트
 
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
@@ -11,6 +12,8 @@ const teacherLevels = [
   { id: 'advanced', name: '고급 (Advanced)' },
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
+
+const MOBILE_BREAKPOINT = 768; // 모바일로 간주할 화면 너비 기준
 
 const LearningPage = () => {
   const { level: levelParam } = useParams();
@@ -23,18 +26,21 @@ const LearningPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- 단어장 및 팝오버 기능 추가 ---
   const [popover, setPopover] = useState({ show: false, x: 0, y: 0, text: '' });
   const [vocabulary, setVocabulary] = useState([]);
   const [isVocabVisible, setIsVocabVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const contentRef = useRef(null); // 본문 영역을 참조하기 위한 ref
+  const contentRef = useRef(null);
 
-  // 페이지 로드 시, 사용자의 단어장 데이터 불러오기
+  // 모바일/데스크탑 구분을 위한 상태
+  const windowWidth = useWindowWidth();
+  const isMobile = windowWidth <= MOBILE_BREAKPOINT;
+  const [isWordSelectMode, setIsWordSelectMode] = useState(false);
+
+  // 단어장 데이터 로딩
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {
-        // TODO: 실제 사용자 인증 정보를 바탕으로 API를 호출해야 합니다.
         const response = await api.get('/api/vocabulary');
         setVocabulary(response.data);
       } catch (err) {
@@ -51,11 +57,10 @@ const LearningPage = () => {
       setIsGenerating(false);
       setError(null);
       setLearningContent(null);
-      setPopover({ show: false, x: 0, y: 0, text: '' }); // 레벨 변경 시 팝오버 닫기
+      setPopover({ show: false, x: 0, y: 0, text: '' });
+      setIsWordSelectMode(false); // 레벨 변경 시 모드 초기화
 
-      const timer = setTimeout(() => {
-        setIsGenerating(true);
-      }, 500);
+      const timer = setTimeout(() => setIsGenerating(true), 500);
 
       try {
         const response = await api.get(`/api/learning/today/${level}`);
@@ -66,43 +71,62 @@ const LearningPage = () => {
       } catch (err) {
         clearTimeout(timer);
         console.error("Error fetching learning content:", err);
-        setError("콘텐츠를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
+        setError("콘텐츠를 불러오는 데 실패했습니다.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchContent();
   }, [level]);
-  
-  // 텍스트 드래그(선택) 완료 시 호출될 함수
+
+  // 데스크탑: 드래그(선택) 완료 시 호출
   const handleTextSelection = () => {
+    if (isMobile || isWordSelectMode) return; // 모바일이거나 단어선택모드일 땐 동작 안함
+
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
 
-    // 100자 미만의 유효한 텍스트가 선택되었을 때
     if (selectedText.length > 0 && selectedText.length < 100) {
       const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      
-      // 본문(contentRef) 안에서 선택된 경우에만 팝오버를 띄움
       if (contentRef.current && contentRef.current.contains(range.startContainer)) {
+        const rect = range.getBoundingClientRect();
         setPopover({
           show: true,
-          x: rect.left + rect.width / 2, // 선택 영역의 가로 중앙
-          y: rect.top + window.scrollY - 45, // 선택 영역보다 45px 위
+          x: rect.left + rect.width / 2,
+          y: rect.top + window.scrollY - 45,
           text: selectedText,
         });
       }
     } else {
-      // 텍스트 선택이 해제되면 팝오버 숨김 (선택 없이 클릭만 한 경우)
-       if (!popover.show) { // 불필요한 리렌더링 방지
-         setPopover({ ...popover, show: false });
-       }
+        if (!popover.show) setPopover({ ...popover, show: false });
     }
   };
 
-  // 단어 저장 처리 함수
+  // 모바일: 단어 탭 시 호출
+  const handleWordTap = (e) => {
+    if (!isWordSelectMode || e.target.tagName !== 'SPAN') return;
+    
+    const tappedWord = e.target.innerText.trim().replace(/[.,!?]$/, '');
+    if (!tappedWord) return;
+    
+    const rect = e.target.getBoundingClientRect();
+    setPopover({
+      show: true,
+      x: rect.left + rect.width / 2,
+      y: rect.top + window.scrollY - 45,
+      text: tappedWord,
+    });
+  };
+
+  // 모바일: 단어 선택 모드 토글
+  const toggleWordSelectMode = () => {
+    setIsWordSelectMode(prev => !prev);
+    if (isWordSelectMode) {
+      setPopover({ ...popover, show: false });
+    }
+  };
+  
+  // 단어 저장 처리
   const handleSaveWord = async () => {
     if (isSaving || !popover.text) return;
 
@@ -110,11 +134,10 @@ const LearningPage = () => {
     try {
       const response = await api.post('/api/vocabulary', { expression: popover.text });
       const newWord = response.data;
-      
       if (!vocabulary.some(v => v.id === newWord.id)) {
         setVocabulary(prev => [newWord, ...prev]);
       }
-      setIsVocabVisible(true); // 저장 후 단어장 자동 열기
+      setIsVocabVisible(true);
     } catch (err) {
       console.error("Error saving word:", err);
       alert("단어 저장에 실패했습니다.");
@@ -124,14 +147,14 @@ const LearningPage = () => {
     }
   };
   
-  // 단어 삭제 처리 함수
+  // 단어 삭제 처리
   const handleDeleteWord = async (wordId) => {
     try {
       await api.delete(`/api/vocabulary/${wordId}`);
       setVocabulary(prev => prev.filter(word => word.id !== wordId));
     } catch (err) {
-        console.error("Error deleting word:", err);
-        alert("단어 삭제에 실패했습니다.");
+      console.error("Error deleting word:", err);
+      alert("단어 삭제에 실패했습니다.");
     }
   };
 
@@ -146,7 +169,6 @@ const LearningPage = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [popover]);
-
 
   const loadingMessage = isGenerating 
     ? "오늘의 맞춤 콘텐츠를 만들고 있어요. 잠시만 기다려 주세요... ✍️" 
@@ -189,6 +211,17 @@ const LearningPage = () => {
         </Link>
       </div>
 
+      {isMobile && !loading && learningContent && (
+        <div className="mode-toggle-wrapper">
+          <button 
+            onClick={toggleWordSelectMode} 
+            className={`word-select-toggle-btn ${isWordSelectMode ? 'active' : ''}`}
+          >
+            {isWordSelectMode ? '✅ 선택 완료' : '✍️ 단어 눌러서 저장하기'}
+          </button>
+        </div>
+      )}
+
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (
           <button
@@ -210,13 +243,21 @@ const LearningPage = () => {
           <>
             <article className="learning-article" ref={contentRef}>
               <h2 className="article-title">{learningContent.title}</h2>
-              <div className="article-content">
-                {learningContent.content.split('\n').map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line}
-                    <br />
-                  </React.Fragment>
-                ))}
+              <div 
+                className={`article-content ${isWordSelectMode ? 'selectable' : ''}`}
+                onClick={isMobile ? handleWordTap : null}
+              >
+                {isMobile && isWordSelectMode ? (
+                  learningContent.content.split(/(\s+)/).map((word, index) => (
+                    word.trim() 
+                      ? <span key={index}>{word}</span> 
+                      : <React.Fragment key={index}>{word}</React.Fragment>
+                  ))
+                ) : (
+                  learningContent.content.split('\n').map((line, index) => (
+                    <React.Fragment key={index}>{line}<br /></React.Fragment>
+                  ))
+                )}
               </div>
             </article>
 

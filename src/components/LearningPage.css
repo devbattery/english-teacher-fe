@@ -109,10 +109,9 @@
 .learning-article {
   padding: 30px 40px;
   width: 100%;
-  position: relative; /* 팝오버 위치 계산의 기준이 될 수 있음 */
+  position: relative;
 }
 
-/* 사용자가 텍스트를 드래그할 때 생기는 파란 배경색을 연하게 변경 */
 .article-content::selection {
   background-color: rgba(var(--accent-color-rgb, 80, 150, 255), 0.3);
 }
@@ -189,9 +188,7 @@
   margin: 0;
 }
 
-/* --- 추가된 스타일 --- */
-
-/* 단어 저장 팝오버 */
+/* --- 단어 저장 팝오버 및 단어장 토글 버튼 --- */
 .save-popover {
   position: absolute;
   transform: translateX(-50%);
@@ -201,9 +198,9 @@
   border-radius: 20px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1001; /* 단어장보다 위에 오도록 */
+  z-index: 1001;
   animation: popover-fade-in 0.2s ease;
-  white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 */
+  white-space: nowrap;
 }
 
 .save-popover button {
@@ -228,7 +225,6 @@
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* 단어장 토글 버튼 */
 .vocab-toggle-btn {
   position: fixed;
   bottom: 20px;
@@ -253,4 +249,52 @@
   transform: translateY(-3px);
   box-shadow: 0 6px 20px var(--shadow-color);
   background-color: var(--accent-color-hover);
+}
+
+/* --- 모바일 단어 선택 모드 스타일 --- */
+.mode-toggle-wrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.word-select-toggle-btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.word-select-toggle-btn.active {
+  background-color: var(--accent-color);
+  color: var(--accent-text-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 80, 150, 255), 0.3);
+}
+
+.article-content.selectable {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.article-content.selectable span {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 2px 0;
+  margin: -2px 0;
+  border-radius: 4px;
+}
+
+@media (hover: hover) {
+  .article-content.selectable span:hover {
+    background-color: rgba(var(--accent-color-rgb, 80, 150, 255), 0.2);
+  }
+}
+
+.article-content.selectable span:active {
+  background-color: rgba(var(--accent-color-rgb, 80, 150, 255), 0.4);
 }

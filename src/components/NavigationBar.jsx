@@ -29,7 +29,6 @@ const MoonIcon = () => (
 );
 
 const NavigationBar = () => {
-  // [수정] 필요한 모든 상태를 context에서 가져옵니다.
   const { user, logout, loading, userLoading, accessToken, logoutLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -49,10 +48,6 @@ const NavigationBar = () => {
     };
   }, [isDropdownOpen]);
   
-  // [핵심 로직] 로딩 상태를 최종적으로 판단합니다.
-  // 1. loading: 앱의 초기 인증 상태를 확인하는 중 (가장 먼저)
-  // 2. userLoading: 토큰으로 사용자 정보를 가져오는 중
-  // 3. accessToken은 있지만 user 객체는 아직 없는 과도기적 상태
   const isLoading = loading || userLoading || (accessToken && !user);
 
   return (
@@ -67,13 +62,11 @@ const NavigationBar = () => {
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
         {isLoading ? (
-          // 로딩 상태 UI
           <div className="navbar-user-skeleton">
             <div className="skeleton skeleton-profile-pic"></div>
             <div className="skeleton skeleton-username"></div>
           </div>
         ) : user ? (
-          // 로그인 완료 상태 UI
           <div className="navbar-user" ref={dropdownRef}>
             {logoutLoading ? (
               <CustomLoader size="small" />
@@ -96,8 +89,9 @@ const NavigationBar = () => {
                     </div>
                     <ul className="dropdown-menu-list">
                       <li className="dropdown-menu-item" onClick={logout}>
-                        <button className="navbar-button logout-button full-width">
-                          Logout
+                        {/* [수정] 'full-width' 클래스 제거 */}
+                        <button className="navbar-button logout-button">
+                          로그아웃
                         </button>
                       </li>
                     </ul>
@@ -107,7 +101,6 @@ const NavigationBar = () => {
             )}
           </div>
         ) : (
-          // 비로그인 상태 UI
           <Link to="/login" className="navbar-button login-button">Login</Link>
         )}
       </div>

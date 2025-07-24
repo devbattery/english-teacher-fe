@@ -46,7 +46,6 @@
 
 .login-button {
   background-color: var(--accent-color);
-  /* 수정: 변수 사용 */
   color: var(--accent-text-color);
 }
 
@@ -78,7 +77,6 @@
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  /* 수정: 변수 사용 */
   box-shadow: 0 4px 12px var(--shadow-color);
   width: 280px;
   overflow: hidden;
@@ -118,16 +116,22 @@
 
 .dropdown-menu-item {
   padding: 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
-.logout-button.full-width {
-  width: 100%;
-  background-color: var(--danger-color);
-  color: var(--accent-text-color);
+.logout-button {
+  width: auto;
+  background-color: transparent;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
 }
 
-.logout-button.full-width:hover {
-  background-color: var(--danger-color-hover);
+.logout-button:hover {
+  background-color: var(--bg-secondary-hover);
+  color: var(--accent-color);
 }
 
 .navbar-user-skeleton {
@@ -136,7 +140,6 @@
   gap: 0.5rem;
 }
 
-/* 수정: skeleton 변수 사용 */
 .skeleton {
   background-color: var(--skeleton-bg);
   border-radius: 4px;

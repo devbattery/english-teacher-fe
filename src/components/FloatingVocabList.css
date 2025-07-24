@@ -31,6 +31,7 @@
   align-items: center;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; /* 헤더 크기 고정 */
 }
 
 .vocab-header h3 {
@@ -51,6 +52,36 @@
   color: var(--text-primary);
 }
 
+/* --- 검색창 스타일 (신규 추가) --- */
+.vocab-search-wrapper {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary-light, var(--bg-secondary)); /* 테마에 따라 다른 배경 적용 가능 */
+  flex-shrink: 0; /* 검색창 크기 고정 */
+}
+
+.vocab-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.95em;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.vocab-search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.vocab-search-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 80, 150, 255), 0.3);
+}
+/* --- 여기까지 신규 추가 --- */
+
 
 .vocab-content {
   overflow-y: auto;
@@ -61,6 +92,7 @@
   padding: 20px;
   text-align: center;
   color: var(--text-secondary);
+  font-style: italic;
 }
 
 .vocab-content ul {
@@ -75,8 +107,14 @@
   gap: 10px;
   align-items: center;
   padding: 12px 10px;
-  border-bottom: 1px solid var(--border-color-light);
+  border-bottom: 1px solid var(--border-color-light, #eee);
 }
+
+/* 다크모드 대응 */
+html.dark .vocab-content li {
+  border-bottom: 1px solid var(--border-color);
+}
+
 
 .vocab-content li:last-child {
   border-bottom: none;
@@ -85,11 +123,13 @@
 .vocab-content .expression {
   font-weight: 600;
   color: var(--text-primary);
+  word-break: break-word; /* 긴 단어가 영역을 벗어나지 않도록 */
 }
 
 .vocab-content .meaning {
   color: var(--text-secondary);
   font-size: 0.95em;
+  word-break: break-word;
 }
 
 .delete-btn {
@@ -99,7 +139,9 @@
   font-size: 1em;
   opacity: 0.6;
   transition: opacity 0.2s;
+  padding: 5px;
 }
+
 .delete-btn:hover {
   opacity: 1;
 }

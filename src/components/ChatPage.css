@@ -23,7 +23,7 @@ html.dark .chat-page-container {
     --bg-level-toeic: #2c2c2e;
 }
 
-/* === 사이드바 === */
+/* === 사이드바 (기존과 동일) === */
 .teacher-sidebar {
   width: 320px;
   background-color: var(--bg-primary);
@@ -248,7 +248,7 @@ html.dark .room-item.active {
     margin: 4px 0;
 }
 
-/* === 메인 채팅창 === */
+/* === 메인 채팅창 (기존과 동일) === */
 .chat-main {
   flex-grow: 1;
   display: flex;
@@ -687,7 +687,7 @@ html.dark .room-item.active {
   box-shadow: 0 4px 12px var(--shadow-color);
 }
 
-/* ChatRoomSelection 컴포넌트 스타일 */
+/* === ChatRoomSelection 컴포넌트 스타일 (기존과 동일) === */
 .chat-room-selection-container {
   display: flex;
   flex-direction: column;
@@ -702,8 +702,8 @@ html.dark .room-item.active {
 
 .room-selection-header {
   text-align: center;
-  margin-bottom: 32px;
-  max-width: 500px;
+  margin-bottom: 24px; /* 간격 조정 */
+  max-width: 600px; /* 너비 조정 */
 }
 
 .room-selection-header h2 {
@@ -739,6 +739,7 @@ html.dark .room-item.active {
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   box-shadow: 0 2px 4px var(--shadow-color);
+  text-align: left;
 }
 
 .room-card:hover {
@@ -772,19 +773,20 @@ html.dark .room-item.active {
 .room-card-date {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  align-self: flex-end;
+  align-self: flex-start; /* 날짜를 왼쪽 정렬 */
   margin-top: 8px;
 }
 
 .new-chat-card {
-  border-style: dashed;
-  border-width: 2px;
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: var(--text-secondary);
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--text-secondary);
   background-color: var(--bg-secondary);
+  border-style: dashed;
+  border-width: 2px;
 }
 
 .new-chat-card:hover:not(:disabled) {
@@ -794,10 +796,6 @@ html.dark .room-item.active {
 
 .new-chat-card .new-chat-card-icon {
   margin-bottom: 8px;
-}
-.new-chat-card .new-chat-card-icon svg {
-  width: 32px;
-  height: 32px;
 }
 
 .new-chat-card:disabled {
@@ -811,6 +809,7 @@ html.dark .room-item.active {
 .room-card-skeleton {
   cursor: default;
   animation: pulse 1.5s infinite ease-in-out;
+  background-color: var(--bg-secondary);
 }
 
 .loader-small {
@@ -822,7 +821,7 @@ html.dark .room-item.active {
   animation: spin 1s linear infinite;
 }
 
-/* [추가] === 마크다운 콘텐츠 스타일 === */
+/* === 마크다운 콘텐츠 스타일 (기존과 동일) === */
 .markdown-content {
   line-height: 1.6;
   white-space: pre-wrap; /* 기본 줄바꿈 유지를 위해 추가 */
@@ -875,38 +874,86 @@ html.dark .room-item.active {
   text-decoration: none;
 }
 
-/* --- [추가] ChatRoomSelection 내 추천 목록 스타일 --- */
+/* --- [핵심 수정] ChatRoomSelection 내 추천 목록 스타일 --- */
 .recommendations-box {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background-color: var(--bg-secondary);
-  border-radius: 12px;
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem; /* 그리드와의 간격 추가 */
+  padding: 1.75rem;
+  background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
+  border-radius: 16px;
   border: 1px solid var(--border-color);
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+html.dark .recommendations-box {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recommendations-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
 .recommendations-box h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
   text-align: left;
   color: var(--text-primary);
+  font-weight: 600;
+}
+
+.recommendations-box h3::before {
+  content: '💡';
+  font-size: 1.4rem;
 }
 
 .recommendations-list-chat {
   list-style: none;
   padding: 0;
   margin: 0;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* 카드 사이의 간격 */
 }
 
 .recommendations-list-chat li {
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+  background-color: var(--bg-primary);
+  padding: 0.9rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
   font-size: 0.95rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
 }
 
-.recommendations-list-chat li:last-child {
-  margin-bottom: 0;
+.recommendations-list-chat li:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-secondary-hover);
+  color: var(--accent-color);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.recommendations-list-chat li::before {
+  content: '>';
+  color: var(--accent-color);
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 1rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.recommendations-list-chat li:hover::before {
+  transform: scale(1.5);
 }

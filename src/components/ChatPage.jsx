@@ -6,14 +6,13 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import CustomLoader from './CustomLoader';
 import ChatPageSkeleton from './ChatPageSkeleton';
-import ChatRoomSelection from './ChatRoomSelection';
-import ReactMarkdown from 'react-markdown'; // [추가] 마크다운 컴포넌트 임포트
-import remarkGfm from 'remark-gfm';         // [추가] GFM 플러그인 임포트
+import ChatRoomSelection from './ChatRoomSelection'; // 수정된 컴포넌트 임포트
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import './ChatPage.css';
-import { levelData } from '../data/levelData'; // [추가] 중앙 데이터 임포트
+import { levelData } from '../data/levelData';
 
-
-// ... 아이콘 컴포넌트들 ...
+// --- 아이콘 컴포넌트들 (기존과 동일) ---
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -27,7 +26,6 @@ const MessageImage = ({ src, alt }) => {
     return ( <div className="message-image-container">{!isLoaded && <div className="image-loading-placeholder"></div>}<img src={src} alt={alt} className={`message-image ${isLoaded ? 'loaded' : ''}`} onLoad={() => setIsLoaded(true)} /></div> );
 };
 
-// [수정] teacherLevels를 levelData에서 가져와서 단순화
 const teacherLevels = levelData.map(level => ({ id: level.id, name: level.name }));
 
 
@@ -54,6 +52,7 @@ const ChatPage = () => {
 
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
+  const inputRef = useRef(null); // [추가] 텍스트 입력창 참조
   const isInitialLoad = useRef(false);
   
   useEffect(() => {
@@ -153,7 +152,7 @@ const ChatPage = () => {
   const handleNewChat = async () => {
     if (chatRooms.length >= 10) {
         alert("한 레벨 당 최대 10개의 채팅방만 만들 수 있습니다.");
-        return;
+        return null; // [수정] 생성 실패 시 null 반환
     }
     setIsCreatingRoom(true);
     try {
@@ -162,11 +161,27 @@ const ChatPage = () => {
         setChatRooms(prev => [newRoom, ...prev]);
         setActiveConversationId(newRoom.conversationId);
         setIsSidebarOpen(false);
+        return newRoom; // [수정] 생성된 룸 정보 반환
     } catch (error) {
         console.error('Error creating new chat room:', error);
         alert('새로운 대화방을 만드는 데 실패했습니다.');
+        return null; // [수정] 생성 실패 시 null 반환
     } finally {
         setIsCreatingRoom(false);
+    }
+  };
+  
+  // [핵심 추가] 추천 질문 클릭 핸들러
+  const handleRecommendationClick = async (text) => {
+    // 1. 새로운 대화방을 생성 (또는 기존 비활성 방 활성화)
+    const newRoom = await handleNewChat();
+
+    // 2. 대화방이 성공적으로 생성되었을 경우에만 진행
+    if (newRoom) {
+      // 3. 입력창에 추천 질문 텍스트를 설정
+      setInputValue(text);
+      // 4. (사용자 경험 향상) 입력창으로 포커스 이동
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
@@ -266,6 +281,7 @@ const ChatPage = () => {
               onRoomSelect={handleRoomSelect}
               onNewChat={handleNewChat}
               recommendations={currentLevelData.recommendations}
+              onRecommendationClick={handleRecommendationClick} // [핵심] 핸들러 전달
             />
         ) : (
           <>
@@ -274,7 +290,6 @@ const ChatPage = () => {
                 <div key={index} className={`message-bubble ${msg.sender}`}>
                     {msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" />}
                     
-                    {/* [핵심 수정] 텍스트를 ReactMarkdown으로 렌더링 */}
                     {msg.text && (
                         <div className="markdown-content">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -291,7 +306,8 @@ const ChatPage = () => {
               <div className="input-controls">
                 <button type="button" className="attach-file-button" onClick={() => fileInputRef.current.click()} disabled={isAiReplying || !!selectedFile}><ImageIcon /></button>
                 <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} accept="image/*"/>
-                <div className="input-wrapper"><input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="메시지를 입력하세요..." disabled={isAiReplying} /></div>
+                {/* [수정] input에 ref 추가 */}
+                <div className="input-wrapper"><input ref={inputRef} type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="메시지를 입력하세요..." disabled={isAiReplying} /></div>
                 <button type="submit" disabled={(!inputValue.trim() && !selectedFile) || isAiReplying || !activeConversationId}><SendIcon /></button>
               </div>
             </form>

@@ -150,3 +150,20 @@
   color: var(--accent-text-color);
   transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+  .home-page {
+    /* 모바일에서는 패딩을 약간 줄여줍니다. */
+    padding: 2rem 1rem;
+  }
+
+  .top-section {
+    /* 모바일 화면에서는 상단 히어로 섹션을 숨깁니다. */
+    display: none;
+  }
+
+  .section-container {
+    /* 모바일에서는 그리드 최소 너비를 조정하여 한 줄에 하나씩 보이게 합니다. */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}

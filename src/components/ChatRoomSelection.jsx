@@ -1,9 +1,34 @@
-import React from 'react';
-import './ChatPage.css'; // 기존 ChatPage.css를 재활용하여 스타일 일관성 유지
+// src/components/ChatRoomSelection.jsx
 
-// 아이콘은 ChatPage에서 가져와도 되지만, 독립성을 위해 여기에도 정의합니다.
+import React from 'react';
+import './ChatPage.css';
+
+// 아이콘 정의
 const PlusCircleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> );
 const ChatBubbleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> );
+
+// [핵심] 안전한 날짜 포매팅 함수
+const formatDate = (dateString) => {
+  // 1. dateString이 null, undefined, 빈 문자열 등 falsy 값이면 대체 텍스트를 반환
+  if (!dateString) {
+    return '날짜 정보 없음';
+  }
+
+  const date = new Date(dateString);
+  
+  // 2. new Date()로 변환한 결과가 유효하지 않은 날짜(Invalid Date)인지 확인
+  // isNaN(date.getTime()) 은 "Invalid Date"를 감지하는 가장 확실한 방법입니다.
+  if (isNaN(date.getTime())) {
+    return '유효하지 않은 날짜';
+  }
+
+  // 3. 유효한 경우에만 원하는 형식으로 포매팅하여 반환
+  return date.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }); // 예: "2023년 10월 27일"
+};
 
 const ChatRoomSelection = ({ levelName, rooms, isLoading, isCreating, onRoomSelect, onNewChat }) => {
   const canCreateNewChat = !isCreating && !isLoading && rooms.length < 10;
@@ -38,7 +63,8 @@ const ChatRoomSelection = ({ levelName, rooms, isLoading, isCreating, onRoomSele
               <div key={room.conversationId} className="room-card" onClick={() => onRoomSelect(room.conversationId)}>
                 <div className="room-card-icon"><ChatBubbleIcon /></div>
                 <p className="room-card-content">{room.lastMessage || '대화를 시작해 보세요...'}</p>
-                <span className="room-card-date">{new Date(room.lastModifiedAt).toLocaleDateString('ko-KR')}</span>
+                {/* [수정] 직접 변환하는 대신, 안전한 포매팅 함수를 사용 */}
+                <span className="room-card-date">{formatDate(room.lastModifiedAt)}</span>
               </div>
             ))
         }

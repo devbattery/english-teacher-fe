@@ -92,3 +92,14 @@
 html.dark .loader-wrapper {
   background-color: rgba(var(--bg-primary-rgb, 24, 25, 26), 0.7);
 }
+
+@media (max-width: 768px) {
+  .skeleton-page {
+    padding: 2rem 1rem;
+  }
+  
+  .page-title {
+    /* 모바일 화면에서는 스켈레톤의 제목 영역을 숨깁니다. */
+    display: none;
+  }
+}

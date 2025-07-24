@@ -6,7 +6,6 @@ import CustomLoader from './CustomLoader'; // CustomLoader 컴포넌트가 사�
 import ChatPageSkeleton from './ChatPageSkeleton';
 import './ChatPage.css';
 
-// --- 아이콘 SVG 컴포넌트들 (기존과 동일) ---
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -14,7 +13,6 @@ const ImageIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 const TrashIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> );
 const PlusCircleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> );
 const ChatBubbleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> );
-// --- 아이콘 SVG 정의 끝 ---
 
 const MessageImage = ({ src, alt }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -39,7 +37,7 @@ const ChatPage = () => {
   const [isRoomsLoading, setIsRoomsLoading] = useState(true);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [isAiReplying, setIsAiReplying] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false); // [추가] 채팅방 삭제 로딩 상태
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const [inputValue, setInputValue] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -48,6 +46,7 @@ const ChatPage = () => {
 
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
+  const isInitialLoad = useRef(false); // [추가] 최초 기록 로딩인지 추적하기 위한 ref
 
   useEffect(() => {
     if (!user || !selectedLevel) return;
@@ -65,6 +64,7 @@ const ChatPage = () => {
     navigate(`/chat?level=${selectedLevel}`, { replace: true });
   }, [selectedLevel, user, navigate]);
 
+  // [수정] 대화 기록을 불러오는 useEffect
   useEffect(() => {
     if (!activeConversationId) {
         setMessages([]);
@@ -74,20 +74,35 @@ const ChatPage = () => {
     const fetchChatHistory = async () => {
         setIsHistoryLoading(true);
         setMessages([]);
+        isInitialLoad.current = true; // [추가] 다음 메시지 업데이트는 최초 로딩임을 표시
         try {
             const response = await api.get(`/api/chat/history/${activeConversationId}`);
             setMessages(response.data);
         } catch (error) {
             console.error('Error fetching chat history:', error);
             setMessages([{ sender: 'ai', text: '대화 기록을 불러오는 데 실패했습니다.' }]);
-        } finally { setIsHistoryLoading(false); }
+        } finally { 
+            setIsHistoryLoading(false); 
+        }
     };
     fetchChatHistory();
   }, [activeConversationId]);
 
+  // [수정] 스크롤을 담당하는 useEffect
   useEffect(() => {
     if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight, behavior: 'smooth' });
+      // isInitialLoad.current가 true이면 'auto'(즉시), 아니면 'smooth'(부드럽게)
+      const scrollBehavior = isInitialLoad.current ? 'auto' : 'smooth';
+      
+      chatMessagesRef.current.scrollTo({
+        top: chatMessagesRef.current.scrollHeight,
+        behavior: scrollBehavior
+      });
+
+      // 스크롤이 실행된 후에는 플래그를 false로 리셋하여 다음 메시지부터는 'smooth'로 동작하게 함
+      if (isInitialLoad.current) {
+        isInitialLoad.current = false;
+      }
     }
   }, [messages]);
 
@@ -163,10 +178,9 @@ const ChatPage = () => {
     }
   };
 
-  // [수정] handleDeleteRoom 함수 수정
   const handleDeleteRoom = async (conversationId) => {
     if (!conversationId) return;
-    setIsDeleting(true); // 삭제 시작 시 로딩 상태 활성화
+    setIsDeleting(true);
     try {
         await api.delete(`/api/chat/room/${conversationId}`);
         setChatRooms(prev => prev.filter(room => room.conversationId !== conversationId));
@@ -175,8 +189,8 @@ const ChatPage = () => {
         console.error('Error deleting chat room:', error);
         alert('채팅방 삭제에 실패했습니다.');
     } finally { 
-      setIsDeleting(false); // 작업 완료 후 로딩 상태 비활성화
-      setConfirmingDelete(null); // 모달 닫기
+      setIsDeleting(false);
+      setConfirmingDelete(null);
     }
   };
 
@@ -191,7 +205,6 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
-      {/* [수정] 확인 모달 내부에 로딩 상태에 따른 조건부 렌더링 추가 */}
       {confirmingDelete && (
         <div className="reset-confirm-overlay">
           <div className="reset-confirm-modal">

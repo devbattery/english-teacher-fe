@@ -18,7 +18,6 @@ const BookIcon = () => (
 const LevelButton = ({ to, label }) => (
   <Link to={to} className="level-button">
     <span>{label}</span>
-    <ArrowRight size={20} />
   </Link>
 );
 
@@ -71,7 +70,7 @@ const HomePage = () => {
                 <div className="card-icon">
                   <ChatIcon />
                 </div>
-                <h2>English Chat</h2>
+                <h2>Messenger</h2>
               </div>
               <p>
                 AI 선생님과 대화하며 실력을 향상시키세요. 원하는 레벨의 선생님을 선택하세요.
@@ -89,7 +88,7 @@ const HomePage = () => {
                 <div className="card-icon">
                   <BookIcon />
                 </div>
-                <h2>Today's Contents</h2>
+                <h2>Daily Contents</h2>
               </div>
               <p>
                 매일 AI 선생님이 작성해주는 맞춤 학습 콘텐츠를 읽어보세요. 원하는 레벨의 콘텐츠를 선택하세요.

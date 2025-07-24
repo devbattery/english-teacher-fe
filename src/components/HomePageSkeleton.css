@@ -36,19 +36,22 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 너비 조정 */
-  gap: 2.5rem; /* 간격 통일 */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
 }
 
+/* [수정] 스켈레톤 카드 스타일 업데이트 */
 .home-card.skeleton-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  padding: 2.5rem; /* 패딩 통일 */
-  border-radius: 16px; /* 통일 */
+  padding: 2.5rem;
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
-  display: flex; /* flex 추가 */
-  flex-direction: column; /* flex 추가 */
+  display: flex;
+  flex-direction: column;
+  /* 상단 테두리 흉내 */
+  border-top: 4px solid var(--border-color);
 }
 
 .skeleton-icon {
@@ -60,8 +63,14 @@
 
 .skeleton-card-h2 {
   width: 70%;
-  height: 32px; /* 제목 높이 조정 */
+  height: 28px;
   margin-bottom: 1rem;
+}
+
+/* [수정] p 태그 래퍼 추가 */
+.skeleton-card-p-wrapper {
+  flex-grow: 1; /* 남은 공간 차지 */
+  margin-bottom: 2rem;
 }
 
 .skeleton-card-p {
@@ -69,29 +78,24 @@
   height: 16px;
   margin-bottom: 0.75rem;
 }
-/* p 태그 부분은 flex-grow로 대체 */
-.skeleton-card-p-wrapper {
-  flex-grow: 1;
-  margin-bottom: 2rem;
-}
 
 .skeleton-card-p-short {
   width: 60%;
   height: 16px;
 }
 
-/* [추가] 새로운 버튼 스켈레톤 스타일 */
+/* [수정] 버튼 스켈레톤 구조 변경 */
 .skeleton-level-button-container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
+
 .skeleton-level-button {
-  height: 58px; /* 실제 버튼 높이와 맞춤 */
-  width: 100%;
+  flex: 1 1 120px;
+  height: 48px; /* 실제 버튼 높이와 맞춤 */
   border-radius: 8px;
 }
-
 
 .loader-wrapper {
   position: absolute;
@@ -103,7 +107,7 @@
   align-items: center;
   justify-content: center;
   background-color: rgba(var(--bg-primary-rgb, 255, 255, 255), 0.7);
-  border-radius: 16px; /* 통일 */
+  border-radius: 16px;
 }
 
 html.dark .loader-wrapper {
@@ -117,7 +121,7 @@ html.dark .loader-wrapper {
   .page-title {
     display: none;
   }
-   .card-container {
+  .card-container {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }

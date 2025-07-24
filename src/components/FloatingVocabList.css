@@ -1,0 +1,105 @@
+.floating-vocab-list {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--shadow-color);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.vocab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.vocab-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8em;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0 5px;
+}
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+
+.vocab-content {
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.vocab-content .empty-message {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.vocab-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vocab-content li {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.vocab-content li:last-child {
+  border-bottom: none;
+}
+
+.vocab-content .expression {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.vocab-content .meaning {
+  color: var(--text-secondary);
+  font-size: 0.95em;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.delete-btn:hover {
+  opacity: 1;
+}

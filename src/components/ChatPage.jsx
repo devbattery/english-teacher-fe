@@ -1,5 +1,3 @@
-// src/components/ChatPage.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -8,7 +6,7 @@ import CustomLoader from './CustomLoader';
 import ChatPageSkeleton from './ChatPageSkeleton';
 import './ChatPage.css';
 
-// --- 아이콘 SVG 컴포넌트들 (변경 없음) ---
+// --- 아이콘 SVG 컴포넌트들 ---
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -37,7 +35,6 @@ const ChatPage = () => {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   
-  // [수정] 채팅방 생성 로딩 상태 추가
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [isRoomsLoading, setIsRoomsLoading] = useState(true);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
@@ -69,7 +66,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!activeConversationId) {
-        setMessages([]); // 활성화된 방이 없으면 메시지 목록 비우기
+        setMessages([]);
         setIsHistoryLoading(false);
         return;
     }
@@ -140,39 +137,28 @@ const ChatPage = () => {
     setIsSidebarOpen(false);
   }
 
-  // --- [핵심] 채팅방 생성 로직 수정 ---
   const handleNewChat = async () => {
     if (chatRooms.length >= 10) {
         alert("한 레벨 당 최대 10개의 채팅방만 만들 수 있습니다.");
         return;
     }
-    setIsCreatingRoom(true); // 생성 시작
+    setIsCreatingRoom(true);
     try {
-        // 빈 메시지를 보내 새 채팅방 생성을 트리거
-        const formData = new FormData();
-        const chatRequest = { level: selectedLevel, conversationId: null, message: "" };
-        formData.append('request', new Blob([JSON.stringify(chatRequest)], { type: "application/json" }));
-
-        const response = await api.post('/api/chat/send', formData);
-        const { conversationId } = response.data;
+        const response = await api.post('/api/chat/rooms', {
+            level: selectedLevel 
+        });
         
-        // 새 채팅방 정보를 UI에 즉시 추가
-        const newRoom = {
-            conversationId: conversationId,
-            lastMessage: "새로운 대화", // 초기 텍스트
-            lastModifiedAt: new Date().toISOString()
-        };
+        const newRoom = response.data;
+        
         setChatRooms(prev => [newRoom, ...prev]);
-        
-        // 새로 생성된 방을 활성화
-        setActiveConversationId(conversationId);
+        setActiveConversationId(newRoom.conversationId);
         setIsSidebarOpen(false);
 
     } catch (error) {
         console.error('Error creating new chat room:', error);
         alert('새로운 대화방을 만드는 데 실패했습니다.');
     } finally {
-        setIsCreatingRoom(false); // 생성 완료
+        setIsCreatingRoom(false);
     }
   };
 

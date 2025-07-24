@@ -10,7 +10,6 @@
 }
 
 .skeleton {
-  /* 수정: 변수 사용 */
   background-color: var(--skeleton-bg);
   border-radius: 4px;
   animation: pulse 1.5s infinite ease-in-out;
@@ -37,30 +36,31 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 너비 조정 */
+  gap: 2.5rem; /* 간격 통일 */
 }
 
 .home-card.skeleton-card {
-  /* 수정: 변수 사용 */
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  padding: 2rem;
-  border-radius: 8px;
+  padding: 2.5rem; /* 패딩 통일 */
+  border-radius: 16px; /* 통일 */
   position: relative;
-  overflow: hidden; /* 로더가 밖으로 나가지 않도록 */
+  overflow: hidden;
+  display: flex; /* flex 추가 */
+  flex-direction: column; /* flex 추가 */
 }
 
 .skeleton-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .skeleton-card-h2 {
   width: 70%;
-  height: 28px;
+  height: 32px; /* 제목 높이 조정 */
   margin-bottom: 1rem;
 }
 
@@ -69,11 +69,29 @@
   height: 16px;
   margin-bottom: 0.75rem;
 }
+/* p 태그 부분은 flex-grow로 대체 */
+.skeleton-card-p-wrapper {
+  flex-grow: 1;
+  margin-bottom: 2rem;
+}
 
 .skeleton-card-p-short {
   width: 60%;
   height: 16px;
 }
+
+/* [추가] 새로운 버튼 스켈레톤 스타일 */
+.skeleton-level-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.skeleton-level-button {
+  height: 58px; /* 실제 버튼 높이와 맞춤 */
+  width: 100%;
+  border-radius: 8px;
+}
+
 
 .loader-wrapper {
   position: absolute;
@@ -84,9 +102,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 수정: 변수 사용 (반투명) */
   background-color: rgba(var(--bg-primary-rgb, 255, 255, 255), 0.7);
-  border-radius: 8px;
+  border-radius: 16px; /* 통일 */
 }
 
 html.dark .loader-wrapper {
@@ -97,9 +114,10 @@ html.dark .loader-wrapper {
   .skeleton-page {
     padding: 2rem 1rem;
   }
-  
   .page-title {
-    /* 모바일 화면에서는 스켈레톤의 제목 영역을 숨깁니다. */
     display: none;
+  }
+   .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }

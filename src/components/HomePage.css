@@ -34,7 +34,7 @@
 
 .partner-logos img {
   height: 40px;
-  filter: grayscale(30%); /* 다크모드에서도 잘 보이도록 조정 */
+  filter: grayscale(30%);
   opacity: 0.8;
   transition: filter 0.3s;
 }
@@ -76,21 +76,45 @@
 .section-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  gap: 2.5rem; /* 간격 살짝 넓힘 */
 }
 
+/* --- [핵심 수정] 카드 디자인 전면 개편 --- */
 .home-section {
-  background-color: var(--bg-secondary);
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  padding: 2.5rem; /* 패딩 늘림 */
+  border-radius: 16px; /* 더 둥글게 */
+  border: 1px solid transparent; /* 기본 테두리는 투명하게 */
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden; /* 그라데이션 효과를 위해 */
+  display: flex;
+  flex-direction: column;
 }
 
 .home-section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px var(--shadow-color);
-  border-color: var(--border-color-hover);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 채팅 카드 전용 그라데이션 */
+.chat-section {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+/* 학습 콘텐츠 카드 전용 그라데이션 */
+.content-section {
+  background: linear-gradient(135deg, #6f42c1, #4a2386);
+}
+
+/* 카드 내 모든 텍스트 색상을 흰색 계열로 변경 */
+.home-section,
+.home-section h2,
+.home-section p {
+  color: #ffffff;
+}
+.home-section p {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .section-header {
@@ -100,8 +124,8 @@
 }
 
 .card-icon {
-  background-color: var(--accent-color);
-  color: var(--accent-text-color);
+  background-color: rgba(255, 255, 255, 0.15); /* 반투명 배경 */
+  color: #ffffff;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -110,60 +134,59 @@
   justify-content: center;
   margin-right: 1rem;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .home-section h2 {
-  font-size: 1.75rem;
+  font-size: 2rem; /* 제목 키움 */
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary);
 }
 
 .home-section p {
-  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 2rem;
-  min-height: 75px; /* 카드의 높이를 비슷하게 유지 */
+  min-height: 50px; /* 높이 조정 */
+  flex-grow: 1; /* 남은 공간 차지하여 버튼을 아래로 밀어냄 */
 }
 
+/* --- [핵심 수정] 버튼 컨테이너 및 버튼 스타일 변경 --- */
 .level-buttons-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column; /* 세로로 나열 */
+  gap: 0.75rem; /* 버튼 간 간격 */
 }
 
-.level-button {
-  flex: 1 1 120px; /* 유연한 크기 조절 */
-  text-align: center;
+.level-button { /* 클래스 이름은 유지, 스타일은 완전히 변경 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
   padding: 1rem;
-  background-color: var(--bg-primary);
-  color: var(--accent-color);
-  border: 1px solid var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500; /* 폰트 두께 조정 */
   transition: all 0.2s ease-in-out;
 }
 
 .level-button:hover {
-  background-color: var(--accent-color);
-  color: var(--accent-text-color);
-  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(5px); /* 오른쪽으로 살짝 이동 */
 }
 
+/* --- 모바일 반응형은 유지 --- */
 @media (max-width: 768px) {
   .home-page {
-    /* 모바일에서는 패딩을 약간 줄여줍니다. */
     padding: 2rem 1rem;
   }
-
   .top-section {
-    /* 모바일 화면에서는 상단 히어로 섹션을 숨깁니다. */
     display: none;
   }
-
   .section-container {
-    /* 모바일에서는 그리드 최소 너비를 조정하여 한 줄에 하나씩 보이게 합니다. */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }

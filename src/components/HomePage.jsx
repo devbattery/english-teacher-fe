@@ -1,11 +1,10 @@
-// src/components/HomePage.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import HomePageSkeleton from './HomePageSkeleton';
 import './HomePage.css';
 import geminiLogo from '../assets/gemini.png';
+import { ArrowRight } from 'lucide-react'; // [추가] 아이콘 라이브러리에서 화살표 가져오기
 
 const ChatIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -15,9 +14,11 @@ const BookIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
 );
 
+// [핵심 수정] LevelButton 컴포넌트 구조 변경
 const LevelButton = ({ to, label }) => (
   <Link to={to} className="level-button">
-    {label}
+    <span>{label}</span>
+    <ArrowRight size={20} />
   </Link>
 );
 
@@ -28,7 +29,6 @@ const HomePage = () => {
     return <HomePageSkeleton />;
   }
 
-  // [수정] 새로운 레벨 이름과 경로로 변경
   const chatLevels = [
     { label: '초등학생', path: '/chat?level=elementary' },
     { label: '고등학생', path: '/chat?level=highschool' },
@@ -36,7 +36,6 @@ const HomePage = () => {
     { label: 'TOEIC 전문가', path: '/chat?level=toeic' },
   ];
 
-  // [수정] 새로운 레벨 이름과 경로로 변경
   const contentLevels = [
     { label: '초등학생', path: '/learning/elementary' },
     { label: '고등학생', path: '/learning/highschool' },

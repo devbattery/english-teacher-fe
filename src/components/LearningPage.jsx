@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import api from '../api/api';
 import './LearningPage.css';
 import CustomLoader from './CustomLoader';
 import FloatingVocabList from './FloatingVocabList';
-import useWindowWidth from '../hooks/useWindowWidth'; // 화면 너비 감지 훅 임포트
+import useWindowWidth from '../hooks/useWindowWidth';
 
 const teacherLevels = [
   { id: 'beginner', name: '초급 (Beginner)' },
@@ -13,7 +13,7 @@ const teacherLevels = [
   { id: 'ielts', name: 'IELTS 전문가' },
 ];
 
-const MOBILE_BREAKPOINT = 768; // 모바일로 간주할 화면 너비 기준
+const MOBILE_BREAKPOINT = 768;
 
 const LearningPage = () => {
   const { level: levelParam } = useParams();
@@ -31,13 +31,21 @@ const LearningPage = () => {
   const [isVocabVisible, setIsVocabVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const contentRef = useRef(null);
+  const [wordsArray, setWordsArray] = useState([]);
 
-  // 모바일/데스크탑 구분을 위한 상태
   const windowWidth = useWindowWidth();
   const isMobile = windowWidth <= MOBILE_BREAKPOINT;
-  const [isWordSelectMode, setIsWordSelectMode] = useState(false);
 
-  // 단어장 데이터 로딩
+  const [isWordSelectMode, setIsWordSelectMode] = useState(false);
+  const [selectedIndices, setSelectedIndices] = useState([]);
+  const [showGuide, setShowGuide] = useState(false);
+
+  useEffect(() => {
+    if (learningContent) {
+      setWordsArray(learningContent.content.split(/(\s+)/));
+    }
+  }, [learningContent]);
+
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {
@@ -50,7 +58,6 @@ const LearningPage = () => {
     fetchVocabulary();
   }, []);
 
-  // 학습 콘텐츠 로딩
   useEffect(() => {
     const fetchContent = async () => {
       setLoading(true);
@@ -58,7 +65,8 @@ const LearningPage = () => {
       setError(null);
       setLearningContent(null);
       setPopover({ show: false, x: 0, y: 0, text: '' });
-      setIsWordSelectMode(false); // 레벨 변경 시 모드 초기화
+      clearSelection();
+      setIsWordSelectMode(false);
 
       const timer = setTimeout(() => setIsGenerating(true), 500);
 
@@ -79,9 +87,8 @@ const LearningPage = () => {
     fetchContent();
   }, [level]);
 
-  // 데스크탑: 드래그(선택) 완료 시 호출
   const handleTextSelection = () => {
-    if (isMobile || isWordSelectMode) return; // 모바일이거나 단어선택모드일 땐 동작 안함
+    if (isMobile || isWordSelectMode) return;
 
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
@@ -98,41 +105,48 @@ const LearningPage = () => {
         });
       }
     } else {
-        if (!popover.show) setPopover({ ...popover, show: false });
+      if (!popover.show) setPopover({ ...popover, show: false });
     }
   };
 
-  // 모바일: 단어 탭 시 호출
-  const handleWordTap = (e) => {
-    if (!isWordSelectMode || e.target.tagName !== 'SPAN') return;
-    
-    const tappedWord = e.target.innerText.trim().replace(/[.,!?]$/, '');
-    if (!tappedWord) return;
-    
-    const rect = e.target.getBoundingClientRect();
-    setPopover({
-      show: true,
-      x: rect.left + rect.width / 2,
-      y: rect.top + window.scrollY - 45,
-      text: tappedWord,
-    });
+  const handleWordTap = (e, tappedIndex) => {
+    if (!isWordSelectMode || !e.target.matches('.selectable-word')) return;
+    const lastIndex = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length - 1] : -2;
+    if (selectedIndices.length === 0 || tappedIndex === lastIndex + 2) {
+      setSelectedIndices(prev => [...prev, tappedIndex]);
+    } else {
+      setSelectedIndices([tappedIndex]);
+    }
   };
 
-  // 모바일: 단어 선택 모드 토글
+  const clearSelection = () => setSelectedIndices([]);
+
   const toggleWordSelectMode = () => {
-    setIsWordSelectMode(prev => !prev);
-    if (isWordSelectMode) {
-      setPopover({ ...popover, show: false });
+    const nextMode = !isWordSelectMode;
+    setIsWordSelectMode(nextMode);
+    clearSelection();
+    if (nextMode) {
+      setShowGuide(true);
+      const timer = setTimeout(() => setShowGuide(false), 2500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowGuide(false);
     }
   };
-  
-  // 단어 저장 처리
-  const handleSaveWord = async () => {
-    if (isSaving || !popover.text) return;
 
+  const selectedPhrase = useMemo(() => {
+    if (selectedIndices.length === 0) return '';
+    const firstIndex = selectedIndices[0];
+    const lastIndex = selectedIndices[selectedIndices.length - 1];
+    return wordsArray.slice(firstIndex, lastIndex + 1).join('');
+  }, [selectedIndices, wordsArray]);
+
+  const handleSaveWord = async () => {
+    const textToSave = isMobile ? selectedPhrase : popover.text;
+    if (isSaving || !textToSave) return;
     setIsSaving(true);
     try {
-      const response = await api.post('/api/vocabulary', { expression: popover.text });
+      const response = await api.post('/api/vocabulary', { expression: textToSave });
       const newWord = response.data;
       if (!vocabulary.some(v => v.id === newWord.id)) {
         setVocabulary(prev => [newWord, ...prev]);
@@ -144,10 +158,10 @@ const LearningPage = () => {
     } finally {
       setIsSaving(false);
       setPopover({ show: false, x: 0, y: 0, text: '' });
+      clearSelection();
     }
   };
-  
-  // 단어 삭제 처리
+
   const handleDeleteWord = async (wordId) => {
     try {
       await api.delete(`/api/vocabulary/${wordId}`);
@@ -158,69 +172,49 @@ const LearningPage = () => {
     }
   };
 
-  // 팝오버 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popover.show && !event.target.closest('.save-popover')) {
         setPopover({ ...popover, show: false });
       }
     };
-    
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [popover]);
 
-  const loadingMessage = isGenerating 
-    ? "오늘의 맞춤 콘텐츠를 만들고 있어요. 잠시만 기다려 주세요... ✍️" 
-    : "오늘의 콘텐츠를 불러오는 중입니다... 📡";
+  const loadingMessage = isGenerating ? "오늘의 맞춤 콘텐츠를 만들고 있어요..." : "오늘의 콘텐츠를 불러오는 중입니다...";
 
   return (
     <div className="learning-page" onMouseUp={handleTextSelection}>
-      {popover.show && (
-        <div 
-          className="save-popover" 
-          style={{ top: `${popover.y}px`, left: `${popover.x}px` }}
-        >
+      {!isMobile && popover.show && (
+        <div className="save-popover" style={{ top: `${popover.y}px`, left: `${popover.x}px` }}>
           <button onClick={handleSaveWord} disabled={isSaving}>
             {isSaving ? '저장중...' : '✍️ 내 단어장에 저장'}
           </button>
         </div>
       )}
 
-      {!isVocabVisible && (
-        <button className="vocab-toggle-btn" onClick={() => setIsVocabVisible(true)}>
-          📖 나의 단어장
-        </button>
+      {showGuide && (
+        <div className="guide-tooltip">
+          저장하고 싶은 단어를 순서대로 탭하세요!
+        </div>
       )}
 
-      <FloatingVocabList 
+      <FloatingVocabList
         words={vocabulary}
         isVisible={isVocabVisible}
         onClose={() => setIsVocabVisible(false)}
         onDelete={handleDeleteWord}
       />
-      
+
       <header className="learning-header">
         <h1>Today's Contents</h1>
         <p>AI 선생님이 매일 제공하는 오늘의 학습 콘텐츠입니다.</p>
       </header>
-      
-      <div className="page-guide-link-wrapper">
-        <Link to="/level-guide" className="page-guide-link">
-          레벨 가이드 보기 👈
-        </Link>
-      </div>
 
-      {isMobile && !loading && learningContent && (
-        <div className="mode-toggle-wrapper">
-          <button 
-            onClick={toggleWordSelectMode} 
-            className={`word-select-toggle-btn ${isWordSelectMode ? 'active' : ''}`}
-          >
-            {isWordSelectMode ? '✅ 선택 완료' : '✍️ 단어 눌러서 저장하기'}
-          </button>
-        </div>
-      )}
+      <div className="page-guide-link-wrapper">
+        <Link to="/level-guide" className="page-guide-link">레벨 가이드 보기 👈</Link>
+      </div>
 
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (
@@ -238,20 +232,23 @@ const LearningPage = () => {
       <main className={`content-area ${loading ? 'loading' : ''}`}>
         {loading && <CustomLoader message={loadingMessage} />}
         {error && <div className="error-message">{error}</div>}
-        
+
         {!loading && learningContent && (
           <>
             <article className="learning-article" ref={contentRef}>
               <h2 className="article-title">{learningContent.title}</h2>
-              <div 
-                className={`article-content ${isWordSelectMode ? 'selectable' : ''}`}
-                onClick={isMobile ? handleWordTap : null}
-              >
+              <div className={`article-content ${isWordSelectMode ? 'selectable' : ''}`}>
                 {isMobile && isWordSelectMode ? (
-                  learningContent.content.split(/(\s+)/).map((word, index) => (
-                    word.trim() 
-                      ? <span key={index}>{word}</span> 
-                      : <React.Fragment key={index}>{word}</React.Fragment>
+                  wordsArray.map((word, index) => (
+                    word.trim() ?
+                      <span
+                        key={index}
+                        className={`selectable-word ${selectedIndices.includes(index) ? 'selected' : ''}`}
+                        onClick={(e) => handleWordTap(e, index)}
+                      >
+                        {word}
+                      </span> :
+                      <React.Fragment key={index}>{word}</React.Fragment>
                   ))
                 ) : (
                   learningContent.content.split('\n').map((line, index) => (
@@ -277,6 +274,50 @@ const LearningPage = () => {
           </>
         )}
       </main>
+
+      <div className="fixed-bottom-controls">
+        {isWordSelectMode && (
+          <div className={`selection-bar ${selectedIndices.length > 0 ? 'visible' : ''}`}>
+            <span className="selected-text" title={selectedPhrase}>
+              {selectedIndices.length > 0 ? `"${selectedPhrase}"` : "단어를 탭하여 선택"}
+            </span>
+            {selectedIndices.length > 0 && (
+              <div className="selection-actions">
+                <button onClick={handleSaveWord} disabled={isSaving} className="save-btn">
+                  {isSaving ? '...' : '저장'}
+                </button>
+                <button onClick={clearSelection} className="cancel-btn">×</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {isMobile && !loading && !isWordSelectMode && (
+          <button
+            onClick={toggleWordSelectMode}
+            className="select-mode-fab"
+            aria-label="단어 선택 모드 시작"
+          >
+            ✍️
+          </button>
+        )}
+
+        {isWordSelectMode && (
+           <button
+            onClick={toggleWordSelectMode}
+            className="select-mode-fab active"
+            aria-label="단어 선택 모드 종료"
+          >
+            ✅
+          </button>
+        )}
+
+        {!isWordSelectMode && !isVocabVisible && (
+          <button className="vocab-toggle-btn" onClick={() => setIsVocabVisible(true)}>
+            📖
+          </button>
+        )}
+      </div>
     </div>
   );
 };

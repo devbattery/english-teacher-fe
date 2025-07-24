@@ -1,30 +1,29 @@
 /* src/components/ChatPage.css */
 
 .chat-page-container {
-  /* 라이트 모드 레벨별 배경색 */
-  --bg-level-beginner: #e3f2fd;
-  --bg-level-intermediate: #e8f5e9;
-  --bg-level-advanced: #f3e5f5;
-  --bg-level-ielts: #f5f5f5;
+  /* [수정] 라이트 모드 레벨별 배경색 ID 변경 */
+  --bg-level-elementary: #e3f2fd;
+  --bg-level-highschool: #e8f5e9;
+  --bg-level-native: #f3e5f5;
+  --bg-level-toeic: #f5f5f5;
   
   display: flex;
-  /* height: 100%; */ /* [수정 전] 이 줄을 주석 처리하거나 삭제 */
-  height: 100vh;      /* [수정 후] 뷰포트 높이로 변경하여 모바일 스크롤 문제 해결 */
+  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   position: relative;
   overflow: hidden;
   background-color: var(--bg-primary);
 }
 
-/* 다크 모드 레벨별 배경색 정의 */
+/* [수정] 다크 모드 레벨별 배경색 ID 변경 */
 html.dark .chat-page-container {
-    --bg-level-beginner: #2a3a4a;
-    --bg-level-intermediate: #2f4031;
-    --bg-level-advanced: #4a3c50;
-    --bg-level-ielts: #2c2c2e;
+    --bg-level-elementary: #2a3a4a;
+    --bg-level-highschool: #2f4031;
+    --bg-level-native: #4a3c50;
+    --bg-level-toeic: #2c2c2e;
 }
 
-/* === [핵심] 사이드바 전면 개편 === */
+/* === 사이드바 === */
 .teacher-sidebar {
   width: 320px;
   background-color: var(--bg-primary);
@@ -40,10 +39,9 @@ html.dark .chat-page-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: hidden; /* 전체 스크롤은 숨김 */
+  overflow-y: hidden;
 }
 
-/* [신규] 사이드바 섹션 (레벨, 채팅방) */
 .sidebar-section {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
@@ -82,7 +80,7 @@ html.dark .chat-page-container {
   border: 1px solid transparent;
   border-radius: 8px; 
   background-color: var(--bg-secondary);
-  text-align: left; /* [수정] 좌측 정렬 */
+  text-align: left;
   font-size: 0.95rem; 
   font-weight: 500;
   color: var(--text-primary);
@@ -104,10 +102,9 @@ html.dark .chat-page-container {
   cursor: not-allowed;
 }
 
-/* [신규] 채팅방 목록 영역 */
 .room-list-section {
-  flex-grow: 1; /* 남은 공간 모두 차지 */
-  min-height: 0; /* flex-grow 버그 방지 */
+  flex-grow: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -125,7 +122,6 @@ html.dark .chat-page-container {
   transition: all 0.2s;
 }
 
-/* --- [핵심] 로딩 애니메이션 추가 --- */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -134,8 +130,6 @@ html.dark .chat-page-container {
 .new-chat-button.creating svg {
   animation: spin 1s linear infinite;
 }
-/* ---------------------------------- */
-
 
 .new-chat-button:hover:not(:disabled) {
   background-color: var(--bg-secondary-hover);
@@ -153,14 +147,13 @@ html.dark .chat-page-container {
 .room-list {
   flex-grow: 1;
   overflow-y: auto;
-  padding-right: 8px; /* 스크롤바 공간 */
+  padding-right: 8px;
   margin-right: -8px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* [신규] 채팅방 아이템 */
 .room-item {
   position: relative;
   display: flex;
@@ -177,11 +170,11 @@ html.dark .chat-page-container {
   background-color: var(--bg-secondary);
 }
 .room-item.active {
-  background-color: var(--accent-color-light, #e7f3ff); /* 라이트모드용 연한 파랑 */
+  background-color: var(--accent-color-light, #e7f3ff);
   border-color: var(--accent-color);
 }
 html.dark .room-item.active {
-  background-color: rgba(46, 137, 255, 0.2); /* 다크모드용 연한 파랑 */
+  background-color: rgba(46, 137, 255, 0.2);
 }
 
 .room-item-content {
@@ -238,7 +231,6 @@ html.dark .room-item.active {
     100% { background-color: var(--skeleton-bg); }
 }
 
-/* [신규] 채팅방 목록 스켈레톤 */
 .room-item-skeleton {
   height: 48px;
   background-color: var(--bg-secondary);
@@ -246,7 +238,6 @@ html.dark .room-item.active {
   animation: pulse 1.5s infinite ease-in-out;
 }
 
-/* [신규] 채팅방 없을 때 플레이스홀더 */
 .no-rooms-placeholder {
     text-align: center;
     color: var(--text-secondary);
@@ -274,39 +265,15 @@ html.dark .room-item.active {
   );
 }
 
-.chat-main.chat-level-beginner { background-color: var(--bg-level-beginner); }
-.chat-main.chat-level-intermediate { background-color: var(--bg-level-intermediate); }
-.chat-main.chat-level-advanced { background-color: var(--bg-level-advanced); }
-.chat-main.chat-level-ielts { background-color: var(--bg-level-ielts); }
+/* [수정] chat-level 클래스 이름 변경 */
+.chat-main.chat-level-elementary { background-color: var(--bg-level-elementary); }
+.chat-main.chat-level-highschool { background-color: var(--bg-level-highschool); }
+.chat-main.chat-level-native { background-color: var(--bg-level-native); }
+.chat-main.chat-level-toeic { background-color: var(--bg-level-toeic); }
 
-/* [신규] 채팅창 플레이스홀더 */
 .chat-placeholder {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--text-secondary);
-  padding: 24px;
+  display: none;
 }
-.chat-placeholder svg {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
-.chat-placeholder h3 {
-  color: var(--text-primary);
-  margin: 0 0 8px 0;
-  font-size: 1.5rem;
-}
-.chat-placeholder p {
-  margin: 0;
-  line-height: 1.6;
-  max-width: 300px;
-}
-
 
 .chat-header {
   display: flex;
@@ -389,10 +356,6 @@ html.dark .room-item.active {
   align-self: flex-start; 
   border-bottom-left-radius: 4px; 
   border: 1px solid var(--border-color);
-}
-.message-bubble p { 
-  margin: 0; 
-  white-space: pre-wrap; 
 }
 
 .message-image-container {
@@ -724,12 +687,12 @@ html.dark .room-item.active {
   box-shadow: 0 4px 12px var(--shadow-color);
 }
 
-/* [추가] ChatRoomSelection 컴포넌트 스타일 */
+/* ChatRoomSelection 컴포넌트 스타일 */
 .chat-room-selection-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* 상단 정렬 */
+  justify-content: flex-start;
   flex-grow: 1;
   height: 100%;
   overflow-y: auto;
@@ -799,7 +762,6 @@ html.dark .room-item.active {
   font-size: 0.95rem;
   line-height: 1.5;
   flex-grow: 1;
-  /* 3줄 이상일 경우 말줄임표 처리 */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -814,7 +776,6 @@ html.dark .room-item.active {
   margin-top: 8px;
 }
 
-/* 새 대화 시작 카드 스타일 */
 .new-chat-card {
   border-style: dashed;
   border-width: 2px;
@@ -847,13 +808,11 @@ html.dark .room-item.active {
   border-color: var(--border-color);
 }
 
-/* 카드 스켈레톤 UI */
 .room-card-skeleton {
   cursor: default;
   animation: pulse 1.5s infinite ease-in-out;
 }
 
-/* 작은 로더 (새 대화 생성 시) */
 .loader-small {
   width: 28px;
   height: 28px;
@@ -863,7 +822,55 @@ html.dark .room-item.active {
   animation: spin 1s linear infinite;
 }
 
-/* 기존 chat-placeholder는 더 이상 사용되지 않으므로 삭제하거나 주석 처리 가능 */
-.chat-placeholder {
-  display: none;
+/* [추가] === 마크다운 콘텐츠 스타일 === */
+.markdown-content {
+  line-height: 1.6;
+  white-space: pre-wrap; /* 기본 줄바꿈 유지를 위해 추가 */
+}
+
+/* 마크다운으로 생성된 p 태그의 기본 마진 제거 */
+.markdown-content p {
+  margin: 0;
+}
+
+/* فقرة 다음에 오는 فقرة에만 상단 마진 추가 (단락 구분) */
+.markdown-content p + p {
+  margin-top: 0.5em;
+}
+
+/* 목록(ul) 스타일 */
+.markdown-content ul {
+  padding-left: 20px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  list-style-type: disc; /* 기본 동그라미 불릿 */
+}
+
+/* 목록 아이템(li) 스타일 */
+.markdown-content li {
+  margin-bottom: 0.25em;
+}
+
+/* 목록 안의 목록 스타일 */
+.markdown-content li ul {
+  margin-top: 0.25em;
+  list-style-type: circle; /* 안쪽 동그라미 불릿 */
+}
+
+/* 굵은 글씨 스타일 */
+.markdown-content strong,
+.markdown-content b {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 링크 스타일 */
+.markdown-content a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.markdown-content a:hover {
+  text-decoration: none;
 }

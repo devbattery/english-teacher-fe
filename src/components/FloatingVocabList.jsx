@@ -50,7 +50,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       <div className="vocab-search-wrapper">
         <input
           type="text"
-          placeholder="Search my words..."
+          placeholder="영어 혹은 한국어를 입력하세요."
           className="vocab-search-input"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

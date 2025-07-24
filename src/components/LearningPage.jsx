@@ -1,3 +1,5 @@
+// src/components/LearningPage.jsx
+
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { Link, useParams } from "react-router-dom";
@@ -8,11 +10,12 @@ import FloatingVocabList from "./FloatingVocabList";
 import useWindowWidth from "../hooks/useWindowWidth";
 import FeatureDiscoveryTooltip from "./FeatureDiscoveryTooltip";
 
+// [수정] 새로운 레벨 ID와 이름으로 변경
 const teacherLevels = [
-  { id: "beginner", name: "초급 (Beginner)" },
-  { id: "intermediate", name: "중급 (Intermediate)" },
-  { id: "advanced", name: "고급 (Advanced)" },
-  { id: "ielts", name: "IELTS 전문가" },
+  { id: "elementary", name: "초등학생" },
+  { id: "highschool", name: "고등학생 (수능)" },
+  { id: "native", name: "원어민 (뉴스/교양)" },
+  { id: "toeic", name: "TOEIC 전문가" },
 ];
 
 const MOBILE_BREAKPOINT = 768;

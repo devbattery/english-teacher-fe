@@ -28,18 +28,20 @@ const HomePage = () => {
     return <HomePageSkeleton />;
   }
 
+  // [수정] 새로운 레벨 이름과 경로로 변경
   const chatLevels = [
-    { label: '초급', path: '/chat?level=beginner' },
-    { label: '중급', path: '/chat?level=intermediate' },
-    { label: '고급', path: '/chat?level=advanced' },
-    { label: 'IELTS 전문가', path: '/chat?level=ielts' },
+    { label: '초등학생', path: '/chat?level=elementary' },
+    { label: '고등학생', path: '/chat?level=highschool' },
+    { label: '원어민', path: '/chat?level=native' },
+    { label: 'TOEIC 전문가', path: '/chat?level=toeic' },
   ];
 
+  // [수정] 새로운 레벨 이름과 경로로 변경
   const contentLevels = [
-    { label: '초급', path: '/learning/beginner' },
-    { label: '중급', path: '/learning/intermediate' },
-    { label: '고급', path: '/learning/advanced' },
-    { label: 'IELTS 전문가', path: '/learning/ielts' },
+    { label: '초등학생', path: '/learning/elementary' },
+    { label: '고등학생', path: '/learning/highschool' },
+    { label: '원어민', path: '/learning/native' },
+    { label: 'TOEIC 전문가', path: '/learning/toeic' },
   ];
 
   return (

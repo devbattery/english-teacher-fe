@@ -1,13 +1,17 @@
+// src/components/ChatPage.jsx
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import CustomLoader from './CustomLoader';
 import ChatPageSkeleton from './ChatPageSkeleton';
-import ChatRoomSelection from './ChatRoomSelection'; // [추가] 새로 만든 컴포넌트 임포트
+import ChatRoomSelection from './ChatRoomSelection';
+import ReactMarkdown from 'react-markdown'; // [추가] 마크다운 컴포넌트 임포트
+import remarkGfm from 'remark-gfm';         // [추가] GFM 플러그인 임포트
 import './ChatPage.css';
 
-// ... 아이콘 컴포넌트들 ... (기존과 동일)
+// ... 아이콘 컴포넌트들 ...
 const MenuIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const CloseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
 const SendIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> );
@@ -16,14 +20,16 @@ const TrashIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 const PlusCircleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> );
 const ChatBubbleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> );
 
-
 const MessageImage = ({ src, alt }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     return ( <div className="message-image-container">{!isLoaded && <div className="image-loading-placeholder"></div>}<img src={src} alt={alt} className={`message-image ${isLoaded ? 'loaded' : ''}`} onLoad={() => setIsLoaded(true)} /></div> );
 };
 
 const teacherLevels = [
-  { id: 'beginner', name: '초급 (Beginner)' }, { id: 'intermediate', name: '중급 (Intermediate)' }, { id: 'advanced', name: '고급 (Advanced)' }, { id: 'ielts', name: 'IELTS 전문가' },
+  { id: 'elementary', name: '초등학생' },
+  { id: 'highschool', name: '고등학생 (수능)' },
+  { id: 'native', name: '원어민 (뉴스/교양)' },
+  { id: 'toeic', name: 'TOEIC 전문가' },
 ];
 
 const ChatPage = () => {
@@ -50,9 +56,6 @@ const ChatPage = () => {
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
   const isInitialLoad = useRef(false);
-
-  // ... useEffect hooks and handler functions (handleSendMessage, etc.) are unchanged ...
-  // They are omitted here for brevity, but they should remain in your file.
   
   useEffect(() => {
     if (!user || !selectedLevel) return;
@@ -190,13 +193,11 @@ const ChatPage = () => {
     else setSelectedFile(null);
   };
 
-
   const isLoading = isRoomsLoading || isHistoryLoading;
   const currentLevelName = teacherLevels.find(t => t.id === selectedLevel)?.name || 'Teacher';
 
   return (
     <div className="chat-page-container">
-      {/* ... confirmingDelete Modal (unchanged) ... */}
       {confirmingDelete && (
         <div className="reset-confirm-overlay">
           <div className="reset-confirm-modal">
@@ -217,7 +218,6 @@ const ChatPage = () => {
       )}
 
       {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
-      {/* ... Sidebar (unchanged) ... */}
       <aside className={`teacher-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-content-wrapper">
           <div className="sidebar-section">
@@ -257,7 +257,6 @@ const ChatPage = () => {
           <div className="chat-header-title"><span className="teacher-avatar">{currentLevelName.charAt(0)}</span><span>{currentLevelName}</span></div>
         </header>
 
-        {/* [수정] activeConversationId에 따른 조건부 렌더링 변경 */}
         {!activeConversationId ? (
             <ChatRoomSelection
               levelName={currentLevelName}
@@ -270,7 +269,20 @@ const ChatPage = () => {
         ) : (
           <>
             <div className="chat-messages" ref={chatMessagesRef}>
-              {isHistoryLoading ? <ChatPageSkeleton /> : messages.map((msg, index) => (<div key={index} className={`message-bubble ${msg.sender}`}>{msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" />}{msg.text && <p>{msg.text}</p>}</div>))}
+              {isHistoryLoading ? <ChatPageSkeleton /> : messages.map((msg, index) => (
+                <div key={index} className={`message-bubble ${msg.sender}`}>
+                    {msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" />}
+                    
+                    {/* [핵심 수정] 텍스트를 ReactMarkdown으로 렌더링 */}
+                    {msg.text && (
+                        <div className="markdown-content">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {msg.sender === 'user' ? msg.text.replace(/\n/g, '  \n') : msg.text}
+                            </ReactMarkdown>
+                        </div>
+                    )}
+                </div>
+              ))}
               {isAiReplying && (<div className="message-bubble ai"><div className="typing-indicator"><span></span><span></span><span></span></div></div>)}
             </div>
             <form className="chat-input-form" onSubmit={handleSendMessage}>

@@ -1,7 +1,7 @@
 /* src/components/ChatPage.css */
 
 .chat-page-container {
-  /* [수정] 라이트 모드 레벨별 배경색 ID 변경 */
+  /* 라이트 모드 레벨별 배경색 */
   --bg-level-elementary: #e3f2fd;
   --bg-level-highschool: #e8f5e9;
   --bg-level-native: #f3e5f5;
@@ -15,7 +15,7 @@
   background-color: var(--bg-primary);
 }
 
-/* [수정] 다크 모드 레벨별 배경색 ID 변경 */
+/* 다크 모드 레벨별 배경색 */
 html.dark .chat-page-container {
     --bg-level-elementary: #2a3a4a;
     --bg-level-highschool: #2f4031;
@@ -23,7 +23,7 @@ html.dark .chat-page-container {
     --bg-level-toeic: #2c2c2e;
 }
 
-/* === 사이드바 (기존과 동일) === */
+/* === 사이드바 === */
 .teacher-sidebar {
   width: 320px;
   background-color: var(--bg-primary);
@@ -248,7 +248,7 @@ html.dark .room-item.active {
     margin: 4px 0;
 }
 
-/* === 메인 채팅창 (기존과 동일) === */
+/* === 메인 채팅창 === */
 .chat-main {
   flex-grow: 1;
   display: flex;
@@ -265,7 +265,6 @@ html.dark .room-item.active {
   );
 }
 
-/* [수정] chat-level 클래스 이름 변경 */
 .chat-main.chat-level-elementary { background-color: var(--bg-level-elementary); }
 .chat-main.chat-level-highschool { background-color: var(--bg-level-highschool); }
 .chat-main.chat-level-native { background-color: var(--bg-level-native); }
@@ -687,7 +686,7 @@ html.dark .room-item.active {
   box-shadow: 0 4px 12px var(--shadow-color);
 }
 
-/* === ChatRoomSelection 컴포넌트 스타일 (기존과 동일) === */
+/* === ChatRoomSelection 컴포넌트 스타일 === */
 .chat-room-selection-container {
   display: flex;
   flex-direction: column;
@@ -702,8 +701,8 @@ html.dark .room-item.active {
 
 .room-selection-header {
   text-align: center;
-  margin-bottom: 24px; /* 간격 조정 */
-  max-width: 600px; /* 너비 조정 */
+  margin-bottom: 24px;
+  max-width: 600px;
 }
 
 .room-selection-header h2 {
@@ -773,7 +772,7 @@ html.dark .room-item.active {
 .room-card-date {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  align-self: flex-start; /* 날짜를 왼쪽 정렬 */
+  align-self: flex-start;
   margin-top: 8px;
 }
 
@@ -810,6 +809,7 @@ html.dark .room-item.active {
   cursor: default;
   animation: pulse 1.5s infinite ease-in-out;
   background-color: var(--bg-secondary);
+  border-radius: 12px;
 }
 
 .loader-small {
@@ -821,49 +821,42 @@ html.dark .room-item.active {
   animation: spin 1s linear infinite;
 }
 
-/* === 마크다운 콘텐츠 스타일 (기존과 동일) === */
+/* === 마크다운 콘텐츠 스타일 === */
 .markdown-content {
   line-height: 1.6;
-  white-space: pre-wrap; /* 기본 줄바꿈 유지를 위해 추가 */
+  white-space: pre-wrap;
 }
 
-/* 마크다운으로 생성된 p 태그의 기본 마진 제거 */
 .markdown-content p {
   margin: 0;
 }
 
-/* فقرة 다음에 오는 فقرة에만 상단 마진 추가 (단락 구분) */
 .markdown-content p + p {
   margin-top: 0.5em;
 }
 
-/* 목록(ul) 스타일 */
 .markdown-content ul {
   padding-left: 20px;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  list-style-type: disc; /* 기본 동그라미 불릿 */
+  list-style-type: disc;
 }
 
-/* 목록 아이템(li) 스타일 */
 .markdown-content li {
   margin-bottom: 0.25em;
 }
 
-/* 목록 안의 목록 스타일 */
 .markdown-content li ul {
   margin-top: 0.25em;
-  list-style-type: circle; /* 안쪽 동그라미 불릿 */
+  list-style-type: circle;
 }
 
-/* 굵은 글씨 스타일 */
 .markdown-content strong,
 .markdown-content b {
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* 링크 스타일 */
 .markdown-content a {
   color: var(--accent-color);
   text-decoration: underline;
@@ -874,10 +867,10 @@ html.dark .room-item.active {
   text-decoration: none;
 }
 
-/* --- [핵심 수정] ChatRoomSelection 내 추천 목록 스타일 --- */
+/* --- ChatRoomSelection 내 추천 목록 스타일 --- */
 .recommendations-box {
-  margin-top: 0.5rem;
-  margin-bottom: 2.5rem; /* 그리드와의 간격 추가 */
+  margin-top: 0rem;
+  margin-bottom: 2.5rem;
   padding: 1.75rem;
   background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
   border-radius: 16px;
@@ -920,7 +913,7 @@ html.dark .recommendations-box {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* 카드 사이의 간격 */
+  gap: 0.75rem;
 }
 
 .recommendations-list-chat li {

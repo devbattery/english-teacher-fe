@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react';
 import './LevelGuidePage.css';
-import { levelData } from '../data/levelData'; // [수정] 외부에서 데이터 임포트
+import { levelData } from '../data/levelData';
 
 const LevelGuidePage = () => {
-  // [핵심 수정] 첫 번째 활성화 탭을 'elementary'로 변경
   const [activeLevel, setActiveLevel] = useState('elementary');
 
   const currentLevelData = levelData.find(level => level.id === activeLevel);
@@ -24,21 +23,24 @@ const LevelGuidePage = () => {
             className={`tab-btn ${activeLevel === level.id ? 'active' : ''}`}
             onClick={() => setActiveLevel(level.id)}
           >
-            {level.title}
+            {/* [수정] level.title -> level.name */}
+            {level.name}
           </button>
         ))}
       </div>
 
       {currentLevelData && (
         <div className="level-content-card">
+          {/* [수정] levelData에 추가한 summary, description 필드 사용 */}
           <h2 className="level-summary">{currentLevelData.summary}</h2>
           <p className="level-description">{currentLevelData.description}</p>
 
           <div className="recommendations-section">
             <h3>이런 분들께 추천해요!</h3>
             <ul className="recommendations-list">
+              {/* [핵심 수정] rec 객체 전체가 아닌, rec.label을 렌더링 */}
               {currentLevelData.recommendations.map((rec, index) => (
-                <li key={index}>✅ {rec}</li>
+                <li key={index}>✅ {rec.label}</li>
               ))}
             </ul>
           </div>

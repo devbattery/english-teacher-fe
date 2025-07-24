@@ -2,55 +2,84 @@
 
 export const levelData = [
   {
-    id: "elementary",
-    name: "초등학생", // ChatPage teacherLevels와 통일
-    title: "초등학생", // LevelGuidePage title과 통일
-    summary: "영어를 처음 만나는 즐거움!",
-    description:
-      "왕초보도 괜찮아요! 초등학생 선생님은 아이들의 눈높이에 맞춰 가장 쉽고 친숙한 단어와 짧은 문장으로 대화합니다. 그림책을 읽듯 재미있는 이야기를 나누며 영어에 대한 두려움을 없애고, 자신감을 쑥쑥 키워보세요. 모든 실수는 배움의 과정일 뿐이에요!",
+    id: 'elementary',
+    name: '왕초보 (Elementary)',
+    // [추가] LevelGuidePage에서 사용할 데이터
+    summary: "영어 단어만 겨우 알거나, 간단한 문장만 만들 수 있는 단계",
+    description: "AI 선생님이 아주 쉽고 간단한 단어와 문장 구조를 사용하여 천천히 대화를 이끌어갑니다. 영어에 대한 막연한 두려움을 없애고 자신감을 키우는 것을 목표로 합니다.",
     recommendations: [
-      "영어 단어만 겨우 아는 왕초보 학습자",
-      "틀릴까 봐 영어로 말하기가 두려우신 분",
-      "쉽고 재미있게 영어와 친해지고 싶으신 분",
-    ],
+      {
+        label: "단어만 겨우 아는 왕초보예요.",
+        prompt: "Hi! I'm a complete beginner in English. I only know a few words. Could you please teach me using very simple sentences?"
+      },
+      {
+        label: "간단한 문장을 만들 수 있어요.",
+        prompt: "Hello. I can make very basic sentences, but I want to get better. I want to practice having simple conversations. Could you help me with that?"
+      },
+      {
+        label: "파파고 없으면 대화가 힘들어요.",
+        prompt: "Hi there. I rely heavily on translation apps to communicate in English. My goal is to speak more naturally without them. Please be patient with me."
+      }
+    ]
   },
   {
-    id: "highschool",
-    name: "고등학생 (수능)",
-    title: "고등학생 (수능)",
-    summary: "수능 영어, 자신감 있게 정복하기!",
-    description:
-      "수능 및 내신 영어에 자주 등장하는 필수 어휘와 문법을 중심으로 대화하고 글을 만듭니다. 고등학생 선생님은 어색한 표현이나 문법 오류를 정확하게 교정해주어, 논리적이고 정확한 문장을 구사하는 능력을 길러줍니다. 시험을 넘어 진짜 실력을 쌓아보세요.",
+    id: 'highschool',
+    name: '고등학생 (High School)',
+    summary: "고등학교 수준의 어휘와 문법 지식을 갖추고 있는 단계",
+    description: "수능 및 내신 대비를 위한 독해, 어휘 학습뿐만 아니라 일상적인 주제로 자유롭게 대화하며 영어 사용의 정확성과 유창성을 함께 향상시킬 수 있습니다.",
     recommendations: [
-      "수능 또는 내신 영어 점수 향상이 목표이신 분",
-      "문법의 기초는 알지만, 문장 만들기가 어려운 학생",
-      "학술적인 지문의 독해력을 키우고 싶으신 분",
-    ],
+       {
+        label: "수능 영어를 대비하고 싶어요.",
+        prompt: "Hi, I'm a high school student preparing for the CSAT (the Korean SAT). I would like to practice reading comprehension and learn useful vocabulary for the exam."
+      },
+      {
+        label: "일상적인 주제로 채팅하고 싶어요.",
+        prompt: "Hey, I want to practice my English chatting skills. Can we talk about casual topics like hobbies, movies, or music?"
+      },
+      {
+        label: "문법 실수를 교정받고 싶어요.",
+        prompt: "Hello! My main goal is to improve my grammatical accuracy. Could you please correct any mistakes I make and explain them simply?"
+      }
+    ]
   },
   {
-    id: "native",
-    name: "원어민 (뉴스/교양)",
-    title: "원어민 (뉴스/교양)",
-    summary: "원어민처럼, 깊고 풍부한 영어의 세계로!",
-    description:
-      "단순한 대화를 넘어, 원어민처럼 세련되고 깊이 있는 영어를 구사하고 싶다면 원어민 선생님을 만나보세요. BBC나 뉴욕타임스 기사 수준의 어휘와 표현을 사용하여 사회, 문화, 기술 등 다양한 주제로 토론합니다. 여러분의 생각을 자유롭게 펼치고 지적인 대화를 나눠보세요.",
+    id: 'native',
+    name: '유창함 (Native)',
+    summary: "자유로운 의사소통이 가능하며, 더 전문적인 표현을 배우고 싶은 단계",
+    description: "비즈니스 이메일 작성, 뉴스 기사 토론 등 특정 목적을 가진 전문적인 글쓰기 연습을 통해 영어 실력을 한 단계 더 높은 수준으로 끌어올릴 수 있습니다.",
     recommendations: [
-      "어느 정도 유창하지만, 표현력을 더 키우고 싶으신 분",
-      "영어 뉴스, 잡지, 교양 서적을 즐겨 읽으시는 분",
-      "자연스러운 관용구나 고급 어휘를 배우고 싶으신 분",
-    ],
+       {
+        label: "비즈니스 이메일 작성을 연습하고 싶어요.",
+        prompt: "Hi, I'd like to practice writing professional business emails. Could you give me a scenario and we can role-play by writing emails to each other?"
+      },
+      {
+        label: "최신 뉴스 기사에 대해 토론해보고 싶어요.",
+        prompt: "Hello. I'm interested in discussing current events. Could you share a recent news article with me so we can talk about it in writing?"
+      },
+       {
+        label: "주제에 맞춰 글 쓰는 연습을 하고 싶어요.",
+        prompt: "I'd like to improve my writing skills. Can you give me a specific topic and I'll try to write a few paragraphs about it?"
+       }
+    ]
   },
   {
-    id: "toeic",
-    name: "TOEIC 전문가",
-    title: "TOEIC 전문가",
-    summary: "비즈니스 영어와 TOEIC 점수를 한번에!",
-    description:
-      "TOEIC 시험, 특히 파트 7과 같은 비즈니스 상황에 특화된 어휘와 표현을 집중적으로 학습합니다. TOEIC 전문가는 이메일, 공지, 회의 등 실제 업무 환경에서 쓰이는 정중하고 프로페셔널한 영어를 알려줍니다. 실전 감각을 익혀 목표 점수를 달성하고, 비즈니스 영어 실력까지 향상시켜 보세요.",
+    id: 'toeic',
+    name: '토익 (TOEIC)',
+    summary: "TOEIC 시험을 준비하며, 관련 유형에 익숙해지고 싶은 단계",
+    description: "TOEIC 시험의 파트5(문법/어휘), 파트7(독해), 그리고 라이팅 파트의 문제 유형을 시뮬레이션하며 실전 감각을 기를 수 있도록 돕습니다.",
     recommendations: [
-      "TOEIC 시험을 준비하고 계신 모든 수험생",
-      "비즈니스 이메일 작성 및 회화 능력이 필요하신 분",
-      "해외 취업이나 외국계 기업 이직을 목표로 하시는 분",
-    ],
+      {
+        label: "TOEIC 파트 5 형식으로 연습하고 싶어요.",
+        prompt: "I'd like to practice with TOEIC Part 5 style questions. Can you give me some incomplete sentences and multiple-choice options for me to solve?"
+      },
+      {
+        label: "TOEIC 라이팅 시험을 준비하고 싶어요.",
+        prompt: "Hello, I'm preparing for the TOEIC Writing test. Could we practice some of the tasks, like writing a response to an email or composing an opinion essay?"
+      },
+      {
+        label: "TOEIC 파트 7 지문처럼 긴 글을 읽고 싶어요.",
+        prompt: "I want to improve my reading speed for TOEIC Part 7. Could you provide a short article, similar to a Part 7 passage, and then ask me a few comprehension questions about it?"
+      }
+    ]
   },
 ];

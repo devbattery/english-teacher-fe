@@ -10,7 +10,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ChatPage from './components/ChatPage';
 import LearningPage from './components/LearningPage';
 import LevelGuidePage from './components/LevelGuidePage';
-import Footer from './components/Footer';
 import LoginModal from './components/LoginModal';
 import LoginTriggerPage from './components/LoginTriggerPage'; // [추가] 새로 만든 컴포넌트 임포트
 import './App.css';
@@ -42,7 +41,6 @@ function AppContent() {
           <Route path="/level-guide" element={<LevelGuidePage />} />
         </Routes>
       </div>
-      <Footer />
       <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
     </div>
   );

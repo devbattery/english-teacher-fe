@@ -1,3 +1,5 @@
+// src/components/HomePageSkeleton.jsx
+
 import React from 'react';
 import CustomLoader from './CustomLoader';
 import './HomePageSkeleton.css';
@@ -7,12 +9,15 @@ const SkeletonCard = ({ withLoader = false }) => (
         {withLoader && <div className="loader-wrapper"><CustomLoader /></div>}
         <div className="skeleton skeleton-icon"></div>
         <div className="skeleton skeleton-card-h2"></div>
-        <div className="skeleton-card-p-wrapper">
-          <div className="skeleton skeleton-card-p"></div>
-          <div className="skeleton skeleton-card-p-short"></div>
+        
+        <div className="skeleton-description-wrapper">
+          <div className="skeleton skeleton-tagline"></div>
+          <div className="skeleton skeleton-feature-item"></div>
+          <div className="skeleton skeleton-feature-item short"></div>
+          <div className="skeleton skeleton-feature-item"></div>
         </div>
+        
         <div className="skeleton-level-button-container">
-          {/* 4개의 버튼 스켈레톤 생성 */}
           <div className="skeleton skeleton-level-button"></div>
           <div className="skeleton skeleton-level-button"></div>
           <div className="skeleton skeleton-level-button"></div>

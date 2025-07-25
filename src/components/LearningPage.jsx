@@ -1,5 +1,3 @@
-// src/components/LearningPage.jsx
-
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { Link, useParams } from "react-router-dom";
@@ -11,7 +9,6 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import FeatureDiscoveryTooltip from "./FeatureDiscoveryTooltip";
 import { levelData } from '../data/levelData';
 
-// [수정] 새로운 레벨 ID와 이름으로 변경
 const teacherLevels = levelData.map(level => ({ id: level.id, name: level.name }));
 
 const MOBILE_BREAKPOINT = 768;
@@ -42,6 +39,10 @@ const LearningPage = () => {
   const [showGuide, setShowGuide] = useState(false);
 
   const [showFeatureGuide, setShowFeatureGuide] = useState(false);
+
+  // [추가] 단어장 토글 버튼을 위한 ref와 위치 정보 state
+  const vocabToggleBtnRef = useRef(null);
+  const [vocabListAnchorRect, setVocabListAnchorRect] = useState(null);
 
   useEffect(() => {
     const hasSeenGuide = localStorage.getItem("hasSeenVocabFeatureGuide");
@@ -209,6 +210,16 @@ const LearningPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [popover]);
 
+  // [추가] 단어장 가시성을 토글하는 함수
+  const handleToggleVocabList = () => {
+    // 단어장을 띄울 때 (isVocabVisible가 false일 때)
+    if (!isVocabVisible && vocabToggleBtnRef.current) {
+      // 버튼의 위치와 크기 정보를 가져와 state에 저장
+      setVocabListAnchorRect(vocabToggleBtnRef.current.getBoundingClientRect());
+    }
+    setIsVocabVisible(prev => !prev);
+  };
+
   const loadingMessage = isGenerating
     ? "오늘의 맞춤 콘텐츠를 만들고 있어요..."
     : "오늘의 콘텐츠를 불러오는 중입니다...";
@@ -239,11 +250,13 @@ const LearningPage = () => {
         <FeatureDiscoveryTooltip onDismiss={handleDismissFeatureGuide} />
       )}
 
+      {/* [수정] FloatingVocabList에 initialAnchorRect prop 전달 */}
       <FloatingVocabList
         words={vocabulary}
         isVisible={isVocabVisible}
         onClose={() => setIsVocabVisible(false)}
         onDelete={handleDeleteWord}
+        initialAnchorRect={vocabListAnchorRect}
       />
 
       <header className="learning-header">
@@ -368,10 +381,12 @@ const LearningPage = () => {
           </button>
         )}
 
+        {/* [수정] 단어장 토글 버튼에 ref와 새로운 onClick 핸들러 연결 */}
         {!isWordSelectMode && !isVocabVisible && (
           <button
+            ref={vocabToggleBtnRef}
             className="vocab-toggle-btn"
-            onClick={() => setIsVocabVisible(true)}
+            onClick={handleToggleVocabList}
           >
             📖
           </button>

@@ -4,7 +4,7 @@ import CustomLoader from './CustomLoader';
 import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import './FloatingVocabList.css';
 
-const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
+const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorRect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingId, setDeletingId] = useState(null);
 
@@ -31,12 +31,30 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       setDimensions({ width: initialWidth, height: initialHeight });
     } else {
       initialWidth = Math.min(window.innerWidth * 0.8, 400);
-      setDimensions({ width: initialWidth, height: 500 });
+      initialHeight = Math.min(window.innerHeight * 0.7, 500); // 모바일 고려 높이 조정
+      setDimensions({ width: initialWidth, height: initialHeight });
     }
 
+    // [수정된 로직] 초기 위치 결정
     if (savedPosition) {
+      // 1. 저장된 위치가 있으면 최우선으로 사용
       setPosition(savedPosition);
+    } else if (initialAnchorRect) {
+      // 2. 저장된 위치는 없지만, 버튼 위치 정보(anchor)가 있으면 그것을 기준으로 계산
+      const margin = 15; // 버튼과 단어장 사이의 간격
+      
+      // 단어장을 버튼의 수평 중앙에 위치시키기 위한 x좌표 계산
+      let newX = initialAnchorRect.left + (initialAnchorRect.width / 2) - (initialWidth / 2);
+      // 단어장을 버튼의 상단에 위치시키기 위한 y좌표 계산
+      let newY = initialAnchorRect.top - initialHeight - margin;
+
+      // 화면 경계 처리: 단어장이 화면 밖으로 나가지 않도록 보정
+      newX = Math.max(10, Math.min(newX, window.innerWidth - initialWidth - 10));
+      newY = Math.max(10, newY);
+
+      setPosition({ x: newX, y: newY });
     } else {
+      // 3. 위 두 조건 모두 해당하지 않으면, 기존처럼 화면 중앙에 배치 (Fallback)
       const defaultX = (window.innerWidth - initialWidth) / 2;
       const defaultY = (window.innerHeight - initialHeight) / 2;
       setPosition({ x: defaultX, y: defaultY });
@@ -47,7 +65,8 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
     });
 
     return () => cancelAnimationFrame(animationFrame);
-  }, []);
+    // 의존성 배열에 initialAnchorRect 추가
+  }, [initialAnchorRect]);
 
   useEffect(() => {
     if (isMounted) {
@@ -166,7 +185,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
         </div>
       </div>
       
-      {/* [추가된 부분] 리사이즈 핸들 아이콘 */}
       <div className="resize-handle" aria-hidden="true">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M13 5L5 13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round"/>

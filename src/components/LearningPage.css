@@ -417,10 +417,7 @@
 .article-content.selectable {
   user-select: none;
   -webkit-user-select: none;
-  /* [수정] white-space: normal -> pre-wrap 으로 변경 */
-  /* 이렇게 하면 JS에서 생성된 텍스트 노드에 포함된 줄바꿈(\n) 문자를 브라우저가 인식하여 화면에 그대로 표시해 줍니다. */
-  white-space: pre-wrap; 
-  line-height: 2.2;
+  white-space: pre-wrap;
 }
 
 .selectable-word {

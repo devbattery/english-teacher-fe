@@ -7,8 +7,10 @@
   --bg-level-native: #f3e5f5;
   --bg-level-toeic: #f5f5f5;
 
+  /* [최종 수정] 데스크탑에서도 부모 컨테이너에 꽉 차도록 100%로 설정 */
+  height: 100%;
+  width: 100%;
   display: flex;
-  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
   position: relative;
@@ -342,7 +344,7 @@ html.dark .room-item.active {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px; /* [수정] 메시지 간 간격 조정 */
+  gap: 16px;
   min-height: 0;
 }
 
@@ -354,35 +356,28 @@ html.dark .room-item.active {
   height: 100%;
 }
 
-/* [추가] 메시지 아바타와 버블을 감싸는 컨테이너 */
 .message-wrapper {
   display: flex;
-  align-items: flex-start; /* 아바타와 메시지 버블 상단 정렬 */
+  align-items: flex-start;
   gap: 12px;
-  max-width: 85%; /* 전체 너비의 85%까지 차지 */
+  max-width: 85%;
 }
 
-/* [추가] 사용자 메시지 래퍼는 오른쪽으로 정렬 */
 .message-wrapper.user {
   justify-content: flex-end;
-  align-self: flex-end; /* 래퍼 자체를 오른쪽으로 */
+  align-self: flex-end;
   max-width: 80%;
 }
 
-/* [추가] AI 메시지 래퍼는 왼쪽으로 정렬 */
 .message-wrapper.ai {
-  align-self: flex-start; /* 래퍼 자체를 왼쪽으로 */
+  align-self: flex-start;
 }
 
-/* [수정] 메시지 아바타 스타일 */
 .message-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  /* [수정] 배경색을 파란색(accent-color)으로 변경 */
   background-color: var(--accent-color);
-  /* [삭제] border: 1px solid var(--border-color); */
-  /* [수정] 글자색을 accent-text-color로 변경 */
   color: var(--accent-text-color);
   display: flex;
   align-items: center;
@@ -393,12 +388,12 @@ html.dark .room-item.active {
   flex-shrink: 0;
 }
 .message-bubble {
-  max-width: 100%; /* [수정] 부모 wrapper 내에서 100% 차지하도록 변경 */
+  max-width: 100%;
   padding: 10px 16px;
   border-radius: 18px;
   line-height: 1.5;
   box-shadow: 0 1px 1px var(--shadow-color);
-  margin-bottom: 0; /* [수정] 간격은 chat-messages의 gap으로 제어 */
+  margin-bottom: 0;
   animation: message-fade-in 0.3s ease-out;
 }
 
@@ -416,13 +411,11 @@ html.dark .room-item.active {
 .message-bubble.user {
   background-color: var(--accent-color);
   color: var(--accent-text-color);
-  /* [삭제] align-self: flex-end; - wrapper가 처리 */
   border-bottom-right-radius: 4px;
 }
 .message-bubble.ai {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  /* [삭제] align-self: flex-start; - wrapper가 처리 */
   border-bottom-left-radius: 4px;
   border: 1px solid var(--border-color);
 }
@@ -641,17 +634,60 @@ html.dark .room-item.active {
   z-index: 999;
 }
 
+/* ======================================================= */
+/* =========== 모바일 UI 최종 수정 (768px 이하) =========== */
+/* ======================================================= */
 @media (max-width: 768px) {
-  .teacher-sidebar {
-    position: absolute;
-    height: 100%;
-    transform: translateX(-100%);
-    border-right: none;
-    box-shadow: 2px 0 5px var(--shadow-color);
+  /* [최종 수정 1] ChatPage 컨테이너를 화면에 고정된 앱처럼 만듭니다. */
+  .chat-page-container {
+    position: fixed; /* 뷰포트에 고정하여 부모의 스크롤 규칙을 무시 */
+    top: 64px;       /* 네비게이션바(64px) 바로 아래에서 시작 */
+    left: 0;
+    width: 100%;
+    /* 네비게이션바를 제외한 '정확한' 나머지 높이를 차지 (스크롤 및 공백 문제 해결) */
+    height: calc(100vh - 64px); 
+    
+    display: flex; /* flex 레이아웃 유지 */
+    flex-direction: row; /* 데스크탑과 동일하게 row로 설정 */
+    overflow: hidden; /* 이 컨테이너 자체가 스크롤되는 것을 방지 */
   }
+
+  /* [최종 수정 2] 사이드바 위치와 동작 방식을 조정합니다. */
+  .teacher-sidebar {
+    position: absolute; /* 부모(.chat-page-container)를 기준으로 위치 */
+    top: 0;
+    left: 0;
+    height: 100%;       /* 부모의 전체 높이를 차지 */
+    width: 300px;
+    max-width: 85%;     /* 화면 너비의 최대 85%까지만 차지 */
+    
+    transform: translateX(-100%);
+    border-right: 1px solid var(--border-color); /* 닫혔을 때 보이지 않게 */
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    z-index: 1001;      /* 최상위로 표시 */
+  }
+
   .teacher-sidebar.open {
     transform: translateX(0);
   }
+
+  /* [최종 수정 3] 메인 채팅창이 항상 전체 너비를 차지하도록 합니다. */
+  .chat-main {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* [최종 수정 4] 오버레이도 부모(.chat-page-container) 기준으로 설정합니다. */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* 사이드바 바로 아래 */
+  }
+
+  /* --- 나머지 모바일 스타일 유지 --- */
   .menu-toggle {
     display: block;
   }
@@ -661,7 +697,6 @@ html.dark .room-item.active {
   .chat-header-title {
     flex-grow: 0;
   }
-
   .image-preview-container {
     margin-left: 0;
     max-width: 150px;
@@ -706,7 +741,7 @@ html.dark .room-item.active {
   color: var(--text-primary);
   font-weight: 600;
 }
-ㄹ .delete-modal-content p {
+.delete-modal-content p {
   margin-bottom: 30px;
   color: var(--text-secondary);
   line-height: 1.6;

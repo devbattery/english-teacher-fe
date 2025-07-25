@@ -336,9 +336,7 @@ const ChatPage = () => {
           <>
             <div className="chat-messages" ref={chatMessagesRef}>
               {isHistoryLoading ? <ChatPageSkeleton /> : messages.map((msg, index) => (
-                // [수정] 메시지 버블을 감싸는 wrapper 추가
                 <div key={index} className={`message-wrapper ${msg.sender}`}>
-                  {/* [추가] AI 메시지일 경우 아바타 표시 */}
                   {msg.sender === 'ai' && (
                     <div className="message-avatar">{currentLevelName.charAt(0)}</div>
                   )}
@@ -354,7 +352,6 @@ const ChatPage = () => {
                   </div>
                 </div>
               ))}
-              {/* [수정] AI 응답 대기 중에도 아바타 표시 */}
               {isAiReplying && (
                 <div className="message-wrapper ai">
                   <div className="message-avatar">{currentLevelName.charAt(0)}</div>

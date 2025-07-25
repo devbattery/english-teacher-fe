@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
-import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip'; // 툴팁 컴포넌트 임포트
+import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import './FloatingVocabList.css';
 
 const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
@@ -101,9 +101,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       onDragStop={(e, d) => setPosition({ x: d.x, y: d.y })}
       onResizeStart={handleInteraction}
       onResizeStop={(e, direction, ref, delta, newPosition) => {
-        setDimensions({ 
-          width: ref.offsetWidth, 
-          height: ref.offsetHeight 
+        setDimensions({
+          width: ref.offsetWidth,
+          height: ref.offsetHeight
         });
         setPosition(newPosition);
       }}
@@ -111,7 +111,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       minHeight={400}
       bounds="window"
       className="floating-vocab-list-rnd"
-      cancel=".vocab-search-wrapper, .vocab-content, .close-btn"
+      cancel=".vocab-search-input, .vocab-content ul, .close-btn, .delete-btn"
     >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
         <FeatureDiscoveryTooltip isVisible={showTooltip} onClose={handleTooltipClose} />
@@ -135,8 +135,8 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
           {filteredWords.length > 0 ? (
             <ul>
               {filteredWords.map(word => (
-                <li 
-                  key={word.id} 
+                <li
+                  key={word.id}
                   className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}
                 >
                   {deletingId === word.id ? (
@@ -164,6 +164,14 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
             </p>
           )}
         </div>
+      </div>
+      
+      {/* [추가된 부분] 리사이즈 핸들 아이콘 */}
+      <div className="resize-handle" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 5L5 13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M13 9L9 13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
       </div>
     </Rnd>
   );

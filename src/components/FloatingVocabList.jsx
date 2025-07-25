@@ -1,5 +1,3 @@
-// src/components/FloatingVocabList.jsx
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
@@ -7,47 +5,72 @@ import './FloatingVocabList.css';
 import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import { useTheme } from '../context/ThemeContext';
 
+// 확인 창을 위한 별도 컴포넌트
+const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="confirmation-overlay" onClick={onClose}>
+      <div 
+        className="confirmation-dialog" 
+        data-theme={theme}
+        onClick={(e) => e.stopPropagation()} // 오버레이 클릭 시 닫히지 않도록
+      >
+        <h4>단어 삭제</h4>
+        <p>
+          <span className="highlight-word">{word?.englishExpression}</span> 단어를 삭제하시겠습니까?
+        </p>
+        <div className="dialog-actions">
+          <button className="cancel-btn" onClick={onClose}>
+            취소
+          </button>
+          <button className="confirm-delete-btn" onClick={onConfirm}>
+            삭제
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorRect }) => {
   const { theme } = useTheme();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingId, setDeletingId] = useState(null);
+  
+  // 삭제 확인을 위한 상태. 삭제할 word 객체를 저장합니다.
+  const [wordToDelete, setWordToDelete] = useState(null);
 
   const [dimensions, setDimensions] = useState({ width: 380, height: 520 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-
+  
   useEffect(() => {
     if (!isVisible) {
       setIsMounted(false);
       return;
     }
-
     const hasSeenTooltip = localStorage.getItem('hasSeenVocabTooltip');
-    if (!hasSeenTooltip) {
-      setShowTooltip(true);
-    }
-
+    if (!hasSeenTooltip) setShowTooltip(true);
     const savedDimensions = JSON.parse(localStorage.getItem('vocabListDimensions'));
     const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
-
-    let initialWidth = 380;
-    let initialHeight = 520;
-
+    let initialWidth = 380, initialHeight = 520;
     if (savedDimensions) {
       initialWidth = savedDimensions.width;
       initialHeight = savedDimensions.height;
     }
     setDimensions({ width: initialWidth, height: initialHeight });
-    
     if (savedPosition) {
       setPosition(savedPosition);
     } else if (initialAnchorRect) {
       const margin = 15;
       let newX = initialAnchorRect.left + (initialAnchorRect.width / 2) - (initialWidth / 2);
       let newY = initialAnchorRect.top - initialHeight - margin;
-
       newX = Math.max(10, Math.min(newX, window.innerWidth - initialWidth - 10));
       newY = Math.max(10, newY);
       setPosition({ x: newX, y: newY });
@@ -56,16 +79,10 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       const defaultY = (window.innerHeight - initialHeight) / 2;
       setPosition({ x: defaultX, y: defaultY });
     }
-
-    const animationFrame = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-
-    return () => {
-      cancelAnimationFrame(animationFrame);
-    }
+    const animationFrame = requestAnimationFrame(() => setIsMounted(true));
+    return () => cancelAnimationFrame(animationFrame);
   }, [isVisible, initialAnchorRect]);
-
+  
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem('vocabListDimensions', JSON.stringify(dimensions));
@@ -85,25 +102,36 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
   const filteredWords = useMemo(() => {
     if (!searchTerm.trim()) return words;
     const lowercasedTerm = searchTerm.toLowerCase();
-    // [수정] 원래 속성 이름인 englishExpression과 koreanMeaning으로 되돌립니다.
     return words.filter(word =>
       (word.englishExpression && word.englishExpression.toLowerCase().includes(lowercasedTerm)) ||
       (word.koreanMeaning && word.koreanMeaning.toLowerCase().includes(lowercasedTerm))
     );
   }, [words, searchTerm]);
 
-  const handleDelete = async (wordId) => {
-    if (deletingId) return;
-    setDeletingId(wordId);
+  // 쓰레기통 클릭 시 바로 삭제하는 대신, 확인 창을 띄우도록 변경
+  const requestDelete = (word) => {
+    if (deletingId) return; // 다른 단어 삭제 중이면 무시
+    setWordToDelete(word);
+  };
+
+  // 확인 창에서 '삭제' 버튼을 눌렀을 때 실행될 함수
+  const handleConfirmDelete = async () => {
+    if (!wordToDelete) return;
+
+    setDeletingId(wordToDelete.id);
+    setWordToDelete(null); // 확인 창 닫기
+
     try {
-      await onDelete(wordId);
+      await onDelete(wordToDelete.id);
     } catch (error) {
       console.error("Failed to delete word:", error);
       alert("단어 삭제에 실패했습니다.");
     } finally {
+      // API 호출이 끝나면 로딩 상태 해제
       setDeletingId(null);
     }
   };
+
 
   if (!isVisible) {
     return null;
@@ -117,10 +145,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       onDragStop={(e, d) => setPosition({ x: d.x, y: d.y })}
       onResizeStart={handleInteraction}
       onResizeStop={(e, direction, ref, delta, newPosition) => {
-        setDimensions({
-          width: ref.offsetWidth,
-          height: ref.offsetHeight
-        });
+        setDimensions({ width: ref.offsetWidth, height: ref.offsetHeight });
         setPosition(newPosition);
       }}
       minWidth={320}
@@ -141,7 +166,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         )}
         
         <header className="vocab-header" onMouseDown={handleInteraction}>
-          <h3>My Vocabulary 📝</h3>
+          <h3>단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
@@ -171,12 +196,11 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
                   ) : (
                     <>
                       <div className="word-details">
-                        {/* [수정] 원래 속성 이름인 englishExpression과 koreanMeaning으로 되돌립니다. */}
                         <span className="expression">{word.englishExpression}</span>
                         <span className="meaning">{word.koreanMeaning}</span>
                       </div>
                       <button
-                        onClick={() => handleDelete(word.id)}
+                        onClick={() => requestDelete(word)}
                         className="delete-btn"
                         disabled={deletingId !== null}
                         aria-label={`Delete ${word.englishExpression}`}
@@ -189,12 +213,21 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
               ))}
             </ul>
           ) : (
-            <div className="empty-message">
+             <div className="empty-message">
               <p>{words.length > 0 ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '저장된 단어가 없습니다.'}</p>
               <span>본문에서 단어를 선택하여 추가해 보세요!</span>
             </div>
           )}
         </main>
+        
+        {/* 확인 창 렌더링 */}
+        <ConfirmationDialog 
+          isOpen={!!wordToDelete}
+          onClose={() => setWordToDelete(null)}
+          onConfirm={handleConfirmDelete}
+          word={wordToDelete}
+          theme={theme}
+        />
       </div>
       
       <div className="resize-handle" aria-hidden="true">

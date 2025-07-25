@@ -1,6 +1,6 @@
 /* FloatingVocabList.css */
 
-/* [수정] 테마별 색상 변수 정의 */
+/* 테마별 색상 변수 정의 */
 :root {
   /* Light Theme Variables */
   --vocab-bg-light: rgba(248, 248, 248, 0.75);
@@ -25,7 +25,7 @@
   --vocab-shadow-dark: rgba(0, 0, 0, 0.3);
 }
 
-/* [추가] 테마에 따라 사용할 변수 매핑 */
+/* 테마에 따라 사용할 변수 매핑 */
 [data-theme='light'] {
   --vocab-bg: var(--vocab-bg-light);
   --vocab-border: var(--vocab-border-light);
@@ -63,7 +63,7 @@
   overflow: hidden;
   z-index: 1001;
   cursor: move;
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary);
 }
 
 
@@ -88,8 +88,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background-color: var(--vocab-header-bg); /* [수정] 변수 사용 */
-  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
+  background-color: var(--vocab-header-bg);
+  border-bottom: 1px solid var(--vocab-border);
   flex-shrink: 0;
 }
 
@@ -97,7 +97,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary);
 }
 
 .close-btn {
@@ -105,7 +105,7 @@
   border: none;
   font-size: 1.6rem;
   font-weight: 400;
-  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-secondary);
   cursor: pointer;
   padding: 0;
   width: 28px;
@@ -116,13 +116,13 @@
 }
 
 .close-btn:hover {
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
-  background-color: var(--vocab-btn-hover-bg); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary);
+  background-color: var(--vocab-btn-hover-bg);
 }
 
 .vocab-search-wrapper {
   padding: 16px 20px;
-  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
+  border-bottom: 1px solid var(--vocab-border);
   flex-shrink: 0;
 }
 
@@ -130,8 +130,8 @@
   width: 100%;
   padding: 10px 15px;
   border: 1px solid transparent;
-  background-color: var(--vocab-input-bg); /* [수정] 변수 사용 */
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  background-color: var(--vocab-input-bg);
+  color: var(--vocab-text-primary);
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -139,11 +139,11 @@
   cursor: text;
 }
 .vocab-search-input::placeholder {
-  color: var(--vocab-text-secondary); /* [추가] 플레이스홀더 색상 */
+  color: var(--vocab-text-secondary);
 }
 
 .vocab-search-input:focus {
-  background-color: var(--vocab-input-focus-bg); /* [수정] 변수 사용 */
+  background-color: var(--vocab-input-focus-bg);
   border-color: #007aff;
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
 }
@@ -166,7 +166,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px 12px 0;
-  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
+  border-bottom: 1px solid var(--vocab-border);
   transition: background-color 0.2s ease, opacity 0.3s ease, height 0.3s ease;
 }
 
@@ -202,11 +202,11 @@
 .expression {
   font-weight: 500;
   font-size: 1.05rem;
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary);
 }
 
 .meaning {
-  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -215,7 +215,7 @@
   border: none;
   cursor: pointer;
   font-size: 1.1rem;
-  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-secondary);
   padding: 8px;
   border-radius: 50%;
   width: 32px;
@@ -249,14 +249,14 @@
   text-align: center;
   height: 100%;
   padding: 40px 20px;
-  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-secondary);
   cursor: default;
 }
 .empty-message p {
   font-size: 1.1em;
   font-weight: 500;
   margin: 0;
-  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary);
 }
 .empty-message span {
   font-size: 0.9em;
@@ -273,7 +273,7 @@
   align-items: flex-end;
   justify-content: flex-end;
   cursor: se-resize;
-  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  color: var(--vocab-text-secondary);
   opacity: 0.5;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
@@ -289,11 +289,113 @@
   background: transparent;
 }
 .vocab-content::-webkit-scrollbar-thumb {
-  background-color: var(--vocab-btn-hover-bg); /* [수정] 변수 사용 */
+  background-color: var(--vocab-btn-hover-bg);
   border: 3px solid transparent;
   background-clip: padding-box;
   border-radius: 10px;
 }
 .vocab-content::-webkit-scrollbar-thumb:hover {
-  background-color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  background-color: var(--vocab-text-secondary);
+}
+
+
+/* ======================================= */
+/* ====== Confirmation Dialog Styles ===== */
+/* ======================================= */
+
+.confirmation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.confirmation-dialog {
+  background-color: var(--vocab-bg);
+  border: 1px solid var(--vocab-border);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 340px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: scaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.confirmation-dialog h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--vocab-text-primary);
+}
+
+.confirmation-dialog p {
+  margin: 0 0 24px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--vocab-text-secondary);
+}
+
+.confirmation-dialog .highlight-word {
+  font-weight: 600;
+  color: var(--vocab-text-primary);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.dialog-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dialog-actions .cancel-btn {
+  background-color: var(--vocab-input-bg);
+  color: var(--vocab-text-primary);
+}
+
+.dialog-actions .cancel-btn:hover {
+  filter: brightness(0.95);
+}
+
+[data-theme='dark'] .dialog-actions .cancel-btn:hover {
+  filter: brightness(1.2);
+}
+
+.dialog-actions .confirm-delete-btn {
+  background-color: #007aff; /* System Blue */
+  color: #fff;
+}
+
+.dialog-actions .confirm-delete-btn:hover {
+  background-color: #005ecb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

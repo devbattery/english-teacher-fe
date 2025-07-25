@@ -1,19 +1,29 @@
+// src/components/FloatingVocabList.jsx
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
-import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import './FloatingVocabList.css';
+import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
+import { useTheme } from '../context/ThemeContext';
 
 const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorRect }) => {
+  const { theme } = useTheme();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingId, setDeletingId] = useState(null);
 
-  const [dimensions, setDimensions] = useState({ width: 400, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 380, height: 520 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
+    if (!isVisible) {
+      setIsMounted(false);
+      return;
+    }
+
     const hasSeenTooltip = localStorage.getItem('hasSeenVocabTooltip');
     if (!hasSeenTooltip) {
       setShowTooltip(true);
@@ -22,39 +32,26 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     const savedDimensions = JSON.parse(localStorage.getItem('vocabListDimensions'));
     const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
 
-    let initialWidth = 400;
-    let initialHeight = 500;
+    let initialWidth = 380;
+    let initialHeight = 520;
 
     if (savedDimensions) {
       initialWidth = savedDimensions.width;
       initialHeight = savedDimensions.height;
-      setDimensions({ width: initialWidth, height: initialHeight });
-    } else {
-      initialWidth = Math.min(window.innerWidth * 0.8, 400);
-      initialHeight = Math.min(window.innerHeight * 0.7, 500); // 모바일 고려 높이 조정
-      setDimensions({ width: initialWidth, height: initialHeight });
     }
-
-    // [수정된 로직] 초기 위치 결정
+    setDimensions({ width: initialWidth, height: initialHeight });
+    
     if (savedPosition) {
-      // 1. 저장된 위치가 있으면 최우선으로 사용
       setPosition(savedPosition);
     } else if (initialAnchorRect) {
-      // 2. 저장된 위치는 없지만, 버튼 위치 정보(anchor)가 있으면 그것을 기준으로 계산
-      const margin = 15; // 버튼과 단어장 사이의 간격
-      
-      // 단어장을 버튼의 수평 중앙에 위치시키기 위한 x좌표 계산
+      const margin = 15;
       let newX = initialAnchorRect.left + (initialAnchorRect.width / 2) - (initialWidth / 2);
-      // 단어장을 버튼의 상단에 위치시키기 위한 y좌표 계산
       let newY = initialAnchorRect.top - initialHeight - margin;
 
-      // 화면 경계 처리: 단어장이 화면 밖으로 나가지 않도록 보정
       newX = Math.max(10, Math.min(newX, window.innerWidth - initialWidth - 10));
       newY = Math.max(10, newY);
-
       setPosition({ x: newX, y: newY });
     } else {
-      // 3. 위 두 조건 모두 해당하지 않으면, 기존처럼 화면 중앙에 배치 (Fallback)
       const defaultX = (window.innerWidth - initialWidth) / 2;
       const defaultY = (window.innerHeight - initialHeight) / 2;
       setPosition({ x: defaultX, y: defaultY });
@@ -64,9 +61,10 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       setIsMounted(true);
     });
 
-    return () => cancelAnimationFrame(animationFrame);
-    // 의존성 배열에 initialAnchorRect 추가
-  }, [initialAnchorRect]);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    }
+  }, [isVisible, initialAnchorRect]);
 
   useEffect(() => {
     if (isMounted) {
@@ -81,17 +79,16 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
   };
 
   const handleInteraction = () => {
-    if (showTooltip) {
-      handleTooltipClose();
-    }
+    if (showTooltip) handleTooltipClose();
   };
 
   const filteredWords = useMemo(() => {
     if (!searchTerm.trim()) return words;
     const lowercasedTerm = searchTerm.toLowerCase();
+    // [수정] 원래 속성 이름인 englishExpression과 koreanMeaning으로 되돌립니다.
     return words.filter(word =>
-      word.englishExpression.toLowerCase().includes(lowercasedTerm) ||
-      word.koreanMeaning.toLowerCase().includes(lowercasedTerm)
+      (word.englishExpression && word.englishExpression.toLowerCase().includes(lowercasedTerm)) ||
+      (word.koreanMeaning && word.koreanMeaning.toLowerCase().includes(lowercasedTerm))
     );
   }, [words, searchTerm]);
 
@@ -126,23 +123,32 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         });
         setPosition(newPosition);
       }}
-      minWidth={300}
+      minWidth={320}
       minHeight={400}
       bounds="window"
       className="floating-vocab-list-rnd"
-      cancel=".vocab-search-input, .vocab-content ul, .close-btn, .delete-btn"
+      data-theme={theme}
+      cancel=".vocab-search-input, .vocab-content ul, .close-btn, .delete-btn, .feature-discovery-tooltip"
     >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
-        <FeatureDiscoveryTooltip isVisible={showTooltip} onClose={handleTooltipClose} />
-        <div className="vocab-header">
+        
+        {showTooltip && (
+          <FeatureDiscoveryTooltip
+            onDismiss={handleTooltipClose}
+            title="새로운 단어장"
+            content="이 창은 드래그하여 옮기거나, 우측 하단 모서리를 드래그하여 크기를 조절할 수 있습니다."
+          />
+        )}
+        
+        <header className="vocab-header" onMouseDown={handleInteraction}>
           <h3>My Vocabulary 📝</h3>
-          <button onClick={onClose} className="close-btn">×</button>
-        </div>
+          <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
+        </header>
 
         <div className="vocab-search-wrapper">
           <input
             type="text"
-            placeholder="영어 혹은 한국어를 입력하세요."
+            placeholder="Search words..."
             className="vocab-search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -150,7 +156,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           />
         </div>
 
-        <div className="vocab-content">
+        <main className="vocab-content">
           {filteredWords.length > 0 ? (
             <ul>
               {filteredWords.map(word => (
@@ -159,11 +165,16 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
                   className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}
                 >
                   {deletingId === word.id ? (
-                    <CustomLoader size="small" />
+                    <div className="loader-container">
+                      <CustomLoader size="small" />
+                    </div>
                   ) : (
                     <>
-                      <span className="expression">{word.englishExpression}</span>
-                      <span className="meaning">{word.koreanMeaning}</span>
+                      <div className="word-details">
+                        {/* [수정] 원래 속성 이름인 englishExpression과 koreanMeaning으로 되돌립니다. */}
+                        <span className="expression">{word.englishExpression}</span>
+                        <span className="meaning">{word.koreanMeaning}</span>
+                      </div>
                       <button
                         onClick={() => handleDelete(word.id)}
                         className="delete-btn"
@@ -178,17 +189,18 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
               ))}
             </ul>
           ) : (
-            <p className="empty-message">
-              {words.length > 0 ? `No results for "${searchTerm}"` : '저장된 단어가 없습니다. 본문에서 단어를 드래그하여 추가해보세요!'}
-            </p>
+            <div className="empty-message">
+              <p>{words.length > 0 ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '저장된 단어가 없습니다.'}</p>
+              <span>본문에서 단어를 선택하여 추가해 보세요!</span>
+            </div>
           )}
-        </div>
+        </main>
       </div>
       
       <div className="resize-handle" aria-hidden="true">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13 5L5 13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M13 9L9 13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M13 5L5 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M13 9L9 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       </div>
     </Rnd>

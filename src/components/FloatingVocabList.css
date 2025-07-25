@@ -1,27 +1,86 @@
 /* FloatingVocabList.css */
 
+/* [수정] 테마별 색상 변수 정의 */
+:root {
+  /* Light Theme Variables */
+  --vocab-bg-light: rgba(248, 248, 248, 0.75);
+  --vocab-border-light: rgba(0, 0, 0, 0.1);
+  --vocab-text-primary-light: #222;
+  --vocab-text-secondary-light: #666;
+  --vocab-header-bg-light: rgba(0, 0, 0, 0.03);
+  --vocab-input-bg-light: rgba(0, 0, 0, 0.05);
+  --vocab-input-focus-bg-light: #ffffff;
+  --vocab-btn-hover-bg-light: rgba(0, 0, 0, 0.1);
+  --vocab-shadow-light: rgba(0, 0, 0, 0.15);
+
+  /* Dark Theme Variables */
+  --vocab-bg-dark: rgba(45, 45, 45, 0.75);
+  --vocab-border-dark: rgba(255, 255, 255, 0.15);
+  --vocab-text-primary-dark: #f0f0f0;
+  --vocab-text-secondary-dark: #a0a0a0;
+  --vocab-header-bg-dark: rgba(255, 255, 255, 0.05);
+  --vocab-input-bg-dark: rgba(255, 255, 255, 0.1);
+  --vocab-input-focus-bg-dark: #333333;
+  --vocab-btn-hover-bg-dark: rgba(255, 255, 255, 0.15);
+  --vocab-shadow-dark: rgba(0, 0, 0, 0.3);
+}
+
+/* [추가] 테마에 따라 사용할 변수 매핑 */
+[data-theme='light'] {
+  --vocab-bg: var(--vocab-bg-light);
+  --vocab-border: var(--vocab-border-light);
+  --vocab-text-primary: var(--vocab-text-primary-light);
+  --vocab-text-secondary: var(--vocab-text-secondary-light);
+  --vocab-header-bg: var(--vocab-header-bg-light);
+  --vocab-input-bg: var(--vocab-input-bg-light);
+  --vocab-input-focus-bg: var(--vocab-input-focus-bg-light);
+  --vocab-btn-hover-bg: var(--vocab-btn-hover-bg-light);
+  --vocab-shadow: var(--vocab-shadow-light);
+}
+
+[data-theme='dark'] {
+  --vocab-bg: var(--vocab-bg-dark);
+  --vocab-border: var(--vocab-border-dark);
+  --vocab-text-primary: var(--vocab-text-primary-dark);
+  --vocab-text-secondary: var(--vocab-text-secondary-dark);
+  --vocab-header-bg: var(--vocab-header-bg-dark);
+  --vocab-input-bg: var(--vocab-input-bg-dark);
+  --vocab-input-focus-bg: var(--vocab-input-focus-bg-dark);
+  --vocab-btn-hover-bg: var(--vocab-btn-hover-bg-dark);
+  --vocab-shadow: var(--vocab-shadow-dark);
+}
+
+
 .floating-vocab-list-rnd {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background-color: var(--vocab-bg);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 var(--vocab-shadow);
+  border: 1px solid var(--vocab-border);
+  
   overflow: hidden;
   z-index: 1001;
-  cursor: move; /* 창 전체에 드래그 커서 적용 */
+  cursor: move;
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
 }
+
 
 .floating-vocab-list-inner {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: transparent;
-  transition: opacity 0.3s ease;
+  
   opacity: 0;
+  transform: scale(0.97) translateY(10px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .floating-vocab-list-inner.mounted {
   opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .vocab-header {
@@ -29,76 +88,86 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background-color: rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--vocab-header-bg); /* [수정] 변수 사용 */
+  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
   flex-shrink: 0;
 }
 
 .vocab-header h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 1.8rem;
-  font-weight: 300;
-  color: #888;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
   cursor: pointer;
-  padding: 0 8px;
-  line-height: 1;
-  transition: color 0.2s ease;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .close-btn:hover {
-  color: #000;
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+  background-color: var(--vocab-btn-hover-bg); /* [수정] 변수 사용 */
 }
 
 .vocab-search-wrapper {
-  padding: 15px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
   flex-shrink: 0;
 }
 
 .vocab-search-input {
   width: 100%;
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid transparent;
+  background-color: var(--vocab-input-bg); /* [수정] 변수 사용 */
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  cursor: text; /* 입력창에서는 텍스트 커서 유지 */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  cursor: text;
+}
+.vocab-search-input::placeholder {
+  color: var(--vocab-text-secondary); /* [추가] 플레이스홀더 색상 */
 }
 
 .vocab-search-input:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  background-color: var(--vocab-input-focus-bg); /* [수정] 변수 사용 */
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
 }
 
 .vocab-content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 10px 20px;
+  padding: 8px 4px 8px 20px;
 }
 
 .vocab-content ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  cursor: default; /* 리스트 영역에서는 기본 커서 사용 */
+  cursor: default;
 }
 
 .vocab-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s ease;
+  padding: 12px 16px 12px 0;
+  border-bottom: 1px solid var(--vocab-border); /* [수정] 변수 사용 */
+  transition: background-color 0.2s ease, opacity 0.3s ease, height 0.3s ease;
 }
 
 .vocab-item:last-child {
@@ -108,34 +177,63 @@
 .vocab-item.is-deleting {
   justify-content: center;
   align-items: center;
-  min-height: 50px;
+  min-height: 60px;
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.word-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
 }
 
 .expression {
   font-weight: 500;
-  color: #333;
-  flex: 1;
+  font-size: 1.05rem;
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
 }
 
 .meaning {
-  color: #666;
-  flex: 1;
-  text-align: left;
-  margin-left: 15px;
+  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  font-size: 0.9rem;
 }
 
 .delete-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2rem;
-  color: #aaa;
-  padding: 5px;
-  transition: color 0.2s ease;
+  font-size: 1.1rem;
+  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  padding: 8px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.vocab-item:hover .delete-btn {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .delete-btn:hover {
   color: #e53935;
+  background-color: rgba(229, 57, 53, 0.1);
 }
 
 .delete-btn:disabled {
@@ -144,50 +242,58 @@
 }
 
 .empty-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  height: 100%;
   padding: 40px 20px;
-  color: #888;
-  font-style: italic;
+  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
   cursor: default;
 }
+.empty-message p {
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 0;
+  color: var(--vocab-text-primary); /* [수정] 변수 사용 */
+}
+.empty-message span {
+  font-size: 0.9em;
+  margin-top: 8px;
+}
 
-/* [추가된 부분] 리사이즈 핸들 스타일 */
 .resize-handle {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+  bottom: 4px;
+  right: 4px;
   width: 20px;
   height: 20px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   cursor: se-resize;
-  pointer-events: none;
+  color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
+  opacity: 0.5;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.floating-vocab-list-rnd:hover .resize-handle {
+  opacity: 1;
 }
 
-.resize-handle svg {
-  transition: stroke 0.2s ease;
-}
-
-.floating-vocab-list-rnd:hover .resize-handle svg path {
-  stroke: #888;
-}
-
-/* 스크롤바 스타일링 */
+/* 스크롤바도 테마 적용 */
 .vocab-content::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
-
 .vocab-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: transparent;
 }
-
 .vocab-content::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background-color: var(--vocab-btn-hover-bg); /* [수정] 변수 사용 */
+  border: 3px solid transparent;
+  background-clip: padding-box;
   border-radius: 10px;
 }
-
 .vocab-content::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+  background-color: var(--vocab-text-secondary); /* [수정] 변수 사용 */
 }

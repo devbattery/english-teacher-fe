@@ -1,99 +1,83 @@
-.feature-tooltip-container {
-  position: fixed;
-  bottom: 85px; /* FAB 버튼 바로 위 */
-  right: 20px;
-  width: 300px;
-  z-index: 1001;
-  animation: tooltip-fade-in 0.5s ease-out;
-}
+/* FeatureDiscoveryTooltip.css */
 
-@keyframes tooltip-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.tooltip-bubble {
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 25px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  position: relative;
-}
-
-.dismiss-btn {
+.feature-discovery-tooltip {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.tooltip-header {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-}
-
-.tooltip-content p {
-  font-size: 0.95em;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0 0 15px 0;
-}
-
-.tooltip-content ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-  font-size: 0.9em;
-}
-
-.tooltip-content li {
-  color: var(--text-secondary);
-  margin-bottom: 8px;
+  top: 80px; /* 헤더 아래에 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1002; /* 단어장 위에 표시 */
+  width: 280px;
+  text-align: center;
+  font-size: 0.95rem;
   line-height: 1.5;
 }
 
-.tooltip-content strong {
-  color: var(--accent-color);
-  font-weight: 600;
+.feature-discovery-tooltip.fade-in {
+  animation: fadeInDown 0.4s ease-out forwards;
 }
 
-.confirm-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: var(--accent-color);
-  color: var(--accent-text-color);
+.feature-discovery-tooltip.fade-out {
+  animation: fadeOutUp 0.3s ease-in forwards;
+}
+
+.tooltip-content p {
+  margin: 0 0 15px 0;
+}
+
+.tooltip-content strong {
+  color: #81c784; /* 밝은 녹색으로 강조 */
+}
+
+.tooltip-close-btn {
+  background-color: #4a90e2;
+  color: white;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  padding: 8px 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 10px;
-}
-.confirm-btn:hover {
-  background-color: var(--accent-color-hover);
+  font-weight: bold;
+  transition: background-color 0.2s ease;
 }
 
-.tooltip-pointer {
+.tooltip-close-btn:hover {
+  background-color: #357abd;
+}
+
+.tooltip-arrow {
   position: absolute;
-  bottom: -10px;
-  right: 28px; /* FAB 버튼 중앙에 맞춤 */
-  width: 20px;
-  height: 20px;
-  background-color: var(--bg-primary);
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  transform: rotate(45deg);
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #333;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -15px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -15px);
+  }
 }

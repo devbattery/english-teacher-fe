@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
+import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip'; // 툴팁 컴포넌트 임포트
 import './FloatingVocabList.css';
 
 const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
@@ -10,8 +11,14 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
   const [dimensions, setDimensions] = useState({ width: 400, height: 500 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
+    const hasSeenTooltip = localStorage.getItem('hasSeenVocabTooltip');
+    if (!hasSeenTooltip) {
+      setShowTooltip(true);
+    }
+
     const savedDimensions = JSON.parse(localStorage.getItem('vocabListDimensions'));
     const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
 
@@ -35,9 +42,11 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       setPosition({ x: defaultX, y: defaultY });
     }
 
-    // Use a timeout to ensure the initial position is set before the animation starts
-    const timer = setTimeout(() => setIsMounted(true), 10);
-    return () => clearTimeout(timer);
+    const animationFrame = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+
+    return () => cancelAnimationFrame(animationFrame);
   }, []);
 
   useEffect(() => {
@@ -46,6 +55,17 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       localStorage.setItem('vocabListPosition', JSON.stringify(position));
     }
   }, [dimensions, position, isMounted]);
+
+  const handleTooltipClose = () => {
+    setShowTooltip(false);
+    localStorage.setItem('hasSeenVocabTooltip', 'true');
+  };
+
+  const handleInteraction = () => {
+    if (showTooltip) {
+      handleTooltipClose();
+    }
+  };
 
   const filteredWords = useMemo(() => {
     if (!searchTerm.trim()) return words;
@@ -77,7 +97,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
     <Rnd
       size={dimensions}
       position={position}
+      onDragStart={handleInteraction}
       onDragStop={(e, d) => setPosition({ x: d.x, y: d.y })}
+      onResizeStart={handleInteraction}
       onResizeStop={(e, direction, ref, delta, newPosition) => {
         setDimensions({ 
           width: ref.offsetWidth, 
@@ -89,9 +111,10 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       minHeight={400}
       bounds="window"
       className="floating-vocab-list-rnd"
-      cancel=".vocab-search-wrapper, .vocab-content"
+      cancel=".vocab-search-wrapper, .vocab-content, .close-btn"
     >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
+        <FeatureDiscoveryTooltip isVisible={showTooltip} onClose={handleTooltipClose} />
         <div className="vocab-header">
           <h3>My Vocabulary 📝</h3>
           <button onClick={onClose} className="close-btn">×</button>

@@ -1,38 +1,37 @@
-import React from "react";
-import "./FeatureDiscoveryTooltip.css";
+import React, { useState, useEffect } from 'react';
+import './FeatureDiscoveryTooltip.css';
 
-const FeatureDiscoveryTooltip = ({ onDismiss }) => {
+const FeatureDiscoveryTooltip = ({ isVisible, onClose }) => {
+  const [isFadingOut, setIsFadingOut] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsFadingOut(false);
+    }
+  }, [isVisible]);
+
+  const handleClose = () => {
+    setIsFadingOut(true);
+    setTimeout(onClose, 300); // 애니메이션 시간과 동일하게 설정
+  };
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <div className="feature-tooltip-container">
-      <div className="tooltip-bubble">
-        <button
-          className="dismiss-btn"
-          onClick={onDismiss}
-          aria-label="도움말 닫기"
-        >
-          ×
-        </button>
-        <div className="tooltip-header">✨ 새로운 '나의 단어장' 기능!</div>
-        <div className="tooltip-content">
-          <p>
-            이제 본문에서 모르는 단어나 숙어를 저장하고, 언제든지{" "}
-            <strong>📖 버튼</strong>을 눌러 복습할 수 있어요.
-          </p>
-          <ul>
-            <li>
-              <strong>PC:</strong> 단어를 드래그하여 저장하세요.
-            </li>
-            <li>
-              <strong>모바일:</strong> <strong>✍🏻 버튼</strong>을 눌러 선택
-              모드를 켜고 단어를 탭하여 저장하세요.
-            </li>
-          </ul>
-        </div>
-        <button className="confirm-btn" onClick={onDismiss}>
+    <div className={`feature-discovery-tooltip ${isFadingOut ? 'fade-out' : 'fade-in'}`}>
+      <div className="tooltip-content">
+        <p>
+          <strong>✨ 새로운 기능!</strong><br />
+          이제 단어장을 원하는 곳으로 옮기거나<br />
+          모서리를 드래그하여 크기를 조절할 수 있어요.
+        </p>
+        <button onClick={handleClose} className="tooltip-close-btn">
           알겠어요!
         </button>
       </div>
-      <div className="tooltip-pointer"></div>
+      <div className="tooltip-arrow"></div>
     </div>
   );
 };

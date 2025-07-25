@@ -1,3 +1,5 @@
+// src/components/FloatingVocabList.jsx
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
@@ -16,11 +18,11 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
       <div 
         className="confirmation-dialog" 
         data-theme={theme}
-        onClick={(e) => e.stopPropagation()} // 오버레이 클릭 시 닫히지 않도록
+        onClick={(e) => e.stopPropagation()}
       >
         <h4>단어 삭제</h4>
         <p>
-          <span className="highlight-word">{word?.englishExpression}</span> 단어를 삭제하시겠습니까?
+          정말로 '<span className="highlight-word">{word?.englishExpression}</span>' 단어를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
         </p>
         <div className="dialog-actions">
           <button className="cancel-btn" onClick={onClose}>
@@ -38,13 +40,9 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
 
 const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorRect }) => {
   const { theme } = useTheme();
-
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingId, setDeletingId] = useState(null);
-  
-  // 삭제 확인을 위한 상태. 삭제할 word 객체를 저장합니다.
   const [wordToDelete, setWordToDelete] = useState(null);
-
   const [dimensions, setDimensions] = useState({ width: 380, height: 520 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = useState(false);
@@ -108,18 +106,15 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     );
   }, [words, searchTerm]);
 
-  // 쓰레기통 클릭 시 바로 삭제하는 대신, 확인 창을 띄우도록 변경
   const requestDelete = (word) => {
-    if (deletingId) return; // 다른 단어 삭제 중이면 무시
+    if (deletingId) return;
     setWordToDelete(word);
   };
 
-  // 확인 창에서 '삭제' 버튼을 눌렀을 때 실행될 함수
   const handleConfirmDelete = async () => {
     if (!wordToDelete) return;
-
     setDeletingId(wordToDelete.id);
-    setWordToDelete(null); // 확인 창 닫기
+    setWordToDelete(null); 
 
     try {
       await onDelete(wordToDelete.id);
@@ -127,11 +122,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       console.error("Failed to delete word:", error);
       alert("단어 삭제에 실패했습니다.");
     } finally {
-      // API 호출이 끝나면 로딩 상태 해제
       setDeletingId(null);
     }
   };
-
 
   if (!isVisible) {
     return null;
@@ -153,7 +146,8 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       bounds="window"
       className="floating-vocab-list-rnd"
       data-theme={theme}
-      cancel=".vocab-search-input, .vocab-content ul, .close-btn, .delete-btn, .feature-discovery-tooltip"
+      // [수정] cancel 속성에 .confirmation-dialog를 추가합니다.
+      cancel=".vocab-search-input, .vocab-content ul, .close-btn, .delete-btn, .feature-discovery-tooltip, .confirmation-dialog"
     >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
         
@@ -166,7 +160,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         )}
         
         <header className="vocab-header" onMouseDown={handleInteraction}>
-          <h3>단어장 📝</h3>
+          <h3>My Vocabulary 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
@@ -220,7 +214,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           )}
         </main>
         
-        {/* 확인 창 렌더링 */}
         <ConfirmationDialog 
           isOpen={!!wordToDelete}
           onClose={() => setWordToDelete(null)}

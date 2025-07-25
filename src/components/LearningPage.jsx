@@ -1,4 +1,7 @@
+// src/components/LearningPage.jsx
+
 import React, { useState, useEffect, useRef, useMemo } from "react";
+// [수정] createPortal 임포트
 import { createPortal } from "react-dom";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/api";
@@ -40,7 +43,6 @@ const LearningPage = () => {
 
   const [showFeatureGuide, setShowFeatureGuide] = useState(false);
 
-  // [추가] 단어장 토글 버튼을 위한 ref와 위치 정보 state
   const vocabToggleBtnRef = useRef(null);
   const [vocabListAnchorRect, setVocabListAnchorRect] = useState(null);
 
@@ -210,11 +212,8 @@ const LearningPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [popover]);
 
-  // [추가] 단어장 가시성을 토글하는 함수
   const handleToggleVocabList = () => {
-    // 단어장을 띄울 때 (isVocabVisible가 false일 때)
     if (!isVocabVisible && vocabToggleBtnRef.current) {
-      // 버튼의 위치와 크기 정보를 가져와 state에 저장
       setVocabListAnchorRect(vocabToggleBtnRef.current.getBoundingClientRect());
     }
     setIsVocabVisible(prev => !prev);
@@ -250,14 +249,21 @@ const LearningPage = () => {
         <FeatureDiscoveryTooltip onDismiss={handleDismissFeatureGuide} />
       )}
 
-      {/* [수정] FloatingVocabList에 initialAnchorRect prop 전달 */}
-      <FloatingVocabList
-        words={vocabulary}
-        isVisible={isVocabVisible}
-        onClose={() => setIsVocabVisible(false)}
-        onDelete={handleDeleteWord}
-        initialAnchorRect={vocabListAnchorRect}
-      />
+      {/* 
+        [수정] FloatingVocabList를 createPortal로 감싸서 document.body에 렌더링합니다.
+        이렇게 하면 부모 컴포넌트의 스크롤에 영향을 받지 않습니다.
+        isVocabVisible 조건은 Portal 내부의 컴포넌트가 알아서 처리하므로 Portal 자체를 조건부 렌더링할 필요는 없습니다.
+      */}
+      {createPortal(
+        <FloatingVocabList
+          words={vocabulary}
+          isVisible={isVocabVisible}
+          onClose={() => setIsVocabVisible(false)}
+          onDelete={handleDeleteWord}
+          initialAnchorRect={vocabListAnchorRect}
+        />,
+        document.body
+      )}
 
       <header className="learning-header">
         <h1>Daily Contents</h1>
@@ -291,6 +297,8 @@ const LearningPage = () => {
               >
                 {isMobile && isWordSelectMode
                   ? wordsArray.map((word, index) =>
+                      // [수정] 렌더링 로직은 기존과 동일하게 유지합니다.
+                      // CSS 수정으로 줄바꿈 문제가 해결되므로 JS 로직을 복잡하게 바꿀 필요가 없습니다.
                       word.trim() ? (
                         <span
                           key={index}
@@ -381,7 +389,6 @@ const LearningPage = () => {
           </button>
         )}
 
-        {/* [수정] 단어장 토글 버튼에 ref와 새로운 onClick 핸들러 연결 */}
         {!isWordSelectMode && !isVocabVisible && (
           <button
             ref={vocabToggleBtnRef}

@@ -9,14 +9,10 @@ import CustomLoader from "./CustomLoader";
 import FloatingVocabList from "./FloatingVocabList";
 import useWindowWidth from "../hooks/useWindowWidth";
 import FeatureDiscoveryTooltip from "./FeatureDiscoveryTooltip";
+import { levelData } from '../data/levelData';
 
 // [수정] 새로운 레벨 ID와 이름으로 변경
-const teacherLevels = [
-  { id: "elementary", name: "초등학생" },
-  { id: "highschool", name: "고등학생 (수능)" },
-  { id: "native", name: "원어민 (뉴스/교양)" },
-  { id: "toeic", name: "TOEIC 전문가" },
-];
+const teacherLevels = levelData.map(level => ({ id: level.id, name: level.name }));
 
 const MOBILE_BREAKPOINT = 768;
 

@@ -3,7 +3,7 @@
 export const levelData = [
   {
     id: 'elementary',
-    name: '왕초보 (Elementary)',
+    name: '왕초보',
     // [추가] LevelGuidePage에서 사용할 데이터
     summary: "영어 단어만 겨우 알거나, 간단한 문장만 만들 수 있는 단계",
     description: "AI 선생님이 아주 쉽고 간단한 단어와 문장 구조를 사용하여 천천히 대화를 이끌어갑니다. 영어에 대한 막연한 두려움을 없애고 자신감을 키우는 것을 목표로 합니다.",
@@ -24,7 +24,7 @@ export const levelData = [
   },
   {
     id: 'highschool',
-    name: '고등학생 (High School)',
+    name: '고등학생',
     summary: "고등학교 수준의 어휘와 문법 지식을 갖추고 있는 단계",
     description: "수능 및 내신 대비를 위한 독해, 어휘 학습뿐만 아니라 일상적인 주제로 자유롭게 대화하며 영어 사용의 정확성과 유창성을 함께 향상시킬 수 있습니다.",
     recommendations: [
@@ -44,7 +44,7 @@ export const levelData = [
   },
   {
     id: 'native',
-    name: '원어민 (Native)',
+    name: '원어민',
     summary: "자유로운 의사소통이 가능하며, 더 전문적인 표현을 배우고 싶은 단계",
     description: "비즈니스 이메일 작성, 뉴스 기사 토론 등 특정 목적을 가진 전문적인 글쓰기 연습을 통해 영어 실력을 한 단계 더 높은 수준으로 끌어올릴 수 있습니다.",
     recommendations: [
@@ -64,7 +64,7 @@ export const levelData = [
   },
   {
     id: 'toeic',
-    name: '토익 (TOEIC)',
+    name: 'TOEIC',
     summary: "TOEIC 시험을 준비하며, 관련 유형에 익숙해지고 싶은 단계",
     description: "TOEIC 시험의 파트5(문법/어휘), 파트7(독해), 그리고 라이팅 파트의 문제 유형을 시뮬레이션하며 실전 감각을 기를 수 있도록 돕습니다.",
     recommendations: [

@@ -26,13 +26,11 @@
 
 .level-guide-header h1 {
   font-size: 2.5em;
-  /* 수정: 변수 사용 */
   color: var(--text-primary);
 }
 
 .level-guide-header p {
   font-size: 1.1em;
-  /* 수정: 변수 사용 */
   color: var(--text-secondary);
   margin-top: 10px;
 }
@@ -50,7 +48,6 @@
   font-size: 1em;
   font-weight: 600;
   border-radius: 8px;
-  /* 수정: 변수 사용 */
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-secondary);
@@ -59,14 +56,12 @@
 }
 
 .tab-btn:hover {
-  /* 수정: 변수 사용 */
   background-color: var(--bg-secondary-hover);
   color: var(--text-primary);
   border-color: var(--border-color-hover);
 }
 
 .tab-btn.active {
-  /* 수정: 변수 사용 */
   background-color: var(--accent-color);
   color: var(--accent-text-color);
   border-color: var(--accent-color);
@@ -74,7 +69,6 @@
 }
 
 .level-content-card {
-  /* 수정: 변수 사용 */
   background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 40px;
@@ -97,7 +91,6 @@
 .level-summary {
   font-size: 1.8em;
   font-weight: 700;
-  /* 수정: 변수 사용 */
   color: var(--accent-color);
   text-align: center;
   margin-top: 0;
@@ -107,14 +100,12 @@
 .level-description {
   font-size: 1.1em;
   line-height: 1.8;
-  /* 수정: 변수 사용 */
   color: var(--text-primary);
   text-align: justify;
   margin-bottom: 40px;
 }
 
 .recommendations-section {
-  /* 수정: 변수 사용 */
   background-color: var(--bg-primary);
   border-radius: 8px;
   padding: 20px;
@@ -125,7 +116,6 @@
   font-size: 1.2em;
   margin-top: 0;
   margin-bottom: 15px;
-  /* 수정: 변수 사용 */
   color: var(--text-primary);
 }
 
@@ -137,7 +127,6 @@
 
 .recommendations-list li {
   font-size: 1em;
-  /* 수정: 변수 사용 */
   color: var(--text-secondary);
   margin-bottom: 10px;
   line-height: 1.6;
@@ -145,4 +134,54 @@
 
 .recommendations-list li:last-child {
   margin-bottom: 0;
+}
+
+
+/* ==================================================== */
+/* =========== 모바일 UI 개선 (768px 이하) =========== */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* [수정] 페이지 상하 마진 및 좌우 패딩 축소 */
+  .level-guide-page {
+    margin-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* [수정] 헤더 폰트 크기 조정 */
+  .level-guide-header h1 {
+    font-size: 2em;
+  }
+  .level-guide-header p {
+    font-size: 1em;
+  }
+  
+  /* [수정] 탭 버튼 패딩 조정으로 크기 축소 */
+  .tab-btn {
+    padding: 10px 18px;
+  }
+
+  /* [수정] 콘텐츠 카드 내부 여백 대폭 축소 (가장 큰 효과) */
+  .level-content-card {
+    padding: 25px 20px;
+  }
+
+  /* [수정] 카드 내 제목 및 본문 폰트 크기 조정 */
+  .level-summary {
+    font-size: 1.5em;
+  }
+  .level-description {
+    font-size: 1.0em;
+    line-height: 1.7;
+    text-align: left; /* justify 대신 left로 변경하여 단어 간격 문제 방지 */
+    margin-bottom: 30px;
+  }
+  
+  /* [수정] 추천 섹션 제목 및 목록 폰트 크기 조정 */
+  .recommendations-section h3 {
+    font-size: 1.1em;
+  }
+  .recommendations-list li {
+    font-size: 0.95em;
+  }
 }

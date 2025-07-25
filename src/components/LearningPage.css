@@ -1,3 +1,4 @@
+/* LearningPage.css */
 .learning-page {
   max-width: 800px;
   margin: 0 auto;
@@ -110,6 +111,7 @@
 .learning-article {
   padding: 30px 40px;
   width: 100%;
+  box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
   position: relative;
 }
 
@@ -441,4 +443,61 @@
 
 .selectable-word:active {
     background-color: rgba(var(--accent-color-rgb, 80, 150, 255), 0.5);
+}
+
+/* ==================================================== */
+/* =========== 모바일 가독성 개선 (768px 이하) =========== */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* [유지] 페이지 전체의 좌우 여백을 줄여서 공간 확보 */
+  .learning-page {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* [유지] 본문이 들어있는 article의 좌우 여백도 줄입니다. */
+  .learning-article {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  /* [수정] 본문 폰트 크기 및 줄 간격 조정 */
+  .article-content {
+    text-align: left;
+    overflow-wrap: break-word;
+    font-size: 1.0em; 
+    line-height: 1.7; 
+  }
+
+  /* [유지] 제목 폰트 크기를 모바일에 맞게 살짝 줄입니다. */
+  .article-title {
+    font-size: 1.5em;
+  }
+
+  /* === [추가] Key Expressions 섹션 모바일 스타일 조정 === */
+  
+  /* [수정] 섹션 전체의 내부 여백을 줄여 통일감을 줍니다. */
+  .key-expressions-section {
+    padding: 25px 20px;
+  }
+
+  /* [수정] "Key Expressions" 제목 폰트 크기를 줄입니다. */
+  .expressions-title {
+    font-size: 1.3em;
+  }
+
+  /* [수정] 각 표현 항목의 여백과 테두리 두께를 미세 조정합니다. */
+  .expression-item {
+    padding: 12px 15px;
+    border-left-width: 4px;
+  }
+
+  /* [수정] 영어 표현과 한글 의미의 폰트 크기를 줄여 본문과 균형을 맞춥니다. */
+  .expression-en {
+    font-size: 1.05em;
+  }
+
+  .expression-kr {
+    font-size: 0.95em;
+  }
 }

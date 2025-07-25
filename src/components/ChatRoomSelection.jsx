@@ -3,6 +3,16 @@
 import React from 'react';
 import { MessageSquareText, MessageSquarePlus } from 'lucide-react';
 
+// [추가] 스켈레톤 컴포넌트 분리
+const RecommendationsSkeleton = () => (
+  <div className="recommendations-box-skeleton">
+    <div className="skeleton-line title-skeleton"></div>
+    <div className="skeleton-line item-skeleton"></div>
+    <div className="skeleton-line item-skeleton"></div>
+    <div className="skeleton-line item-skeleton" style={{ width: '70%' }}></div>
+  </div>
+);
+
 const ChatRoomSelection = ({
   levelName,
   rooms,
@@ -11,7 +21,7 @@ const ChatRoomSelection = ({
   onRoomSelect,
   onNewChat,
   recommendations = [],
-  onRecommendationClick // 부모로부터 클릭 핸들러 함수를 받습니다.
+  onRecommendationClick
 }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -21,21 +31,28 @@ const ChatRoomSelection = ({
 
   return (
     <div className="chat-room-selection-container">
-      {/* [핵심 수정] 추천 질문 섹션 */}
-      {recommendations.length > 0 && (
-        <div className="recommendations-box">
-          <h3>이렇게 시작해 보세요!</h3>
-          <ul className="recommendations-list-chat">
-            {recommendations.map((rec, index) => (
-              // rec.label은 사용자에게 보여주고,
-              // 클릭 시 rec.prompt를 핸들러에 전달합니다.
-              <li key={index} onClick={() => onRecommendationClick(rec.prompt)}>
-                {rec.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* ▼▼▼ [핵심 수정] 3단계 렌더링 로직 적용 ▼▼▼ */}
+      {
+        isLoading ? (
+          // 1. 로딩 중일 때는 스켈레톤을 보여줍니다.
+          <RecommendationsSkeleton />
+        ) : (
+          // 2. 로딩 완료 후, 채팅방이 없고 추천 질문이 있을 때만 실제 내용을 보여줍니다.
+          rooms.length === 0 && recommendations.length > 0 && (
+            <div className="recommendations-box">
+              <h3>첫 메시지를 추천해 드려요!</h3>
+              <ul className="recommendations-list-chat">
+                {recommendations.map((rec, index) => (
+                  <li key={index} onClick={() => onRecommendationClick(rec.prompt)}>
+                    {rec.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+          // 3. 로딩 완료 후, 채팅방이 있으면 아무것도 보여주지 않습니다.
+        )
+      }
 
       <div className="room-selection-grid">
         <button

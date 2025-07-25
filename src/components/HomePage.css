@@ -1,11 +1,19 @@
 /* src/components/HomePage.css */
 
-/* [추가] 두 섹션을 위한 새로운 테마 컬러 변수 정의 */
+/* 다크 모드에 대한 변수 정의 추가 */
 :root {
-  --accent-color-chat: var(--accent-color); /* 기본 파란색 */
-  --accent-text-color-chat: var(--accent-text-color);
-
+  /* 라이트 모드 테마 컬러 */
+  --accent-color-chat: #007bff; /* 기본 파란색 */
+  --accent-text-color-chat: #ffffff;
   --accent-color-learning: #8a63d2; /* 차분한 보라색 */
+  --accent-text-color-learning: #ffffff;
+}
+
+html.dark {
+  /* 다크 모드 테마 컬러 */
+  --accent-color-chat: #2e89ff; /* 다크모드용 밝은 파란색 */
+  --accent-text-color-chat: #ffffff;
+  --accent-color-learning: #ab8eee; /* 다크모_드용 밝은 보라색 */
   --accent-text-color-learning: #ffffff;
 }
 
@@ -178,21 +186,31 @@
   font-size: 1rem;
 }
 
+
+/* ▼▼▼ [핵심 수정] 이모지 대신 CSS로 체크마크 직접 그리기 ▼▼▼ */
 .feature-item::before {
-  content: "✔";
+  content: "";
+  display: inline-block;
+  
+  /* 체크마크 모양 만들기 */
+  width: 6px;
+  height: 12px;
+  border-style: solid;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+
+  /* 위치 조정 */
   position: absolute;
-  left: 0;
-  top: 1px;
-  font-size: 1.1rem;
-  line-height: 1;
+  left: 4px;
+  top: 4px;
 }
 
 .chat-section .feature-item::before {
-  color: var(--accent-color-chat);
+  border-color: var(--accent-color-chat);
 }
 
 .content-section .feature-item::before {
-  color: var(--accent-color-learning);
+  border-color: var(--accent-color-learning);
 }
 
 /* --- 버튼 스타일 --- */

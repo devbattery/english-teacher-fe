@@ -35,7 +35,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       setPosition({ x: defaultX, y: defaultY });
     }
 
-    setIsMounted(true);
+    // Use a timeout to ensure the initial position is set before the animation starts
+    const timer = setTimeout(() => setIsMounted(true), 10);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -86,10 +88,10 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete }) => {
       minWidth={300}
       minHeight={400}
       bounds="window"
-      className={`floating-vocab-list-rnd ${isMounted ? 'mounted' : ''}`}
+      className="floating-vocab-list-rnd"
       cancel=".vocab-search-wrapper, .vocab-content"
     >
-      <div className="floating-vocab-list-inner">
+      <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
         <div className="vocab-header">
           <h3>My Vocabulary 📝</h3>
           <button onClick={onClose} className="close-btn">×</button>

@@ -5,25 +5,22 @@
   backdrop-filter: blur(10px);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  overflow: hidden; /* Rnd component itself should hide overflow */
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  opacity: 0;
-  transform: scale(0.95);
+  overflow: hidden;
   z-index: 1001;
 }
 
-.floating-vocab-list-rnd.mounted {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* This new inner container will hold the flex layout */
 .floating-vocab-list-inner {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: transparent; /* Inner container is transparent */
+  background-color: transparent;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.floating-vocab-list-inner.mounted {
+  opacity: 1;
 }
 
 .vocab-header {

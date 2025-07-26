@@ -2,35 +2,50 @@
 
 .feature-discovery-tooltip {
   position: absolute;
-  top: 80px; /* 헤더 아래에 위치 */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
+  background-color: #3D3D3D;
   color: white;
-  padding: 15px 20px;
+  padding: 16px 22px;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 1002; /* 단어장 위에 표시 */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1002;
   width: 280px;
   text-align: center;
   font-size: 0.95rem;
   line-height: 1.5;
+  pointer-events: all;
+  transform-origin: center center;
 }
 
-.feature-discovery-tooltip.fade-in {
-  animation: fadeInDown 0.4s ease-out forwards;
+.feature-discovery-tooltip.center {
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.feature-discovery-tooltip.dynamic.arrow-down {
+  transform: translateY(calc(-100% - 12px));
+  transform-origin: bottom center;
+}
+
+/* [핵심 수정] 애니메이션 적용 방식을 분리합니다. */
+.center.fade-in {
+  animation: pop-in-center 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.dynamic.fade-in {
+  animation: pop-in-dynamic 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .feature-discovery-tooltip.fade-out {
-  animation: fadeOutUp 0.3s ease-in forwards;
+  animation: pop-out 0.3s ease-in forwards;
 }
 
 .tooltip-content p {
-  margin: 0 0 15px 0;
+  margin: 0 0 16px 0;
 }
 
 .tooltip-content strong {
-  color: #81c784; /* 밝은 녹색으로 강조 */
+  color: #81c784;
 }
 
 .tooltip-close-btn {
@@ -50,34 +65,54 @@
 
 .tooltip-arrow {
   position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #333;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-@keyframes fadeInDown {
+.arrow-up .tooltip-arrow {
+  top: -10px;
+  border-bottom: 10px solid #3D3D3D;
+}
+
+.arrow-down .tooltip-arrow {
+  bottom: -10px;
+  border-top: 10px solid #3D3D3D;
+}
+
+/* [핵심 수정] 중앙 정렬을 위한 별도의 애니메이션을 정의합니다. */
+@keyframes pop-in-center {
   from {
     opacity: 0;
-    transform: translate(-50%, -15px);
+    transform: translateX(-50%) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateX(-50%) scale(1);
   }
 }
 
-@keyframes fadeOutUp {
+/* 동적 위치를 위한 애니메이션 */
+@keyframes pop-in-dynamic {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-100% - 12px)) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(calc(-100% - 12px)) scale(1);
+  }
+}
+
+/* 사라지는 애니메이션 (공통) */
+@keyframes pop-out {
   from {
     opacity: 1;
-    transform: translate(-50%, 0);
   }
   to {
     opacity: 0;
-    transform: translate(-50%, -15px);
   }
 }

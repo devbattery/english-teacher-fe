@@ -1,7 +1,5 @@
 // src/components/LearningPage.jsx
-
 import React, { useState, useEffect, useRef, useMemo } from "react";
-// [수정] createPortal 임포트
 import { createPortal } from "react-dom";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/api";
@@ -42,19 +40,38 @@ const LearningPage = () => {
   const [showGuide, setShowGuide] = useState(false);
 
   const [showFeatureGuide, setShowFeatureGuide] = useState(false);
+  const [tooltipStyle, setTooltipStyle] = useState({});
 
   const vocabToggleBtnRef = useRef(null);
   const [vocabListAnchorRect, setVocabListAnchorRect] = useState(null);
 
   useEffect(() => {
     const hasSeenGuide = localStorage.getItem("hasSeenVocabFeatureGuide");
-    if (!hasSeenGuide) {
+    if (!hasSeenGuide && !loading) {
       const timer = setTimeout(() => {
-        setShowFeatureGuide(true);
+        if (vocabToggleBtnRef.current) {
+          const rect = vocabToggleBtnRef.current.getBoundingClientRect();
+          const tooltipWidth = 280;
+
+          // 1. 툴팁 본체를 버튼의 왼쪽에 위치시킨다.
+          const finalLeft = rect.right - tooltipWidth;
+
+          // 2. 꼬리는 툴팁 본체 내에서, 버튼의 중앙을 가리키도록 위치를 계산한다.
+          // (툴팁 너비) - (버튼 너비의 절반) = 툴팁 오른쪽 끝에서부터 꼬리까지의 거리
+          const arrowLeft = tooltipWidth - (rect.width / 2);
+          
+          setTooltipStyle({
+            top: `${rect.top}px`, 
+            left: `${finalLeft}px`,
+            arrowStyle: { left: `${arrowLeft}px` }
+          });
+
+          setShowFeatureGuide(true);
+        }
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [loading]);
 
   const handleDismissFeatureGuide = () => {
     setShowFeatureGuide(false);
@@ -244,16 +261,20 @@ const LearningPage = () => {
           저장하고 싶은 단어를 순서대로 탭하세요!
         </div>
       )}
-
-      {showFeatureGuide && (
-        <FeatureDiscoveryTooltip onDismiss={handleDismissFeatureGuide} />
+      
+      {createPortal(
+        <FeatureDiscoveryTooltip
+          isVisible={showFeatureGuide}
+          onClose={handleDismissFeatureGuide}
+          title="단어 저장 기능 안내"
+          content="PC에서는 텍스트를 드래그하고, 모바일에서는 ✍🏻 버튼을 눌러 단어를 저장할 수 있습니다. 📖 버튼으로 단어장을 열어보세요!"
+          style={tooltipStyle}
+          arrowDirection="down"
+          positioning="dynamic"
+        />,
+        document.body
       )}
 
-      {/* 
-        [수정] FloatingVocabList를 createPortal로 감싸서 document.body에 렌더링합니다.
-        이렇게 하면 부모 컴포넌트의 스크롤에 영향을 받지 않습니다.
-        isVocabVisible 조건은 Portal 내부의 컴포넌트가 알아서 처리하므로 Portal 자체를 조건부 렌더링할 필요는 없습니다.
-      */}
       {createPortal(
         <FloatingVocabList
           words={vocabulary}
@@ -297,8 +318,6 @@ const LearningPage = () => {
               >
                 {isMobile && isWordSelectMode
                   ? wordsArray.map((word, index) =>
-                      // [수정] 렌더링 로직은 기존과 동일하게 유지합니다.
-                      // CSS 수정으로 줄바꿈 문제가 해결되므로 JS 로직을 복잡하게 바꿀 필요가 없습니다.
                       word.trim() ? (
                         <span
                           key={index}

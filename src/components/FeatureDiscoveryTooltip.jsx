@@ -1,7 +1,16 @@
+// src/components/FeatureDiscoveryTooltip.jsx
 import React, { useState, useEffect } from 'react';
 import './FeatureDiscoveryTooltip.css';
 
-const FeatureDiscoveryTooltip = ({ isVisible, onClose }) => {
+const FeatureDiscoveryTooltip = ({
+  isVisible,
+  onClose,
+  title,
+  content,
+  style = {},
+  arrowDirection = 'up',
+  positioning = 'dynamic',
+}) => {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
@@ -12,26 +21,27 @@ const FeatureDiscoveryTooltip = ({ isVisible, onClose }) => {
 
   const handleClose = () => {
     setIsFadingOut(true);
-    setTimeout(onClose, 300); // 애니메이션 시간과 동일하게 설정
+    setTimeout(() => onClose?.(), 300);
   };
 
   if (!isVisible) {
     return null;
   }
 
+  const tooltipClasses = `feature-discovery-tooltip ${positioning} ${isFadingOut ? 'fade-out' : 'fade-in'} arrow-${arrowDirection}`;
+
   return (
-    <div className={`feature-discovery-tooltip ${isFadingOut ? 'fade-out' : 'fade-in'}`}>
+    <div className={tooltipClasses} style={style}>
       <div className="tooltip-content">
         <p>
-          <strong>✨ 새로운 기능!</strong><br />
-          이제 단어장을 원하는 곳으로 옮기거나<br />
-          모서리를 드래그하여 크기를 조절할 수 있어요.
+          <strong>{title}</strong><br />
+          <span dangerouslySetInnerHTML={{ __html: content }} />
         </p>
         <button onClick={handleClose} className="tooltip-close-btn">
           알겠어요!
         </button>
       </div>
-      <div className="tooltip-arrow"></div>
+      <div className="tooltip-arrow" style={style.arrowStyle}></div>
     </div>
   );
 };

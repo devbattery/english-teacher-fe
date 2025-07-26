@@ -6,7 +6,7 @@
 
 <br>
 
-> 개발 기간: 2025.05 ~ 진행중
+> 개발 기간: 2025.05 ~ 진행중  
 > 도메인 링크: [https://englishteacher.store](https://englishteacher.store/)  
 > 프론트엔드 링크: https://github.com/devbattery/english-teacher-fe  
 > 백엔드 링크: https://github.com/devbattery/english-teacher-be
@@ -69,7 +69,7 @@ $ serve -s dist
 
 ## 화면 구성
 
-### 홈페이지
+### HomePage
 
 <table>
   <tr>
@@ -82,6 +82,13 @@ $ serve -s dist
       <img width="400" alt="Screenshot 2025-07-26 at 21 18 29" src="https://github.com/user-attachments/assets/805180fa-5b0a-4ac3-86e4-fc702b13f840" />
     </td>
   </tr>
+</table>
+
+
+
+### Messenger
+
+<table>
   <tr>
     <td align="center">
       <strong>채팅 목록 페이지</strong> <br/>
@@ -92,6 +99,11 @@ $ serve -s dist
       <img width="400" alt="Screenshot 2025-07-26 at 21 22 28" src="https://github.com/user-attachments/assets/b113479f-ef8d-46e8-a5c9-e8fc604c10df" />
     </td>
   </tr>
+</table>
+
+### Daily Contents
+
+<table>
   <tr>
     <td align="center">
       <strong>컨텐츠 페이지</strong> <br/>

@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import imagemin from 'vite-plugin-imagemin'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,7 +13,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       visualizer({
-        open: true,
+        open: false,
         filename: 'dist/stats.html',
       }),
       imagemin({
@@ -38,6 +39,31 @@ export default defineConfig(({ mode }) => {
             {
               name: 'removeEmptyAttrs',
               active: false,
+            },
+          ],
+        },
+      }),
+      VitePWA({
+        registerType: 'autoUpdate',
+        injectRegister: 'auto',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        },
+        manifest: {
+          name: 'English Teacher AI',
+          short_name: 'ET AI',
+          description: 'AI-powered English learning chat application',
+          theme_color: '#ffffff',
+          icons: [
+            {
+              src: 'icon.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'icon.png',
+              sizes: '512x512',
+              type: 'image/png',
             },
           ],
         },

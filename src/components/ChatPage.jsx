@@ -9,6 +9,7 @@ import ChatPageSkeleton from './ChatPageSkeleton';
 import ChatRoomSelection from './ChatRoomSelection';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import imageCompression from 'browser-image-compression';
 import './ChatPage.css';
 import { levelData } from '../data/levelData';
 
@@ -246,10 +247,24 @@ const ChatPage = () => {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) setSelectedFile(file);
-    else setSelectedFile(null);
+    if (!file || !file.type.startsWith('image/')) {
+      setSelectedFile(null);
+      return;
+    }
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+      setSelectedFile(compressedFile);
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      setSelectedFile(file);
+    }
   };
 
   const isLoading = isRoomsLoading || isHistoryLoading;

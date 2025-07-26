@@ -378,7 +378,7 @@
 
 @keyframes scaleUp {
   from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  to { transform:1 scale(1); opacity: 1; }
 }
 
 /* [수정] 리사이즈 핸들 스타일 (최종본) */

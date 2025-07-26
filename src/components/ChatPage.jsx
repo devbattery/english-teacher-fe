@@ -10,6 +10,7 @@ import ChatRoomSelection from './ChatRoomSelection';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import imageCompression from 'browser-image-compression';
+import ImageModal from './ImageModal'; // 이미지 모달 컴포넌트 임포트
 import './ChatPage.css';
 import { levelData } from '../data/levelData';
 
@@ -22,9 +23,14 @@ const TrashIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 const PlusCircleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> );
 const ChatBubbleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> );
 
-const MessageImage = ({ src, alt }) => {
+const MessageImage = ({ src, alt, onClick }) => {
     const [isLoaded, setIsLoaded] = useState(false);
-    return ( <div className="message-image-container">{!isLoaded && <div className="image-loading-placeholder"></div>}<img src={src} alt={alt} className={`message-image ${isLoaded ? 'loaded' : ''}`} onLoad={() => setIsLoaded(true)} /></div> );
+    return (
+        <div className="message-image-container" onClick={onClick}>
+            {!isLoaded && <div className="image-loading-placeholder"></div>}
+            <img src={src} alt={alt} className={`message-image ${isLoaded ? 'loaded' : ''}`} onLoad={() => setIsLoaded(true)} />
+        </div>
+    );
 };
 
 const teacherLevels = levelData.map(level => ({ id: level.id, name: level.name }));
@@ -50,6 +56,7 @@ const ChatPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(null);
+  const [modalImageUrl, setModalImageUrl] = useState(null); // 모달에 표시할 이미지 URL 상태
 
   const chatMessagesRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -273,6 +280,8 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
+      <ImageModal imageUrl={modalImageUrl} onClose={() => setModalImageUrl(null)} />
+
       {confirmingDelete && (
         <div className="delete-modal-overlay">
           <div className="delete-modal-content">
@@ -356,7 +365,7 @@ const ChatPage = () => {
                     <div className="message-avatar">{currentLevelName.charAt(0)}</div>
                   )}
                   <div className={`message-bubble ${msg.sender}`}>
-                    {msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" />}
+                    {msg.imageUrl && <MessageImage src={msg.imageUrl} alt="uploaded" onClick={() => setModalImageUrl(msg.imageUrl)} />}
                     {msg.text && (
                         <div className="markdown-content">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>

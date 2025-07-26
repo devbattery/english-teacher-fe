@@ -159,14 +159,14 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         )}
         
         <header className="vocab-header" onMouseDown={handleInteraction}>
-          <h3>My Vocabulary 📝</h3>
+          <h3>내 단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
         <div className="vocab-search-wrapper">
           <input
             type="text"
-            placeholder="Search words..."
+            placeholder="찾고자 하는 영어나 한국어를 입력하세요."
             className="vocab-search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

@@ -355,6 +355,8 @@ const ChatPage = () => {
               onNewChat={handleNewChat}
               recommendations={currentLevelData.recommendations}
               onRecommendationClick={handleRecommendationClick}
+              // ▼▼▼ [수정] 삭제 함수를 prop으로 전달 ▼▼▼
+              onDeleteRoom={setConfirmingDelete}
             />
         ) : (
           <>

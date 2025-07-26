@@ -1,7 +1,8 @@
 // src/components/ChatRoomSelection.jsx
 
 import React from 'react';
-import { MessageSquareText, MessageSquarePlus } from 'lucide-react';
+// ▼▼▼ [수정] lucide-react에서 Trash2 아이콘을 임포트합니다. ▼▼▼
+import { MessageSquareText, MessageSquarePlus, Trash2 } from 'lucide-react';
 
 // [추가] 스켈레톤 컴포넌트 분리
 const RecommendationsSkeleton = () => (
@@ -21,7 +22,9 @@ const ChatRoomSelection = ({
   onRoomSelect,
   onNewChat,
   recommendations = [],
-  onRecommendationClick
+  onRecommendationClick,
+  // ▼▼▼ [수정] onDeleteRoom prop을 받습니다. ▼▼▼
+  onDeleteRoom
 }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -79,6 +82,18 @@ const ChatRoomSelection = ({
               className="room-card"
               onClick={() => onRoomSelect(room.conversationId)}
             >
+              {/* ▼▼▼ [추가] 삭제 버튼 ▼▼▼ */}
+              <button
+                className="room-card-delete-button"
+                title="채팅방 삭제"
+                onClick={(e) => {
+                  e.stopPropagation(); // 카드를 클릭하는 이벤트 전파 방지
+                  onDeleteRoom(room.conversationId);
+                }}
+              >
+                <Trash2 size={18} />
+              </button>
+              {/* ▲▲▲ [추가] 삭제 버튼 ▲▲▲ */}
               <div className="room-card-icon"><MessageSquareText size={28} /></div>
               <p className="room-card-content">{room.lastMessage || '아직 대화가 없습니다.'}</p>
               <span className="room-card-date">{formatDate(room.lastModifiedAt)}</span>

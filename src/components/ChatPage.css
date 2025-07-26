@@ -220,13 +220,19 @@ html.dark .room-item.active {
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
-  opacity: 0;
+  /* [수정] 항상 보이도록 opacity를 1로 설정 */
+  opacity: 1;
   transition: opacity 0.2s, color 0.2s;
   flex-shrink: 0;
 }
+
+/* [삭제] 호버 시에만 보이게 하던 규칙을 제거합니다. */
+/*
 .room-item:hover .room-delete-button {
   opacity: 1;
 }
+*/
+
 .room-delete-button:hover {
   color: var(--danger-color);
 }
@@ -835,6 +841,8 @@ html.dark .room-item.active {
 
 .room-card,
 .room-card-skeleton {
+  /* [수정] 삭제 버튼의 기준점이 되도록 relative 속성 추가 */
+  position: relative;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -854,6 +862,32 @@ html.dark .room-item.active {
   border-color: var(--accent-color);
   box-shadow: 0 5px 15px var(--shadow-color);
 }
+
+/* ▼▼▼ [추가] 채팅방 카드용 삭제 버튼 스타일 ▼▼▼ */
+.room-card-delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 5;
+}
+
+.room-card-delete-button:hover {
+  background-color: var(--bg-secondary-hover);
+  color: var(--danger-color);
+}
+/* ▲▲▲ [추가] 채팅방 카드용 삭제 버튼 스타일 ▲▲▲ */
+
 
 .room-card-icon {
   color: var(--accent-color);

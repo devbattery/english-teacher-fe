@@ -1,8 +1,8 @@
 /* FloatingVocabList.css */
 
-/* 테마별 색상 변수 정의 */
+/* 테마별 색상 변수 정의 (변경 없음) */
 :root {
-  /* Light Theme Variables */
+  /* ... */
   --vocab-bg-light: rgba(248, 248, 248, 0.75);
   --vocab-border-light: rgba(0, 0, 0, 0.1);
   --vocab-text-primary-light: #222;
@@ -13,7 +13,6 @@
   --vocab-btn-hover-bg-light: rgba(0, 0, 0, 0.1);
   --vocab-shadow-light: rgba(0, 0, 0, 0.15);
 
-  /* Dark Theme Variables */
   --vocab-bg-dark: rgba(45, 45, 45, 0.75);
   --vocab-border-dark: rgba(255, 255, 255, 0.15);
   --vocab-text-primary-dark: #f0f0f0;
@@ -25,8 +24,9 @@
   --vocab-shadow-dark: rgba(0, 0, 0, 0.3);
 }
 
-/* 테마에 따라 사용할 변수 매핑 */
+/* 테마 매핑 (변경 없음) */
 [data-theme='light'] {
+  /* ... */
   --vocab-bg: var(--vocab-bg-light);
   --vocab-border: var(--vocab-border-light);
   --vocab-text-primary: var(--vocab-text-primary-light);
@@ -39,6 +39,7 @@
 }
 
 [data-theme='dark'] {
+  /* ... */
   --vocab-bg: var(--vocab-bg-dark);
   --vocab-border: var(--vocab-border-dark);
   --vocab-text-primary: var(--vocab-text-primary-dark);
@@ -51,31 +52,34 @@
 }
 
 
+/* [수정] Rnd의 최상위 컨테이너는 이제 스타일이 거의 없습니다. */
 .floating-vocab-list-rnd {
+  z-index: 1001; /* z-index만 남김 */
+}
+
+/* [수정] 모든 시각적 스타일을 inner 컨테이너로 이동 */
+.floating-vocab-list-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  
+  /* [이동] 스타일들을 .floating-vocab-list-rnd에서 여기로 가져옴 */
   background-color: var(--vocab-bg);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   border-radius: 16px;
   box-shadow: 0 8px 32px 0 var(--vocab-shadow);
   border: 1px solid var(--vocab-border);
-  overflow: hidden;
-  z-index: 1001;
   color: var(--vocab-text-primary);
-}
+  overflow: hidden; /* [핵심] 이제 inner가 스스로의 컨텐츠를 클리핑합니다. */
 
-.vocab-header {
-  cursor: move; /* 드래그 핸들임을 명시 */
-}
-
-.floating-vocab-list-inner {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+  /* 애니메이션 관련 스타일 */
   opacity: 0;
   transform: scale(0.97) translateY(10px);
   transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 
 .floating-vocab-list-inner.mounted {
   opacity: 1;
@@ -83,6 +87,7 @@
 }
 
 .vocab-header {
+  cursor: move;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -119,6 +124,7 @@
   background-color: var(--vocab-btn-hover-bg);
 }
 
+/* ... 나머지 CSS는 변경 없음 ... */
 .vocab-search-wrapper {
   padding: 16px 20px;
   border-bottom: 1px solid var(--vocab-border);
@@ -262,7 +268,6 @@
   margin-top: 8px;
 }
 
-/* 스크롤바도 테마 적용 */
 .vocab-content::-webkit-scrollbar {
   width: 12px;
 }
@@ -278,11 +283,6 @@
 .vocab-content::-webkit-scrollbar-thumb:hover {
   background-color: var(--vocab-text-secondary);
 }
-
-
-/* ======================================= */
-/* ====== Confirmation Dialog Styles ===== */
-/* ======================================= */
 
 .confirmation-overlay {
   position: absolute;
@@ -370,7 +370,6 @@
   background-color: #005ecb;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -381,33 +380,88 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-/* 리사이즈 핸들 스타일 */
-.corner-resize-handle {
+.resize-corner-handle {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  bottom: 0;
-  right: 0;
-  box-sizing: border-box;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 4px;
-  cursor: se-resize;
+  width: 32px;
+  height: 32px;
   z-index: 12;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: none;
 }
 
-.corner-resize-handle svg {
-  width: 100%;
-  height: 100%;
+.resize-corner-handle svg {
+  width: 24px;
+  height: 24px;
+  color: var(--vocab-text-secondary);
+  transition: all 0.15s ease-out;
 }
 
-.bottom-resize-handle {
-  position: absolute;
-  width: 100%;
-  height: 10px;
-  bottom: 0;
-  left: 0;
-  cursor: ns-resize;
-  z-index: 11;
+/* [수정] 공통 hover/active 스타일은 이제 색상만 담당합니다. transform은 개별 규칙으로 이동. */
+.resize-corner-handle:hover svg,
+.resize-corner-handle:active svg {
+  color: var(--vocab-text-primary);
+}
+
+
+/* --- Top-Left Handle --- */
+.resize-corner-handle--top-left {
+  top: 10px;
+  left: 10px;
+  cursor: nwse-resize;
+}
+.resize-corner-handle--top-left svg {
+  transform: rotate(180deg); /* 기본 회전 */
+}
+/* [수정] hover/active 시 회전과 스케일을 모두 포함 */
+.resize-corner-handle--top-left:hover svg,
+.resize-corner-handle--top-left:active svg {
+  transform: rotate(180deg) scale(1.15);
+}
+
+
+/* --- Top-Right Handle --- */
+.resize-corner-handle--top-right {
+  top: 10px;
+  right: 10px;
+  cursor: nesw-resize;
+}
+.resize-corner-handle--top-right svg {
+  transform: rotate(-90deg); /* 기본 회전 */
+}
+/* [수정] hover/active 시 회전과 스케일을 모두 포함 */
+.resize-corner-handle--top-right:hover svg,
+.resize-corner-handle--top-right:active svg {
+  transform: rotate(-90deg) scale(1.15);
+}
+
+
+/* --- Bottom-Left Handle --- */
+.resize-corner-handle--bottom-left {
+  bottom: 10px;
+  left: 10px;
+  cursor: nesw-resize;
+}
+.resize-corner-handle--bottom-left svg {
+  transform: rotate(90deg); /* 기본 회전 */
+}
+/* [수정] hover/active 시 회전과 스케일을 모두 포함 */
+.resize-corner-handle--bottom-left:hover svg,
+.resize-corner-handle--bottom-left:active svg {
+  transform: rotate(90deg) scale(1.15);
+}
+
+
+/* --- Bottom-Right Handle --- */
+.resize-corner-handle--bottom-right {
+  bottom: 10px;
+  right: 10px;
+  cursor: nwse-resize;
+}
+/* 이 핸들은 기본 회전이 필요 없습니다. */
+/* [수정] hover/active 시 스케일만 적용 (원래 정상 작동하던 규칙) */
+.resize-corner-handle--bottom-right:hover svg,
+.resize-corner-handle--bottom-right:active svg {
+  transform: scale(1.15);
 }

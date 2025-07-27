@@ -1,23 +1,18 @@
 // src/components/FloatingVocabList.jsx
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
 import './FloatingVocabList.css';
 import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import { useTheme } from '../context/ThemeContext';
 
-// 우측 하단 모서리 핸들
-const CornerResizeHandle = () => (
-  <div className="corner-resize-handle">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 5L5 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-      <path d="M13 9L9 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+const ResizeCornerHandle = ({ position }) => (
+  <div className={`resize-corner-handle resize-corner-handle--${position}`}>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 12C20 16.4183 16.4183 20 12 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
     </svg>
   </div>
 );
-
-// 하단 전체 핸들
-const BottomResizeHandle = () => <div className="bottom-resize-handle"></div>;
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
   if (!isOpen) return null;
@@ -45,6 +40,48 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
   const [isMounted, setIsMounted] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   
+  const [minHeight, setMinHeight] = useState(390); // 동적 계산을 위한 state, 초기값은 fallback
+
+  // 높이 측정을 위한 ref
+  const headerRef = useRef(null);
+  const searchRef = useRef(null);
+  const itemRef = useRef(null); // 단어 아이템 1개를 측정하기 위한 ref
+
+  const filteredWords = useMemo(() => {
+    if (!searchTerm.trim()) return words;
+    const lowercasedTerm = searchTerm.toLowerCase();
+    return words.filter(word =>
+      (word.englishExpression && word.englishExpression.toLowerCase().includes(lowercasedTerm)) ||
+      (word.koreanMeaning && word.koreanMeaning.toLowerCase().includes(lowercasedTerm))
+    );
+  }, [words, searchTerm]);
+  
+  // 실제 렌더링된 요소들의 높이를 기반으로 최소 높이를 계산하는 useEffect
+  useEffect(() => {
+    if (isVisible && filteredWords.length > 0) {
+      const animationFrameId = requestAnimationFrame(() => {
+        const header = headerRef.current;
+        const search = searchRef.current;
+        const item = itemRef.current;
+
+        if (header && search && item) {
+          const headerHeight = header.offsetHeight;
+          const searchHeight = search.offsetHeight;
+          const itemHeight = item.offsetHeight;
+          
+          const NUM_VISIBLE_ITEMS = 4; // 최소 4개의 아이템이 보이도록 설정
+          const CONTENT_PADDING = 16;  // .vocab-content의 상하 패딩 (top 8px + bottom 8px)
+
+          const calculatedMinHeight = headerHeight + searchHeight + (itemHeight * NUM_VISIBLE_ITEMS) + CONTENT_PADDING;
+          
+          setMinHeight(calculatedMinHeight);
+        }
+      });
+      return () => cancelAnimationFrame(animationFrameId);
+    }
+  }, [isVisible, filteredWords.length]);
+
+
   useEffect(() => {
     if (!isVisible) {
       setIsMounted(false);
@@ -57,7 +94,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
 
     const minWidth = 320;
-    const minHeight = 390;
 
     let initialWidth, initialHeight;
 
@@ -66,7 +102,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       initialHeight = savedDimensions.height;
     } else {
       initialWidth = minWidth;
-      initialHeight = minHeight;
+      initialHeight = 520; // 기본 높이는 유지
     }
     setDimensions({ width: initialWidth, height: initialHeight });
 
@@ -74,11 +110,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       setPosition(savedPosition);
     } else if (initialAnchorRect) {
       const margin = 15;
-      // [핵심 수정] 단어장 오른쪽 끝을 버튼 오른쪽 끝에 맞추도록 변경
       let newX = initialAnchorRect.right - initialWidth;
       let newY = initialAnchorRect.top - initialHeight - margin;
       
-      // 화면 왼쪽 경계를 벗어나지 않도록 보정
       newX = Math.max(10, newX);
       newY = Math.max(10, newY);
       setPosition({ x: newX, y: newY });
@@ -107,15 +141,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
   const handleInteraction = () => {
     if (showTooltip) handleTooltipClose();
   };
-
-  const filteredWords = useMemo(() => {
-    if (!searchTerm.trim()) return words;
-    const lowercasedTerm = searchTerm.toLowerCase();
-    return words.filter(word =>
-      (word.englishExpression && word.englishExpression.toLowerCase().includes(lowercasedTerm)) ||
-      (word.koreanMeaning && word.koreanMeaning.toLowerCase().includes(lowercasedTerm))
-    );
-  }, [words, searchTerm]);
 
   const requestDelete = (word) => {
     if (deletingId) return;
@@ -153,15 +178,17 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         setPosition(newPosition);
       }}
       minWidth={320}
-      minHeight={390}
+      minHeight={minHeight} // 동적으로 계산된 state 사용
       bounds="window"
       className="floating-vocab-list-rnd"
       data-theme={theme}
       cancel=".vocab-search-input, .vocab-content, .close-btn, .delete-btn, .feature-discovery-tooltip, .confirmation-dialog"
       dragHandleClassName="vocab-header"
       resizeHandleComponent={{
-        bottom: <BottomResizeHandle />,
-        bottomRight: <CornerResizeHandle />,
+        topLeft: <ResizeCornerHandle position="top-left" />,
+        topRight: <ResizeCornerHandle position="top-right" />,
+        bottomLeft: <ResizeCornerHandle position="bottom-left" />,
+        bottomRight: <ResizeCornerHandle position="bottom-right" />,
       }}
     >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
@@ -174,12 +201,14 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           arrowDirection="up"
         />
         
-        <header className="vocab-header" onMouseDown={handleInteraction}>
+        {/* 측정할 요소에 ref 할당 */}
+        <header className="vocab-header" onMouseDown={handleInteraction} ref={headerRef}>
           <h3>내 단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
-        <div className="vocab-search-wrapper">
+        {/* 측정할 요소에 ref 할당 */}
+        <div className="vocab-search-wrapper" ref={searchRef}>
           <input
             type="text"
             placeholder="찾고자 하는 단어를 입력하세요."
@@ -193,10 +222,12 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         <main className="vocab-content">
           {filteredWords.length > 0 ? (
             <ul>
-              {filteredWords.map(word => (
+              {filteredWords.map((word, index) => (
                 <li
                   key={word.id}
                   className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}
+                  // 첫 번째 아이템에만 ref를 할당하여 높이를 측정
+                  ref={index === 0 ? itemRef : null}
                 >
                   {deletingId === word.id ? (
                     <div className="loader-container">

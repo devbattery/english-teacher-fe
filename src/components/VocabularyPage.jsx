@@ -1,4 +1,5 @@
-// src/components/VocabularyPage.jsx (신규 파일)
+// src/components/VocabularyPage.jsx
+
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../api/api';
 import CustomLoader from './CustomLoader';
@@ -9,9 +10,11 @@ const VocabularyPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // UI 상태 관리
-  const [viewOptions, setViewOptions] = useState({ hideEnglish: false, hideKorean: false });
-  const [sortBy, setSortBy] = useState('newest'); // 'newest', 'oldest', 'memorized'
+  // [수정] "가리기" 상태를 단일 문자열로 관리 ('none', 'english', 'korean')
+  const [hideOption, setHideOption] = useState('none');
+
+  // [수정] "정렬" 상태의 기본값을 'memorized'로 변경
+  const [sortBy, setSortBy] = useState('memorized');
   
   // API 통신 상태 관리
   const [updatingId, setUpdatingId] = useState(null);
@@ -75,17 +78,36 @@ const VocabularyPage = () => {
     }
   };
 
+  // [추가] "가리기" 버튼 클릭 핸들러
+  const handleHideToggle = (option) => {
+    // 이미 선택된 옵션을 다시 클릭하면 선택 해제
+    if (hideOption === option) {
+      setHideOption('none');
+    } else {
+      // 새로운 옵션을 선택
+      setHideOption(option);
+    }
+  };
+
   const sortedVocab = useMemo(() => {
-    return [...vocab].sort((a, b) => {
+    // isMemorized와 createdAt이 없는 경우를 대비한 안정성 추가
+    const safeVocab = vocab.map(v => ({
+      ...v,
+      isMemorized: v.isMemorized || false,
+      createdAt: v.createdAt || '1970-01-01T00:00:00Z',
+    }));
+
+    return [...safeVocab].sort((a, b) => {
       if (sortBy === 'memorized') {
         if (a.isMemorized !== b.isMemorized) {
           return a.isMemorized ? 1 : -1;
         }
       }
+      // 날짜 정렬은 외운단어 정렬 후 2차 정렬 기준으로 항상 적용
       if (sortBy === 'oldest') {
         return new Date(a.createdAt) - new Date(b.createdAt);
       }
-      // 'newest' (default)
+      // 'newest' 또는 'memorized' 선택 시 기본 2차 정렬 기준
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
   }, [vocab, sortBy]);
@@ -96,26 +118,26 @@ const VocabularyPage = () => {
   return (
     <div className="vocabulary-page">
       <header className="vocab-header">
-        <h1>내 단어장</h1>
+        <h1>내 단어장 📝</h1>
         <div className="vocab-controls">
           <div className="control-group">
             <span className="control-label">정렬:</span>
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <option value="memorized">외운 단어 뒤로</option>
               <option value="newest">최신순</option>
               <option value="oldest">오래된순</option>
-              <option value="memorized">외운단어 뒤로</option>
             </select>
           </div>
           <div className="control-group">
             <span className="control-label">가리기:</span>
             <button 
-              className={`toggle-btn ${viewOptions.hideEnglish ? 'active' : ''}`}
-              onClick={() => setViewOptions(v => ({...v, hideEnglish: !v.hideEnglish}))}>
+              className={`toggle-btn ${hideOption === 'english' ? 'active' : ''}`}
+              onClick={() => handleHideToggle('english')}>
               영어
             </button>
             <button 
-              className={`toggle-btn ${viewOptions.hideKorean ? 'active' : ''}`}
-              onClick={() => setViewOptions(v => ({...v, hideKorean: !v.hideKorean}))}>
+              className={`toggle-btn ${hideOption === 'korean' ? 'active' : ''}`}
+              onClick={() => handleHideToggle('korean')}>
               한글
             </button>
           </div>
@@ -138,17 +160,17 @@ const VocabularyPage = () => {
                 <label className="checkbox-container">
                   <input
                     type="checkbox"
-                    checked={word.isMemorized}
+                    checked={!!word.isMemorized} // undefined 방지를 위해 boolean으로 변환
                     onChange={() => handleToggleMemorized(word.id)}
                     disabled={updatingId === word.id || deletingId}
                   />
                   <span className="checkmark"></span>
                   {updatingId === word.id && <div className="updating-spinner"></div>}
                 </label>
-                <div className={`expression ${viewOptions.hideEnglish ? 'hidden' : ''}`}>
+                <div className={`expression ${hideOption === 'english' ? 'hidden' : ''}`}>
                   {word.englishExpression}
                 </div>
-                <div className={`meaning ${viewOptions.hideKorean ? 'hidden' : ''}`}>
+                <div className={`meaning ${hideOption === 'korean' ? 'hidden' : ''}`}>
                   {word.koreanMeaning}
                 </div>
                 <button

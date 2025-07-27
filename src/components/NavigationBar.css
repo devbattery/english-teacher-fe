@@ -45,18 +45,33 @@
   justify-content: center;
 }
 
+
+/* --- [변경] 아이콘 버튼 스타일로 수정 --- */
 .vocab-link {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: none;
+  border: none;
   color: var(--text-primary);
-  font-weight: 500;
+  cursor: pointer;
+  padding: 8px; /* theme-toggle-button과 동일한 패딩 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  text-decoration: none; /* Link 태그의 밑줄 제거 */
 }
 
 .vocab-link:hover {
   background-color: var(--bg-secondary-hover);
-  border-color: var(--accent-color);
   color: var(--accent-color);
 }
+
+.vocab-link svg {
+  width: 24px;
+  height: 24px;
+}
+/* --- 변경 끝 --- */
+
 
 .login-button {
   background-color: var(--accent-color);
@@ -70,6 +85,7 @@
 
 .navbar-user {
   position: relative;
+  margin-left: 0.4rem; /* 약 8px의 추가 간격. 이 값을 조절하여 원하는 간격을 맞출 수 있습니다. */
 }
 
 .navbar-profile-pic {

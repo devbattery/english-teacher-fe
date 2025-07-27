@@ -197,8 +197,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       cancel=".vocab-search-input, .vocab-content, .close-btn, .delete-btn, .feature-discovery-tooltip, .confirmation-dialog"
       dragHandleClassName="vocab-header"
       resizeHandleComponent={{
-        topLeft: <ResizeCornerHandle position="top-left" />,
-        topRight: <ResizeCornerHandle position="top-right" />,
         bottomLeft: <ResizeCornerHandle position="bottom-left" />,
         bottomRight: <ResizeCornerHandle position="bottom-right" />,
       }}
@@ -208,7 +206,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           isVisible={showTooltip}
           onClose={handleTooltipClose}
           title="모르는 단어 추가하기"
-          content="이 창은 헤더를 드래그하여 옮기거나,<br />테두리나 모서리를 드래그하여 크기를 조절할 수 있습니다."
+          content="단어장을 움직여 보세요!</br>표시된 모서리를 드래그하여 크기를 조절할 수도 있어요."
           positioning="center"
           arrowDirection="up"
         />

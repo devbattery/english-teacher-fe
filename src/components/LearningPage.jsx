@@ -266,8 +266,8 @@ const LearningPage = () => {
         <FeatureDiscoveryTooltip
           isVisible={showFeatureGuide}
           onClose={handleDismissFeatureGuide}
-          title="단어 저장 기능 안내"
-          content="PC에서는 텍스트를 드래그하고, 모바일에서는 ✍🏻 버튼을 눌러 단어를 저장할 수 있습니다. 📖 버튼으로 단어장을 열어보세요!"
+          title="단어장 기능 안내"
+          content="PC 환경에서는 단어를 드래그하고,</br>모바일 환경에서는 ✍🏻 버튼을 눌러 단어를 터치해 보세요!"
           style={tooltipStyle}
           arrowDirection="down"
           positioning="dynamic"

@@ -1,7 +1,6 @@
-// src/components/LearningPage.jsx
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../api/api";
 import "./LearningPage.css";
 import CustomLoader from "./CustomLoader";
@@ -26,11 +25,13 @@ const LearningPage = () => {
   const [error, setError] = useState(null);
 
   const [popover, setPopover] = useState({ show: false, x: 0, y: 0, text: "" });
-  const [vocabulary, setVocabulary] = useState([]);
   const [isVocabVisible, setIsVocabVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const contentRef = useRef(null);
   const [wordsArray, setWordsArray] = useState([]);
+
+  // [추가] 새 단어 추가 시 FloatingVocabList를 리프레시하기 위한 상태
+  const [newWordTimestamp, setNewWordTimestamp] = useState(null);
 
   const windowWidth = useWindowWidth();
   const isMobile = windowWidth <= MOBILE_BREAKPOINT;
@@ -52,12 +53,7 @@ const LearningPage = () => {
         if (vocabToggleBtnRef.current) {
           const rect = vocabToggleBtnRef.current.getBoundingClientRect();
           const tooltipWidth = 280;
-
-          // 1. 툴팁 본체를 버튼의 왼쪽에 위치시킨다.
           const finalLeft = rect.right - tooltipWidth;
-
-          // 2. 꼬리는 툴팁 본체 내에서, 버튼의 중앙을 가리키도록 위치를 계산한다.
-          // (툴팁 너비) - (버튼 너비의 절반) = 툴팁 오른쪽 끝에서부터 꼬리까지의 거리
           const arrowLeft = tooltipWidth - (rect.width / 2);
           
           setTooltipStyle({
@@ -65,7 +61,6 @@ const LearningPage = () => {
             left: `${finalLeft}px`,
             arrowStyle: { left: `${arrowLeft}px` }
           });
-
           setShowFeatureGuide(true);
         }
       }, 1500);
@@ -84,17 +79,7 @@ const LearningPage = () => {
     }
   }, [learningContent]);
 
-  useEffect(() => {
-    const fetchVocabulary = async () => {
-      try {
-        const response = await api.get("/api/vocabulary");
-        setVocabulary(response.data);
-      } catch (err) {
-        console.error("Error fetching vocabulary:", err);
-      }
-    };
-    fetchVocabulary();
-  }, []);
+  // [수정] 전체 단어 목록을 불러오는 useEffect는 제거됨
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -105,7 +90,6 @@ const LearningPage = () => {
       setPopover({ show: false, x: 0, y: 0, text: "" });
       clearSelection();
       setIsWordSelectMode(false);
-
       const timer = setTimeout(() => setIsGenerating(true), 500);
 
       try {
@@ -152,10 +136,7 @@ const LearningPage = () => {
   const handleWordTap = (e, tappedIndex) => {
     e.preventDefault();
     if (!isWordSelectMode || !e.target.matches(".selectable-word")) return;
-    const lastIndex =
-      selectedIndices.length > 0
-        ? selectedIndices[selectedIndices.length - 1]
-        : -2;
+    const lastIndex = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length - 1] : -2;
     if (selectedIndices.length === 0 || tappedIndex === lastIndex + 2) {
       setSelectedIndices((prev) => [...prev, tappedIndex]);
     } else {
@@ -190,14 +171,10 @@ const LearningPage = () => {
     if (isSaving || !textToSave) return;
     setIsSaving(true);
     try {
-      const response = await api.post("/api/vocabulary", {
-        expression: textToSave,
-      });
-      const newWord = response.data;
-      if (!vocabulary.some((v) => v.id === newWord.id)) {
-        setVocabulary((prev) => [newWord, ...prev]);
-      }
-      setIsVocabVisible(true);
+      await api.post("/api/vocabulary", { expression: textToSave });
+      // [수정] 타임스탬프를 업데이트하여 자식 컴포넌트에 변경을 알림
+      setNewWordTimestamp(Date.now());
+      setIsVocabVisible(true); // 저장 후 단어장 바로 열기
     } catch (err) {
       console.error("Error saving word:", err);
       alert("단어 저장에 실패했습니다.");
@@ -209,15 +186,7 @@ const LearningPage = () => {
     }
   };
 
-  const handleDeleteWord = async (wordId) => {
-    try {
-      await api.delete(`/api/vocabulary/${wordId}`);
-      setVocabulary((prev) => prev.filter((word) => word.id !== wordId));
-    } catch (err) {
-      console.error("Error deleting word:", err);
-      alert("단어 삭제에 실패했습니다.");
-    }
-  };
+  // [수정] handleDeleteWord는 FloatingVocabList가 직접 처리하므로 제거됨
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -236,31 +205,20 @@ const LearningPage = () => {
     setIsVocabVisible(prev => !prev);
   };
 
-  const loadingMessage = isGenerating
-    ? "오늘의 맞춤 콘텐츠를 만들고 있어요..."
-    : "오늘의 콘텐츠를 불러오는 중입니다...";
+  const loadingMessage = isGenerating ? "오늘의 맞춤 콘텐츠를 만들고 있어요..." : "오늘의 콘텐츠를 불러오는 중입니다...";
 
   return (
     <div className="learning-page" onMouseUp={handleTextSelection}>
-      {!isMobile &&
-        popover.show &&
-        createPortal(
-          <div
-            className="save-popover"
-            style={{ top: `${popover.y}px`, left: `${popover.x}px` }}
-          >
+      {!isMobile && popover.show && createPortal(
+          <div className="save-popover" style={{ top: `${popover.y}px`, left: `${popover.x}px` }}>
             <button onClick={handleSaveWord} disabled={isSaving}>
               {isSaving ? <CustomLoader size="small" /> : "✍🏻"}
             </button>
           </div>,
           document.body
-        )}
-
-      {showGuide && (
-        <div className="guide-tooltip">
-          저장하고 싶은 단어를 순서대로 탭하세요!
-        </div>
       )}
+
+      {showGuide && <div className="guide-tooltip">저장하고 싶은 단어를 순서대로 탭하세요!</div>}
       
       {createPortal(
         <FeatureDiscoveryTooltip
@@ -277,18 +235,15 @@ const LearningPage = () => {
 
       {createPortal(
         <FloatingVocabList
-          words={vocabulary}
           isVisible={isVocabVisible}
           onClose={() => setIsVocabVisible(false)}
-          onDelete={handleDeleteWord}
           initialAnchorRect={vocabListAnchorRect}
+          onNewWordAdded={newWordTimestamp}
         />,
         document.body
       )}
 
-      <header className="learning-header">
-        <h1>Daily Contents</h1>
-      </header>
+      <header className="learning-header"><h1>Daily Contents</h1></header>
 
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (
@@ -306,43 +261,24 @@ const LearningPage = () => {
       <main className={`content-area ${loading ? "loading" : ""}`}>
         {loading && <CustomLoader message={loadingMessage} />}
         {error && <div className="error-message">{error}</div>}
-
         {!loading && learningContent && (
           <>
             <article className="learning-article" ref={contentRef}>
               <h2 className="article-title">{learningContent.title}</h2>
-              <div
-                className={`article-content ${
-                  isWordSelectMode ? "selectable" : ""
-                }`}
-              >
-                {isMobile && isWordSelectMode
-                  ? wordsArray.map((word, index) =>
-                      word.trim() ? (
-                        <span
-                          key={index}
-                          className={`selectable-word ${
-                            selectedIndices.includes(index) ? "selected" : ""
-                          }`}
-                          onMouseDown={(e) => handleWordTap(e, index)}
-                        >
-                          {word}
-                        </span>
-                      ) : (
-                        <React.Fragment key={index}>{word}</React.Fragment>
-                      )
-                    )
-                  : learningContent.content.split("\n").map((line, index) => (
-                      <React.Fragment key={index}>
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
+              <div className={`article-content ${isWordSelectMode ? "selectable" : ""}`}>
+                {isMobile && isWordSelectMode ? wordsArray.map((word, index) =>
+                    word.trim() ? (
+                      <span key={index} className={`selectable-word ${selectedIndices.includes(index) ? "selected" : ""}`} onMouseDown={(e) => handleWordTap(e, index)}>
+                        {word}
+                      </span>
+                    ) : ( <React.Fragment key={index}>{word}</React.Fragment> )
+                  ) : learningContent.content.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>{line}<br /></React.Fragment>
+                  ))
+                }
               </div>
             </article>
-
-            {learningContent.keyExpressions &&
-              learningContent.keyExpressions.length > 0 && (
+            {learningContent.keyExpressions && learningContent.keyExpressions.length > 0 && (
                 <section className="key-expressions-section">
                   <h3 className="expressions-title">Key Expressions ✨</h3>
                   <ul className="expressions-list">
@@ -354,68 +290,33 @@ const LearningPage = () => {
                     ))}
                   </ul>
                 </section>
-              )}
+            )}
           </>
         )}
       </main>
 
       <div className="fixed-bottom-controls">
         {isWordSelectMode && (
-          <div
-            className={`selection-bar ${
-              selectedIndices.length > 0 ? "visible" : ""
-            }`}
-          >
+          <div className={`selection-bar ${selectedIndices.length > 0 ? "visible" : ""}`}>
             <span className="selected-text" title={selectedPhrase}>
-              {selectedIndices.length > 0
-                ? `"${selectedPhrase}"`
-                : "단어를 탭하여 선택"}
+              {selectedIndices.length > 0 ? `"${selectedPhrase}"` : "단어를 탭하여 선택"}
             </span>
             {selectedIndices.length > 0 && (
               <div className="selection-actions">
-                <button
-                  onClick={handleSaveWord}
-                  disabled={isSaving}
-                  className="save-btn"
-                >
-                  {isSaving ? "..." : "저장"}
-                </button>
-                <button onClick={clearSelection} className="cancel-btn">
-                  ×
-                </button>
+                <button onClick={handleSaveWord} disabled={isSaving} className="save-btn">{isSaving ? "..." : "저장"}</button>
+                <button onClick={clearSelection} className="cancel-btn">×</button>
               </div>
             )}
           </div>
         )}
-
         {isMobile && !loading && !isWordSelectMode && (
-          <button
-            onClick={toggleWordSelectMode}
-            className="select-mode-fab"
-            aria-label="단어 선택 모드 시작"
-          >
-            ✍🏻
-          </button>
+          <button onClick={toggleWordSelectMode} className="select-mode-fab" aria-label="단어 선택 모드 시작">✍🏻</button>
         )}
-
         {isWordSelectMode && (
-          <button
-            onClick={toggleWordSelectMode}
-            className="select-mode-fab active"
-            aria-label="단어 선택 모드 종료"
-          >
-            ✅
-          </button>
+          <button onClick={toggleWordSelectMode} className="select-mode-fab active" aria-label="단어 선택 모드 종료">✅</button>
         )}
-
         {!isWordSelectMode && !isVocabVisible && (
-          <button
-            ref={vocabToggleBtnRef}
-            className="vocab-toggle-btn"
-            onClick={handleToggleVocabList}
-          >
-            📖
-          </button>
+          <button ref={vocabToggleBtnRef} className="vocab-toggle-btn" onClick={handleToggleVocabList}>📖</button>
         )}
       </div>
     </div>

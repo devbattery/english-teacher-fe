@@ -1,10 +1,11 @@
-// src/components/FloatingVocabList.jsx
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Rnd } from 'react-rnd';
 import CustomLoader from './CustomLoader';
 import './FloatingVocabList.css';
-import FeatureDiscoveryTooltip from './FeatureDiscoveryTooltip';
 import { useTheme } from '../context/ThemeContext';
+import api from '../api/api';
+
+const PAGE_SIZE = 15;
 
 const ResizeCornerHandle = ({ position }) => (
   <div className={`resize-corner-handle resize-corner-handle--${position}`}>
@@ -30,129 +31,94 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
   );
 };
 
-const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorRect }) => {
+const FloatingVocabList = ({ isVisible, onClose, initialAnchorRect, onNewWordAdded }) => {
   const { theme } = useTheme();
+  
+  const [vocab, setVocab] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
   const [deletingId, setDeletingId] = useState(null);
   const [wordToDelete, setWordToDelete] = useState(null);
+
   const [dimensions, setDimensions] = useState({ width: 380, height: 520 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
   
-  const [minHeight, setMinHeight] = useState(390); // 동적 계산을 위한 state, 초기값은 fallback
+  const observer = useRef();
+  const lastVocabElementRef = useCallback(node => {
+    if (loadingMore || loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loadingMore, loading, hasNextPage]);
 
-  // 높이 측정을 위한 ref
-  const headerRef = useRef(null);
-  const searchRef = useRef(null);
-  const itemRef = useRef(null);
-
-  const filteredWords = useMemo(() => {
-    if (!searchTerm.trim()) return words;
-    const lowercasedTerm = searchTerm.toLowerCase();
-    return words.filter(word =>
-      (word.englishExpression && word.englishExpression.toLowerCase().includes(lowercasedTerm)) ||
-      (word.koreanMeaning && word.koreanMeaning.toLowerCase().includes(lowercasedTerm))
-    );
-  }, [words, searchTerm]);
-  
-  // 1. 최소 높이를 계산하는 useEffect
   useEffect(() => {
-    if (isVisible && filteredWords.length > 0) {
-      const animationFrameId = requestAnimationFrame(() => {
-        const header = headerRef.current;
-        const search = searchRef.current;
-        const item = itemRef.current;
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
-        if (header && search && item) {
-          const headerHeight = header.offsetHeight;
-          const searchHeight = search.offsetHeight;
-          const itemHeight = item.offsetHeight;
-          
-          const NUM_VISIBLE_ITEMS = 4;
-          const CONTENT_PADDING = 16;
-
-          const calculatedMinHeight = headerHeight + searchHeight + (itemHeight * NUM_VISIBLE_ITEMS) + CONTENT_PADDING;
-          
-          setMinHeight(calculatedMinHeight);
-        }
-      });
-      return () => cancelAnimationFrame(animationFrameId);
-    }
-  }, [isVisible, filteredWords.length]);
-
-  // 2. localStorage에서 위치/크기를 불러오는 useEffect
   useEffect(() => {
-    if (!isVisible) {
-      setIsMounted(false);
+    setPage(0);
+    setVocab([]);
+    setHasNextPage(true);
+  }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    if (!isVisible || (!hasNextPage && page > 0)) {
       return;
     }
-    const hasSeenTooltip = localStorage.getItem('hasSeenVocabTooltip');
-    if (!hasSeenTooltip) setShowTooltip(true);
 
-    const savedDimensions = JSON.parse(localStorage.getItem('vocabListDimensions'));
-    const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
+    const fetchVocab = async () => {
+      if (page === 0) setLoading(true);
+      else setLoadingMore(true);
 
-    const minWidth = 320;
+      try {
+        // [핵심 수정] API 경로를 '/api/vocabulary'로 변경
+        const response = await api.get('/api/vocabulary', {
+          params: {
+            page,
+            size: PAGE_SIZE,
+            searchTerm: debouncedSearchTerm || null,
+          }
+        });
+        const { content, last } = response.data;
+        
+        setVocab(prev => (page === 0 ? content : [...prev, ...content]));
+        setHasNextPage(!last);
+      } catch (err) {
+        console.error("Error fetching vocabulary in FloatingList:", err);
+      } finally {
+        if (page === 0) setLoading(false);
+        else setLoadingMore(false);
+      }
+    };
+    
+    fetchVocab();
+  }, [page, debouncedSearchTerm, isVisible]);
 
-    let initialWidth, initialHeight;
-
-    if (savedDimensions) {
-      initialWidth = savedDimensions.width;
-      initialHeight = savedDimensions.height;
-    } else {
-      initialWidth = minWidth;
-      initialHeight = 520; // 임시 초기값
-    }
-    setDimensions({ width: initialWidth, height: initialHeight });
-
-    if (savedPosition) {
-      setPosition(savedPosition);
-    } else if (initialAnchorRect) {
-      const margin = 15;
-      let newX = initialAnchorRect.right - initialWidth;
-      let newY = initialAnchorRect.top - initialHeight - margin;
-      
-      newX = Math.max(10, newX);
-      newY = Math.max(10, newY);
-      setPosition({ x: newX, y: newY });
-    } else {
-      const defaultX = (window.innerWidth - initialWidth) / 2;
-      const defaultY = (window.innerHeight - initialHeight) / 2;
-      setPosition({ x: defaultX, y: defaultY });
-    }
-
-    const animationFrame = requestAnimationFrame(() => setIsMounted(true));
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isVisible, initialAnchorRect]);
-  
-  // 3. 첫 실행 시, 초기 높이를 minHeight로 설정하는 useEffect
   useEffect(() => {
-    const hasSavedDimensions = localStorage.getItem('vocabListDimensions');
-    if (minHeight > 390 && !hasSavedDimensions) {
-      setDimensions(prevDimensions => ({
-        ...prevDimensions,
-        height: minHeight
-      }));
+    if (isVisible && !isMounted) {
+      setSearchTerm('');
     }
-  }, [minHeight]);
+  }, [isVisible, isMounted]);
 
-  // 4. localStorage에 위치/크기를 저장하는 useEffect
   useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem('vocabListDimensions', JSON.stringify(dimensions));
-      localStorage.setItem('vocabListPosition', JSON.stringify(position));
+    if (onNewWordAdded && isVisible) {
+      setSearchTerm('');
     }
-  }, [dimensions, position, isMounted]);
-
-  const handleTooltipClose = () => {
-    setShowTooltip(false);
-    localStorage.setItem('hasSeenVocabTooltip', 'true');
-  };
-
-  const handleInteraction = () => {
-    if (showTooltip) handleTooltipClose();
-  };
+  }, [onNewWordAdded, isVisible]);
 
   const requestDelete = (word) => {
     if (deletingId) return;
@@ -163,9 +129,9 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     if (!wordToDelete) return;
     setDeletingId(wordToDelete.id);
     setWordToDelete(null); 
-
     try {
-      await onDelete(wordToDelete.id);
+      await api.delete(`/api/vocabulary/${wordToDelete.id}`);
+      setVocab(prev => prev.filter(w => w.id !== wordToDelete.id));
     } catch (error) {
       console.error("Failed to delete word:", error);
       alert("단어 삭제에 실패했습니다.");
@@ -174,106 +140,82 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     }
   };
 
-  if (!isVisible) {
-    return null;
-  }
+  useEffect(() => {
+    if (!isVisible) {
+      setIsMounted(false);
+      return;
+    }
+    setIsMounted(true);
+    const savedDimensions = JSON.parse(localStorage.getItem('vocabListDimensions'));
+    const savedPosition = JSON.parse(localStorage.getItem('vocabListPosition'));
+
+    setDimensions(savedDimensions || { width: 380, height: 520 });
+
+    if (savedPosition) {
+      setPosition(savedPosition);
+    } else if (initialAnchorRect) {
+      const initialWidth = (savedDimensions && savedDimensions.width) || 380;
+      const initialHeight = (savedDimensions && savedDimensions.height) || 520;
+      setPosition({
+        x: Math.max(10, window.innerWidth - initialWidth - 20),
+        y: Math.max(10, window.innerHeight - initialHeight - 20)
+      });
+    } else {
+      setPosition({ x: (window.innerWidth - 380) / 2, y: (window.innerHeight - 520) / 2 });
+    }
+  }, [isVisible, initialAnchorRect]);
+
+  if (!isVisible) return null;
   
   return (
     <Rnd
       size={dimensions}
       position={position}
-      onDragStart={handleInteraction}
       onDragStop={(e, d) => setPosition({ x: d.x, y: d.y })}
-      onResizeStart={handleInteraction}
       onResizeStop={(e, direction, ref, delta, newPosition) => {
         setDimensions({ width: ref.offsetWidth, height: ref.offsetHeight });
         setPosition(newPosition);
       }}
-      minWidth={320}
-      minHeight={minHeight}
-      bounds="window"
-      className="floating-vocab-list-rnd"
-      data-theme={theme}
-      cancel=".vocab-search-input, .vocab-content, .close-btn, .delete-btn, .feature-discovery-tooltip, .confirmation-dialog"
+      minWidth={320} minHeight={390} bounds="window" className="floating-vocab-list-rnd" data-theme={theme}
+      cancel=".vocab-search-input, .vocab-content, .close-btn, .delete-btn, .confirmation-dialog"
       dragHandleClassName="vocab-header"
-      resizeHandleComponent={{
-        bottomLeft: <ResizeCornerHandle position="bottom-left" />,
-        bottomRight: <ResizeCornerHandle position="bottom-right" />,
-      }}
-    >
+      resizeHandleComponent={{ bottomLeft: <ResizeCornerHandle position="bottom-left" />, bottomRight: <ResizeCornerHandle position="bottom-right" />, }} >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
-        <FeatureDiscoveryTooltip
-          isVisible={showTooltip}
-          onClose={handleTooltipClose}
-          title="모르는 단어 추가하기"
-          content="단어장을 움직여 보세요!</br>표시된 모서리를 드래그하여 크기를 조절할 수도 있어요."
-          positioning="center"
-          arrowDirection="up"
-        />
-        
-        <header className="vocab-header" onMouseDown={handleInteraction} ref={headerRef}>
+        <header className="vocab-header">
           <h3>내 단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
-        <div className="vocab-search-wrapper" ref={searchRef}>
-          <input
-            type="text"
-            placeholder="찾고자 하는 단어를 입력하세요."
-            className="vocab-search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="Search Vocabulary"
-          />
+        <div className="vocab-search-wrapper">
+          <input type="text" placeholder="단어 검색..." className="vocab-search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
 
         <main className="vocab-content">
-          {filteredWords.length > 0 ? (
+          {loading ? (
+            <div className="loader-container"><CustomLoader /></div>
+          ) : vocab.length > 0 ? (
             <ul>
-              {filteredWords.map((word, index) => (
-                <li
-                  key={word.id}
-                  className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}
-                  ref={index === 0 ? itemRef : null}
-                >
-                  {deletingId === word.id ? (
-                    <div className="loader-container">
-                      <CustomLoader size="small" />
-                    </div>
-                  ) : (
+              {vocab.map((word, index) => (
+                <li key={word.id} ref={vocab.length === index + 1 ? lastVocabElementRef : null} className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}>
+                  {deletingId === word.id ? <div className="loader-container"><CustomLoader size="small" /></div> : (
                     <>
                       <div className="word-details">
                         <span className="expression">{word.englishExpression}</span>
                         <span className="meaning">{word.koreanMeaning}</span>
                       </div>
-                      <button
-                        onClick={() => requestDelete(word)}
-                        className="delete-btn"
-                        disabled={deletingId !== null}
-                        aria-label={`Delete ${word.englishExpression}`}
-                      >
-                        🗑️
-                      </button>
+                      <button onClick={() => requestDelete(word)} className="delete-btn" disabled={!!deletingId}>🗑️</button>
                     </>
                   )}
                 </li>
               ))}
             </ul>
           ) : (
-             <div className="empty-message">
-              <p>{words.length > 0 ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '저장된 단어가 없습니다.'}</p>
-              <span>본문에서 단어를 선택하여 추가해 보세요!</span>
-            </div>
+            <div className="empty-message"><p>{debouncedSearchTerm ? `"${debouncedSearchTerm}"에 대한 검색 결과가 없습니다.` : '저장된 단어가 없습니다.'}</p></div>
           )}
+          {loadingMore && <div className="loader-container"><CustomLoader size="small" message="더 보기..."/></div>}
         </main>
         
-        <ConfirmationDialog 
-          isOpen={!!wordToDelete}
-          onClose={() => setWordToDelete(null)}
-          onConfirm={handleConfirmDelete}
-          word={wordToDelete}
-          theme={theme}
-        />
+        <ConfirmationDialog isOpen={!!wordToDelete} onClose={() => setWordToDelete(null)} onConfirm={handleConfirmDelete} word={wordToDelete} theme={theme} />
       </div>
     </Rnd>
   );

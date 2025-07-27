@@ -45,7 +45,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
   // 높이 측정을 위한 ref
   const headerRef = useRef(null);
   const searchRef = useRef(null);
-  const itemRef = useRef(null); // 단어 아이템 1개를 측정하기 위한 ref
+  const itemRef = useRef(null);
 
   const filteredWords = useMemo(() => {
     if (!searchTerm.trim()) return words;
@@ -56,7 +56,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     );
   }, [words, searchTerm]);
   
-  // 실제 렌더링된 요소들의 높이를 기반으로 최소 높이를 계산하는 useEffect
+  // 1. 최소 높이를 계산하는 useEffect
   useEffect(() => {
     if (isVisible && filteredWords.length > 0) {
       const animationFrameId = requestAnimationFrame(() => {
@@ -69,8 +69,8 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           const searchHeight = search.offsetHeight;
           const itemHeight = item.offsetHeight;
           
-          const NUM_VISIBLE_ITEMS = 4; // 최소 4개의 아이템이 보이도록 설정
-          const CONTENT_PADDING = 16;  // .vocab-content의 상하 패딩 (top 8px + bottom 8px)
+          const NUM_VISIBLE_ITEMS = 4;
+          const CONTENT_PADDING = 16;
 
           const calculatedMinHeight = headerHeight + searchHeight + (itemHeight * NUM_VISIBLE_ITEMS) + CONTENT_PADDING;
           
@@ -81,7 +81,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     }
   }, [isVisible, filteredWords.length]);
 
-
+  // 2. localStorage에서 위치/크기를 불러오는 useEffect
   useEffect(() => {
     if (!isVisible) {
       setIsMounted(false);
@@ -102,7 +102,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
       initialHeight = savedDimensions.height;
     } else {
       initialWidth = minWidth;
-      initialHeight = 520; // 기본 높이는 유지
+      initialHeight = 520; // 임시 초기값
     }
     setDimensions({ width: initialWidth, height: initialHeight });
 
@@ -126,6 +126,18 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
     return () => cancelAnimationFrame(animationFrame);
   }, [isVisible, initialAnchorRect]);
   
+  // 3. 첫 실행 시, 초기 높이를 minHeight로 설정하는 useEffect
+  useEffect(() => {
+    const hasSavedDimensions = localStorage.getItem('vocabListDimensions');
+    if (minHeight > 390 && !hasSavedDimensions) {
+      setDimensions(prevDimensions => ({
+        ...prevDimensions,
+        height: minHeight
+      }));
+    }
+  }, [minHeight]);
+
+  // 4. localStorage에 위치/크기를 저장하는 useEffect
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem('vocabListDimensions', JSON.stringify(dimensions));
@@ -178,7 +190,7 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
         setPosition(newPosition);
       }}
       minWidth={320}
-      minHeight={minHeight} // 동적으로 계산된 state 사용
+      minHeight={minHeight}
       bounds="window"
       className="floating-vocab-list-rnd"
       data-theme={theme}
@@ -201,13 +213,11 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
           arrowDirection="up"
         />
         
-        {/* 측정할 요소에 ref 할당 */}
         <header className="vocab-header" onMouseDown={handleInteraction} ref={headerRef}>
           <h3>내 단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 
-        {/* 측정할 요소에 ref 할당 */}
         <div className="vocab-search-wrapper" ref={searchRef}>
           <input
             type="text"
@@ -226,7 +236,6 @@ const FloatingVocabList = ({ words, isVisible, onClose, onDelete, initialAnchorR
                 <li
                   key={word.id}
                   className={`vocab-item ${deletingId === word.id ? 'is-deleting' : ''}`}
-                  // 첫 번째 아이템에만 ref를 할당하여 높이를 측정
                   ref={index === 0 ? itemRef : null}
                 >
                   {deletingId === word.id ? (

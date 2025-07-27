@@ -1,5 +1,3 @@
-// src/components/NavigationBar.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -28,8 +26,13 @@ const MoonIcon = () => (
   </svg>
 );
 
+const LogoutIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+);
+
 const NavigationBar = () => {
-  // openLoginModal 함수를 context에서 가져옵니다.
   const { user, logout, loading, userLoading, accessToken, logoutLoading, openLoginModal } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -62,49 +65,56 @@ const NavigationBar = () => {
         <button onClick={toggleTheme} className="theme-toggle-button">
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
+
         {isLoading ? (
           <div className="navbar-user-skeleton">
             <div className="skeleton skeleton-profile-pic"></div>
             <div className="skeleton skeleton-username"></div>
           </div>
         ) : user ? (
-          <div className="navbar-user" ref={dropdownRef}>
-            {logoutLoading ? (
-              <CustomLoader size="small" />
-            ) : (
-              <>
-                {user.picture && (
-                  <img
-                    src={user.picture}
-                    alt="Profile"
-                    className="navbar-profile-pic clickable"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  />
-                )}
-                {isDropdownOpen && (
-                  <div className="user-dropdown">
-                    <div className="dropdown-header">
-                      <img src={user.picture} alt="Profile" className="dropdown-profile-pic" />
-                      <span className="dropdown-username">{user.name}</span>
-                      <span className="dropdown-email">{user.email}</span>
+          <>
+            <Link to="/vocabulary" className="navbar-button vocab-link">
+              내 단어장
+            </Link>
+
+            <div className="navbar-user" ref={dropdownRef}>
+              {logoutLoading ? (
+                <CustomLoader size="small" />
+              ) : (
+                <>
+                  {user.picture && (
+                    <img
+                      src={user.picture}
+                      alt="Profile"
+                      className="navbar-profile-pic clickable"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    />
+                  )}
+                  {isDropdownOpen && (
+                    <div className="user-dropdown">
+                      <div className="dropdown-header">
+                        <img src={user.picture} alt="Profile" className="dropdown-profile-pic" />
+                        <span className="dropdown-username">{user.name}</span>
+                        <span className="dropdown-email">{user.email}</span>
+                      </div>
+                      <ul className="dropdown-menu-list">
+                        <li className="dropdown-menu-item" onClick={() => {
+                            setIsDropdownOpen(false);
+                            logout();
+                          }}>
+                          <button className="dropdown-link logout-button">
+                            <LogoutIcon />
+                            <span>로그아웃</span>
+                          </button>
+                        </li>
+                      </ul>
                     </div>
-                    <ul className="dropdown-menu-list">
-                      <li className="dropdown-menu-item" onClick={() => {
-                          setIsDropdownOpen(false); // 드롭다운 닫기
-                          logout();
-                        }}>
-                        <button className="navbar-button logout-button">
-                          로그아웃
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                  )}
+                </>
+              )}
+            </div>
+          </>
         ) : (
-          // <Link> 대신 <button>을 사용하고 onClick으로 모달을 엽니다.
           <button onClick={openLoginModal} className="navbar-button login-button">
             로그인
           </button>

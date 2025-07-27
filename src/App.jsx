@@ -12,6 +12,7 @@ import './App.css';
 
 const ChatPage = React.lazy(() => import('./components/ChatPage'));
 const LearningPage = React.lazy(() => import('./components/LearningPage'));
+const VocabularyPage = React.lazy(() => import('./components/VocabularyPage'));
 
 function AppContent() {
   const { isLoginModalOpen, closeLoginModal } = useAuth();
@@ -19,7 +20,7 @@ function AppContent() {
   return (
     <div className="app-container">
       <NavigationBar />
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="main-content"><div style={{ paddingTop: '50px', textAlign: 'center' }}>Loading page...</div></div>}>
         <div className="main-content">
           <Routes>
             <Route path="/login" element={<LoginTriggerPage />} />
@@ -30,6 +31,7 @@ function AppContent() {
             <Route path="/learning" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
             <Route path="/learning/:level" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
             <Route path="/level-guide" element={<LevelGuidePage />} />
+            <Route path="/vocabulary" element={<ProtectedRoute><VocabularyPage /></ProtectedRoute>} />
           </Routes>
         </div>
       </Suspense>

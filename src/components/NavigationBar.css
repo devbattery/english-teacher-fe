@@ -1,5 +1,3 @@
-/* src/components/NavigationBar.css */
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -41,12 +39,29 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vocab-link {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.vocab-link:hover {
+  background-color: var(--bg-secondary-hover);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .login-button {
   background-color: var(--accent-color);
   color: var(--accent-text-color);
+  border-color: var(--accent-color);
 }
 
 .login-button:hover {
@@ -111,28 +126,56 @@
 
 .dropdown-menu-list {
   list-style: none;
-  padding: 0;
+  padding: 0.5rem;
   margin: 0;
 }
 
 .dropdown-menu-item {
-  padding: 0.5rem;
+  padding: 0;
+  display: flex; /* li를 flex 컨테이너로 만듭니다. */
+  justify-content: center; /* [핵심] li의 자식 요소를 가운데 정렬합니다. */
+  margin: 0.25rem 0;
+}
+
+.dropdown-link {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  /* width: 100% 속성을 제거하거나, 필요하다면 남겨둡니다 (다른 링크를 위해). */
+  /* 여기서는 일단 남겨두고, 로그아웃 버튼에서만 재정의하겠습니다. */
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-primary);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-link:hover {
+  background-color: var(--bg-secondary-hover);
+  color: var(--accent-color);
+}
+
+.dropdown-link svg {
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.dropdown-link:hover svg {
+  color: var(--accent-color);
 }
 
 .logout-button {
-  width: auto;
-  background-color: transparent;
-  color: var(--text-primary);
-  text-align: center;
-  padding: 0.5rem 1.5rem;
-  border-radius: 8px;
-}
-
-.logout-button:hover {
-  background-color: var(--bg-secondary-hover);
-  color: var(--accent-color);
+  width: auto; /* [핵심] 너비를 내용에 맞게 자동으로 설정합니다. */
+  /* padding: 0; 제거 또는 아래와 같이 직접 설정 */
+  padding: 0.75rem 1.5rem; /* 버튼의 좌우 여백을 적절히 줍니다. */
+  justify-content: center; /* 이 속성은 dropdown-link에 이미 있을 수 있으나, 명시적으로 추가 */
 }
 
 .navbar-user-skeleton {

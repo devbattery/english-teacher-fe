@@ -20,7 +20,7 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, word, theme }) => {
     <div className="confirmation-overlay" onClick={onClose}>
       <div className="confirmation-dialog" data-theme={theme} onClick={(e) => e.stopPropagation()}>
         <h4>단어 삭제</h4>
-        <p>정말로 '<span className="highlight-word">{word?.englishExpression}</span>' 단어를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+        <p><span className="highlight-word">{word?.englishExpression}</span> 단어를 삭제하시겠습니까?</p>
         <div className="dialog-actions">
           <button className="cancel-btn" onClick={onClose}>취소</button>
           <button className="confirm-delete-btn" onClick={onConfirm}>삭제</button>

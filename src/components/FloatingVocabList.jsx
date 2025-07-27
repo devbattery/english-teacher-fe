@@ -182,7 +182,7 @@ const FloatingVocabList = ({ isVisible, onClose, initialAnchorRect, onNewWordAdd
       resizeHandleComponent={{ bottomLeft: <ResizeCornerHandle position="bottom-left" />, bottomRight: <ResizeCornerHandle position="bottom-right" />, }} >
       <div className={`floating-vocab-list-inner ${isMounted ? 'mounted' : ''}`}>
         <header className="vocab-header">
-          <h3>내 단어장 📝</h3>
+          <h3>미니 내 단어장 📝</h3>
           <button onClick={onClose} className="close-btn" aria-label="Close vocabulary list">×</button>
         </header>
 

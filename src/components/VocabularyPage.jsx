@@ -1,33 +1,28 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import api from '../api/api';
 import CustomLoader from './CustomLoader';
+import VocabListSkeleton from './VocabListSkeleton'; // 스켈레톤 컴포넌트 import
 import './VocabularyPage.css';
 
-// 페이지 당 불러올 단어 개수
 const PAGE_SIZE = 20;
 
 const VocabularyPage = () => {
-  // 데이터 및 페이지네이션 상태
   const [vocab, setVocab] = useState([]);
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [loading, setLoading] = useState(true); // 초기 로딩 및 검색 시 스켈레톤 UI를 위한 상태
+  const [loadingMore, setLoadingMore] = useState(false); // 무한 스크롤 로딩을 위한 상태
   const [error, setError] = useState(null);
 
-  // 검색 관련 상태
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
-  // UI 옵션 상태
   const [hideOption, setHideOption] = useState('none');
   const [sortBy, setSortBy] = useState('memorized');
   
-  // 개별 아이템 API 통신 상태
   const [updatingId, setUpdatingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  // --- 무한 스크롤 Intersection Observer 설정 ---
   const observer = useRef();
   const lastVocabElementRef = useCallback(node => {
     if (loadingMore || loading) return;
@@ -40,64 +35,53 @@ const VocabularyPage = () => {
     if (node) observer.current.observe(node);
   }, [loadingMore, loading, hasNextPage]);
 
-  // --- 검색어 디바운싱 useEffect ---
+  // 검색어 디바운싱
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (debouncedSearchTerm !== searchTerm) {
-        setDebouncedSearchTerm(searchTerm);
-        setPage(0); // 검색어가 바뀌면 첫 페이지부터 다시 로드
-        setVocab([]); // 기존 단어 목록 초기화
-        setHasNextPage(true); // 다음 페이지가 있을 수 있으므로 리셋
-      }
-    }, 500); // 500ms 동안 타이핑 없으면 검색
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchTerm, debouncedSearchTerm]);
-
-  // --- 데이터 로딩 useEffect ---
+  // 검색어가 변경되면 페이지 상태를 리셋
   useEffect(() => {
-    // 검색어가 변경되어 page가 0으로 리셋된 경우,
-    // 또는 page가 1 이상으로 증가한 경우에만 데이터를 불러옴
-    if (page === 0 && vocab.length > 0 && debouncedSearchTerm === '') return;
+    setPage(0);
+    setVocab([]);
+    setHasNextPage(true);
+  }, [debouncedSearchTerm]);
+
+  // 데이터 로딩 로직
+  useEffect(() => {
+    // 다음 페이지가 없으면(첫 페이지 로딩 제외) API 호출 중단
+    if (!hasNextPage && page > 0) return;
 
     const fetchVocab = async () => {
-      if (page === 0) setLoading(true);
-      else setLoadingMore(true);
+      if (page === 0) setLoading(true); // 초기/검색 로딩 시작
+      else setLoadingMore(true); // 추가 로딩 시작
       
       setError(null);
 
       try {
         const response = await api.get('/api/vocabulary', {
-          params: {
-            page: page,
-            size: PAGE_SIZE,
-            searchTerm: debouncedSearchTerm || null,
-          }
+          params: { page, size: PAGE_SIZE, searchTerm: debouncedSearchTerm || null }
         });
         const { content, last } = response.data;
         
         setVocab(prev => (page === 0 ? content : [...prev, ...content]));
         setHasNextPage(!last);
-
       } catch (err) {
         setError('단어장을 불러오는 데 실패했습니다.');
         console.error(err);
       } finally {
-        if (page === 0) setLoading(false);
-        else setLoadingMore(false);
+        if (page === 0) setLoading(false); // 초기/검색 로딩 종료
+        else setLoadingMore(false); // 추가 로딩 종료
       }
     };
-
-    // 더 불러올 페이지가 있거나, 첫 로딩일 때만 함수 실행
-    if (hasNextPage || page === 0) {
-        fetchVocab();
-    }
+    
+    fetchVocab();
   }, [page, debouncedSearchTerm]);
 
-
-  // --- CRUD 및 UI 옵션 핸들러 ---
+  // 단어 상태 변경 및 삭제 핸들러 (이전과 동일)
   const handleToggleMemorized = async (id) => {
     if (updatingId || deletingId) return;
     setUpdatingId(id);
@@ -120,13 +104,13 @@ const VocabularyPage = () => {
     if (updatingId || deletingId) return;
     if (window.confirm("정말로 이 단어를 삭제하시겠습니까?")) {
       setDeletingId(id);
-      setVocab(prev => prev.filter(word => word.id !== id)); // Optimistic delete
+      setVocab(prev => prev.filter(word => word.id !== id));
       try {
         await api.delete(`/api/vocabulary/${id}`);
       } catch (err) {
         console.error('Failed to delete word:', err);
         alert('단어 삭제에 실패했습니다.');
-        setVocab(prev => [...prev, vocab.find(v => v.id === id)].sort((a,b) => b.id - a.id)); // Revert
+        setVocab(prev => [...prev, vocab.find(v => v.id === id)].sort((a,b) => b.id - a.id));
       } finally {
         setDeletingId(null);
       }
@@ -138,7 +122,7 @@ const VocabularyPage = () => {
     else setHideOption(option);
   };
 
-  // --- 정렬 로직 (프론트엔드에서 현재 로드된 데이터만 정렬) ---
+  // 정렬 로직 (이전과 동일)
   const sortedVocab = useMemo(() => {
     const safeVocab = vocab.map(v => ({
       ...v,
@@ -153,9 +137,9 @@ const VocabularyPage = () => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
   }, [vocab, sortBy]);
-
-  if (loading) return <div className="page-loader"><CustomLoader message="단어장을 불러오는 중..." /></div>;
-  if (error && vocab.length === 0) return <div className="error-message">{error}</div>;
+  
+  // 에러 발생 시 (로딩 중이 아닐 때만) 에러 메시지 표시
+  if (error && vocab.length === 0 && !loading) return <div className="error-message">{error}</div>;
 
   return (
     <div className="vocabulary-page">
@@ -187,7 +171,10 @@ const VocabularyPage = () => {
         </div>
       </header>
 
-      {vocab.length > 0 ? (
+      {/* [핵심] 스켈레톤 로딩 로직 적용 */}
+      {loading ? (
+        <VocabListSkeleton count={PAGE_SIZE / 4} /> // 스켈레톤 UI를 5개(20/4) 정도 표시
+      ) : vocab.length > 0 ? (
         <ul className="vocab-list">
           {sortedVocab.map((word, index) => {
             const cardContent = (
@@ -199,10 +186,11 @@ const VocabularyPage = () => {
                 </label>
                 <div className={`expression ${hideOption === 'english' ? 'hidden' : ''}`}>{word.englishExpression}</div>
                 <div className={`meaning ${hideOption === 'korean' ? 'hidden' : ''}`}>{word.koreanMeaning}</div>
-                <button className="delete-btn" onClick={() => handleDelete(word.id)} disabled={deletingId === word.id || updatingId} aria-label="Delete word">×</button>
+                <button className="delete-btn" onClick={() => handleDelete(word.id)} disabled={updatingId === word.id || deletingId} aria-label="Delete word">×</button>
               </div>
             );
 
+            // 마지막 요소에 무한 스크롤을 위한 ref 연결
             if (sortedVocab.length === index + 1) {
               return <li ref={lastVocabElementRef} key={word.id} className={`vocab-card ${word.isMemorized ? 'memorized' : ''} ${deletingId === word.id ? 'deleting' : ''}`} style={{ animationDelay: `${index % PAGE_SIZE * 30}ms` }}>{cardContent}</li>;
             } else {
@@ -211,7 +199,7 @@ const VocabularyPage = () => {
           })}
         </ul>
       ) : (
-        !loading && <div className="empty-vocab">
+        <div className="empty-vocab">
           <p>{debouncedSearchTerm ? `"${debouncedSearchTerm}"에 대한 검색 결과가 없습니다.` : "저장된 단어가 없습니다."}</p>
           <span>학습 페이지에서 단어를 추가해 보세요!</span>
         </div>

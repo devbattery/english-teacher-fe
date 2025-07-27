@@ -108,6 +108,25 @@
   padding: 30px 40px;
 }
 
+/* ================== [추가된 스타일 시작] ================== */
+.generator-info {
+  text-align: center;
+  padding: 15px 20px;
+  margin: 0 40px; /* article의 패딩과 맞춤 */
+  margin-bottom: -15px; /* article과의 간격 조절 */
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.generator-info strong {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+/* ================== [추가된 스타일 끝] ================== */
+
 .learning-article {
   padding: 30px 40px;
   width: 100%;
@@ -452,6 +471,13 @@
   .learning-page {
     padding-left: 15px;
     padding-right: 15px;
+  }
+
+  /* [추가] 모바일에서 생성자 정보 스타일 조정 */
+  .generator-info {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 0.9em;
   }
 
   /* [유지] 본문이 들어있는 article의 좌우 여백도 줄입니다. */

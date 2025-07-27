@@ -39,13 +39,11 @@ const LearningPage = () => {
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [showGuide, setShowGuide] = useState(false);
 
-  // [복원] FeatureDiscoveryTooltip 관련 상태 및 ref
   const [showFeatureGuide, setShowFeatureGuide] = useState(false);
   const [tooltipStyle, setTooltipStyle] = useState({});
   const vocabToggleBtnRef = useRef(null);
   const [vocabListAnchorRect, setVocabListAnchorRect] = useState(null);
 
-  // [복원] FeatureDiscoveryTooltip을 띄우는 useEffect
   useEffect(() => {
     const hasSeenGuide = localStorage.getItem("hasSeenVocabFeatureGuide");
     if (!hasSeenGuide && !loading && vocabToggleBtnRef.current) {
@@ -68,7 +66,6 @@ const LearningPage = () => {
     }
   }, [loading]);
 
-  // [복원] 툴팁 닫기 핸들러
   const handleDismissFeatureGuide = () => {
     setShowFeatureGuide(false);
     localStorage.setItem("hasSeenVocabFeatureGuide", "true");
@@ -100,7 +97,7 @@ const LearningPage = () => {
       } catch (err) {
         clearTimeout(timer);
         console.error("Error fetching learning content:", err);
-        setError("콘텐츠를 불러오는 데 실패했습니다.");
+        setError("콘텐츠를 불러오는 데 실패했습니다. 로그인이 필요할 수 있습니다.");
       } finally {
         setLoading(false);
       }
@@ -201,7 +198,7 @@ const LearningPage = () => {
     setIsVocabVisible(prev => !prev);
   };
 
-  const loadingMessage = isGenerating ? "오늘의 맞춤 콘텐츠를 만들고 있어요..." : "오늘의 콘텐츠를 불러오는 중입니다...";
+  const loadingMessage = isGenerating ? "오늘의 컨텐츠를 만들고 있어요..." : "오늘의 컨텐츠를 불러오는 중입니다...";
 
   return (
     <div className="learning-page" onMouseUp={handleTextSelection}>
@@ -216,7 +213,6 @@ const LearningPage = () => {
 
       {showGuide && <div className="guide-tooltip">저장하고 싶은 단어를 순서대로 탭하세요!</div>}
       
-      {/* [복원] FeatureDiscoveryTooltip 렌더링 */}
       {createPortal(
         <FeatureDiscoveryTooltip
           isVisible={showFeatureGuide}
@@ -256,6 +252,14 @@ const LearningPage = () => {
         {error && <div className="error-message">{error}</div>}
         {!loading && learningContent && (
           <>
+            {/* ======================= [수정된 부분 시작] ======================= */}
+            {learningContent.generatedByUserName && (
+              <div className="generator-info">
+                ✨ 오늘의 컨텐츠는 <strong >{learningContent.generatedByUserName}</strong> 님이 생성하셨습니다.
+              </div>
+            )}
+            {/* ======================= [수정된 부분 끝] ========================= */}
+            
             <article className="learning-article" ref={contentRef}>
               <h2 className="article-title">{learningContent.title}</h2>
               <div className={`article-content ${isWordSelectMode ? "selectable" : ""}`}>

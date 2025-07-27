@@ -148,7 +148,7 @@ const VocabularyPage = () => {
         <div className="search-container">
           <input
             type="text"
-            placeholder="영어 또는 한글로 검색..."
+            placeholder="찾고자 하는 단어를 입력하세요."
             className="search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -166,7 +166,7 @@ const VocabularyPage = () => {
           <div className="control-group">
             <span className="control-label">가리기:</span>
             <button className={`toggle-btn ${hideOption === 'english' ? 'active' : ''}`} onClick={() => handleHideToggle('english')}>영어</button>
-            <button className={`toggle-btn ${hideOption === 'korean' ? 'active' : ''}`} onClick={() => handleHideToggle('korean')}>한글</button>
+            <button className={`toggle-btn ${hideOption === 'korean' ? 'active' : ''}`} onClick={() => handleHideToggle('korean')}>한국어</button>
           </div>
         </div>
       </header>

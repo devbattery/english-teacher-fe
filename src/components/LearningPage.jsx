@@ -29,8 +29,7 @@ const LearningPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const contentRef = useRef(null);
   const [wordsArray, setWordsArray] = useState([]);
-
-  // [추가] 새 단어 추가 시 FloatingVocabList를 리프레시하기 위한 상태
+  
   const [newWordTimestamp, setNewWordTimestamp] = useState(null);
 
   const windowWidth = useWindowWidth();
@@ -40,15 +39,16 @@ const LearningPage = () => {
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [showGuide, setShowGuide] = useState(false);
 
+  // [복원] FeatureDiscoveryTooltip 관련 상태 및 ref
   const [showFeatureGuide, setShowFeatureGuide] = useState(false);
   const [tooltipStyle, setTooltipStyle] = useState({});
-
   const vocabToggleBtnRef = useRef(null);
   const [vocabListAnchorRect, setVocabListAnchorRect] = useState(null);
 
+  // [복원] FeatureDiscoveryTooltip을 띄우는 useEffect
   useEffect(() => {
     const hasSeenGuide = localStorage.getItem("hasSeenVocabFeatureGuide");
-    if (!hasSeenGuide && !loading) {
+    if (!hasSeenGuide && !loading && vocabToggleBtnRef.current) {
       const timer = setTimeout(() => {
         if (vocabToggleBtnRef.current) {
           const rect = vocabToggleBtnRef.current.getBoundingClientRect();
@@ -68,6 +68,7 @@ const LearningPage = () => {
     }
   }, [loading]);
 
+  // [복원] 툴팁 닫기 핸들러
   const handleDismissFeatureGuide = () => {
     setShowFeatureGuide(false);
     localStorage.setItem("hasSeenVocabFeatureGuide", "true");
@@ -78,8 +79,6 @@ const LearningPage = () => {
       setWordsArray(learningContent.content.split(/(\s+)/));
     }
   }, [learningContent]);
-
-  // [수정] 전체 단어 목록을 불러오는 useEffect는 제거됨
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -172,9 +171,8 @@ const LearningPage = () => {
     setIsSaving(true);
     try {
       await api.post("/api/vocabulary", { expression: textToSave });
-      // [수정] 타임스탬프를 업데이트하여 자식 컴포넌트에 변경을 알림
       setNewWordTimestamp(Date.now());
-      setIsVocabVisible(true); // 저장 후 단어장 바로 열기
+      setIsVocabVisible(true);
     } catch (err) {
       console.error("Error saving word:", err);
       alert("단어 저장에 실패했습니다.");
@@ -185,8 +183,6 @@ const LearningPage = () => {
       setIsWordSelectMode(false);
     }
   };
-
-  // [수정] handleDeleteWord는 FloatingVocabList가 직접 처리하므로 제거됨
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -220,6 +216,7 @@ const LearningPage = () => {
 
       {showGuide && <div className="guide-tooltip">저장하고 싶은 단어를 순서대로 탭하세요!</div>}
       
+      {/* [복원] FeatureDiscoveryTooltip 렌더링 */}
       {createPortal(
         <FeatureDiscoveryTooltip
           isVisible={showFeatureGuide}
@@ -244,7 +241,6 @@ const LearningPage = () => {
       )}
 
       <header className="learning-header"><h1>Daily Contents</h1></header>
-
       <nav className="level-selector">
         {teacherLevels.map((teacher) => (
           <button
@@ -252,12 +248,9 @@ const LearningPage = () => {
             className={`level-btn ${level === teacher.id ? "active" : ""}`}
             onClick={() => setLevel(teacher.id)}
             disabled={loading}
-          >
-            {teacher.name}
-          </button>
+          >{teacher.name}</button>
         ))}
       </nav>
-
       <main className={`content-area ${loading ? "loading" : ""}`}>
         {loading && <CustomLoader message={loadingMessage} />}
         {error && <div className="error-message">{error}</div>}
@@ -268,9 +261,7 @@ const LearningPage = () => {
               <div className={`article-content ${isWordSelectMode ? "selectable" : ""}`}>
                 {isMobile && isWordSelectMode ? wordsArray.map((word, index) =>
                     word.trim() ? (
-                      <span key={index} className={`selectable-word ${selectedIndices.includes(index) ? "selected" : ""}`} onMouseDown={(e) => handleWordTap(e, index)}>
-                        {word}
-                      </span>
+                      <span key={index} className={`selectable-word ${selectedIndices.includes(index) ? "selected" : ""}`} onMouseDown={(e) => handleWordTap(e, index)}>{word}</span>
                     ) : ( <React.Fragment key={index}>{word}</React.Fragment> )
                   ) : learningContent.content.split("\n").map((line, index) => (
                       <React.Fragment key={index}>{line}<br /></React.Fragment>
@@ -294,7 +285,6 @@ const LearningPage = () => {
           </>
         )}
       </main>
-
       <div className="fixed-bottom-controls">
         {isWordSelectMode && (
           <div className={`selection-bar ${selectedIndices.length > 0 ? "visible" : ""}`}>

@@ -261,7 +261,7 @@ const FloatingVocabList = ({
         />
 
         <header className="vocab-header" onMouseDown={handleInteraction}>
-          <h3>Mini 내 단어장 📝</h3>
+          <h3>Mini 단어장</h3>
           <button
             onClick={onClose}
             className="close-btn"
